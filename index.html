@@ -3,780 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown to HTML Converter</title>
-    <!-- Thư viện Marked.js để chuyển đổi Markdown -> HTML -->
+    <title>12A2 TOOLS</title> 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* === BASE STYLES (GIỮ NGUYÊN PHONG CÁCH SCI-FI TUYỆT VỜI) === */
         :root {
-            --primary: #00f7ff; /* Xanh dương neon chủ đạo */
-            --secondary: #6e00ff; /* Tím neon phụ */
-            --accent: #ff00aa;  /* Hồng neon nhấn */
-            --error: #ff3d71; /* Đỏ báo lỗi */
-            --success: #00ff88; /* Xanh lá thành công */
-            --warning: #ffcc00; /* Vàng cảnh báo */
-
-            --bg-dark: #0a0a20; /* Nền tối đậm */
-            --bg-darker: #050510; /* Nền tối hơn */
-            --bg-light: rgba(20, 20, 50, 0.5); /* Nền sáng nhẹ (có độ trong) */
-            --bg-lighter: rgba(30, 30, 70, 0.3); /* Nền sáng hơn (có độ trong) */
-
-            --text-light: #e0e0ff; /* Màu chữ sáng */
-            --text-lighter: #ffffff; /* Màu chữ trắng */
-            --text-dim: rgba(224, 224, 255, 0.6); /* Màu chữ mờ */
-
-            --border-radius: 12px; /* Bo góc */
-            --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2); /* Đổ bóng neon */
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng chuyển động mượt */
+            --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa;
+            --error: #ff3d71; --success: #00ff88; --warning: #ffcc00;
+            --bg-dark: #0a0a20; --bg-darker: #050510; --bg-light: rgba(20, 20, 50, 0.5);
+            --bg-lighter: rgba(30, 30, 70, 0.3); --text-light: #e0e0ff;
+            --text-lighter: #ffffff; --text-dim: rgba(224, 224, 255, 0.6);
+            --border-radius: 12px; --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.6;
-            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark);
+            color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative;
         }
 
-        /* === BACKGROUND EFFECTS (GIỮ NGUYÊN HIỆU ỨNG NỀN HUYỀN ẢO) === */
-        .particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
+        /* === BACKGROUND EFFECTS (GIỮ NGUYÊN) === */
+        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
+        @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; pointer-events: none; }
+        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px); z-index: -1; pointer-events: none; animation: scanline 8s linear infinite; }
+        @keyframes scanline { 0%{background-position:0 0;} 100%{background-position:0 100%;} }
 
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: particle-anim linear infinite;
-        }
-
-        @keyframes particle-anim {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            100% { transform: translateY(-1500px) rotate(720deg); opacity: 0; }
-        }
-
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 247, 255, 0.03),
-                rgba(0, 247, 255, 0.03) 1px,
-                transparent 1px,
-                transparent 3px
-            );
-            z-index: -1;
-            pointer-events: none;
-            animation: scanline 8s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
-        }
-
-        /* === MAIN CONTAINER (KHỐI CHÍNH - Giờ đây là Converter) === */
+        /* === MAIN CONTAINER === */
         .container {
-            max-width: 900px; /* Tăng độ rộng cho khu vực nhập liệu */
-            margin: 2rem auto;
-            padding: 2.5rem;
-            background: rgba(10, 10, 32, 0.85);
-            backdrop-filter: blur(12px);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(110, 0, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-            animation: float 6s ease-in-out infinite;
+            max-width: 900px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85);
+            backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow);
+            border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden;
+            transition: var(--transition); animation: float 6s ease-in-out infinite;
         }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .container::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index:-1; animation:pulse 15s infinite alternate; }
+        @keyframes pulse { 0%{transform:scale(0.8);opacity:0.5;} 100%{transform:scale(1.2);opacity:0.8;} }
+        h1 { text-align:center; color:var(--primary); margin-bottom:2rem; font-weight:300; letter-spacing:2px; text-transform:uppercase; font-size:1.8rem; text-shadow:0 0 15px rgba(0, 247, 255, 0.5); position:relative; padding-bottom:1rem; }
+        h1::after { content:''; position:absolute; bottom:0; left:25%; width:50%; height:2px; background:linear-gradient(90deg, transparent, var(--primary), transparent); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%);
-            z-index: -1;
-            animation: pulse 15s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            100% { transform: scale(1.2); opacity: 0.8; }
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 1.8rem;
-            text-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        h1::after { /* Đường gạch chân neon gradient */
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 25%;
-            width: 50%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        }
-
-         /* === MARKDOWN INPUT & CONTROLS (KHU VỰC MỚI THÊM) === */
-        .converter-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-light);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase; /* Thêm chút phong cách */
-        }
-
+        /* === GENERATOR FORM STYLES === */
+        .generator-form { display:flex; flex-direction:column; gap:1.5rem; margin-top:2rem; }
+        .input-group label { display:block; margin-bottom:0.5rem; color:var(--text-light); font-size:0.9rem; letter-spacing:1px; text-transform:uppercase; }
         textarea#markdown-input {
-            width: 100%;
-            min-height: 250px; /* Cao hơn để nhập liệu thoải mái */
-            padding: 1.5rem;
-            background: var(--bg-light);
-            border: 1px solid rgba(110, 0, 255, 0.5);
-            border-radius: var(--border-radius);
-            color: var(--text-lighter); /* Màu chữ sáng rõ hơn */
-            font-size: 1rem;
-            font-family: 'Consolas', 'Monaco', monospace; /* Font cho code */
-            transition: var(--transition);
-            outline: none;
-            letter-spacing: 1px;
-            resize: vertical; /* Cho phép thay đổi chiều cao */
-            line-height: 1.5;
+            width:100%; min-height:200px; padding:1.5rem; background:var(--bg-light);
+            border:1px solid rgba(110, 0, 255, 0.5); border-radius:var(--border-radius);
+            color:var(--text-lighter); font-size:1rem; font-family:'Consolas', 'Monaco', monospace;
+            transition:var(--transition); outline:none; letter-spacing:1px; resize:vertical; line-height:1.5;
         }
-
-        textarea#markdown-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
-            transform: translateY(-2px); /* Nhấc nhẹ lên khi focus */
-        }
-
-        /* Style nút bấm chung (tái sử dụng từ code gốc) */
-        button {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: var(--transition);
-            box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4);
-            position: relative;
-            overflow: hidden; /* Để chứa hiệu ứng ánh kim */
-            display: inline-flex; /* Để căn icon và text */
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem; /* Khoảng cách giữa icon và chữ */
-        }
-
-        button:hover {
-            transform: translateY(-3px); /* Nhấc cao hơn khi hover */
-            box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); /* Tăng bóng */
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(45deg);
-            animation: shine 3s infinite linear; /* Tăng tốc độ chút */
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-150%) rotate(45deg); } /* Dịch xa hơn */
-            100% { transform: translateX(150%) rotate(45deg); }
-        }
-
-        /* Nút sao chép - dùng màu xanh lá thành công */
-        #copy-button {
-            background: linear-gradient(135deg, #008040, var(--success));
-            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4);
-        }
-        #copy-button:hover {
-             box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6);
-        }
-
-        /* Làm mờ nút sao chép khi chưa có gì để copy */
-        #copy-button:disabled {
-            background: var(--bg-light);
-            color: var(--text-dim);
-            cursor: not-allowed;
-            box-shadow: none;
-            opacity: 0.6;
-        }
-         #copy-button:disabled::before {
-             display: none; /* Ẩn hiệu ứng ánh kim khi disable */
+        textarea#markdown-input:focus { border-color:var(--primary); box-shadow:0 0 15px rgba(0, 247, 255, 0.5); transform:translateY(-2px); }
+        input[type="text"]#output-password-input { /* Changed type to text for visibility, can change back to password */
+             width:100%; padding:1rem 1.5rem; background:var(--bg-light);
+             border:1px solid rgba(110, 0, 255, 0.5); border-radius:var(--border-radius);
+             color:var(--text-light); font-size:1rem; transition:var(--transition); outline:none; letter-spacing:1px;
+         }
+         input[type="text"]#output-password-input:focus {
+             border-color:var(--primary); box-shadow:0 0 15px rgba(0, 247, 255, 0.5); transform:translateY(-2px);
+         }
+         input[type="text"]#output-password-input.error { /* Style for password input error */
+             border-color: var(--error);
          }
 
-         /* Nút sao chép - Trạng thái đã sao chép */
-         #copy-button.copied {
-             background: var(--accent); /* Đổi màu hồng khi đã copy */
-             color: var(--text-lighter);
-             box-shadow: 0 4px 20px rgba(255, 0, 170, 0.5);
+
+        /* === BUTTON STYLES (General) === */
+        button {
+            background:linear-gradient(135deg, var(--secondary), var(--primary)); color:white;
+            border:none; padding:1rem; border-radius:var(--border-radius); cursor:pointer;
+            font-size:1rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px;
+            transition:var(--transition); box-shadow:0 4px 20px rgba(110, 0, 255, 0.4);
+            position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
+        }
+        button:hover { transform:translateY(-3px); box-shadow:0 6px 25px rgba(0, 247, 255, 0.6); }
+        button::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform:rotate(45deg); animation:shine 3s infinite linear; }
+        @keyframes shine { 0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);} }
+        /* Copy button style */
+        #copy-button { /* Default disabled style */
+             background:var(--bg-lighter); color:var(--text-dim); cursor:not-allowed;
+             box-shadow:none; opacity:0.5; border:1px solid rgba(110, 0, 255, 0.3);
+        }
+        #copy-button::before { display:none; }
+        #copy-button:not(:disabled) { /* Activated style */
+            background:linear-gradient(135deg, #008040, var(--success)); box-shadow:0 4px 20px rgba(0, 255, 136, 0.4);
+            opacity:1; color:white; cursor:pointer;
+        }
+        #copy-button:not(:disabled):hover { box-shadow:0 6px 25px rgba(0, 255, 136, 0.6); transform:translateY(-3px); }
+        #copy-button:not(:disabled)::before { display:block; }
+        #copy-button.copied { /* Style when copied */
+             background:var(--accent); box-shadow:0 4px 20px rgba(255, 0, 170, 0.5);
          }
 
 
         /* === STATUS MESSAGE === */
         .status-message {
-            color: var(--success);
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            height: 1.5rem; /* Giữ chiều cao cố định */
-            transition: all 0.3s ease;
-            font-weight: bold;
+            color: var(--success); text-align: center; margin-top: 1rem; font-size: 0.9rem;
+            height: 1.5rem; transition: all 0.3s ease; font-weight: bold;
         }
-        .status-message.error {
-             color: var(--error);
-        }
-        .status-message.info {
-             color: var(--warning); /* Màu vàng cho thông báo thông thường */
-        }
+        .status-message.error { color: var(--error); }
+        .status-message.info { color: var(--warning); }
 
 
-        /* === ICON FONTS (MATERIAL ICONS - Vẫn cần thiết) === */
-        @font-face {
-            font-family: 'Material Icons';
-            font-style: normal;
-            font-weight: 400;
-            src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
-        }
+        /* === ICON FONTS === */
+        @font-face { font-family:'Material Icons'; font-style:normal; font-weight:400; src:url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2'); }
+        .material-icons { font-family:'Material Icons'; font-weight:normal; font-style:normal; font-size:20px; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; vertical-align:middle; }
 
-        .material-icons {
-            font-family: 'Material Icons';
-            font-weight: normal;
-            font-style: normal;
-            font-size: 20px;
-            line-height: 1;
-            letter-spacing: normal;
-            text-transform: none;
-            display: inline-block;
-            white-space: nowrap;
-            word-wrap: normal;
-            direction: ltr;
-            -webkit-font-feature-settings: 'liga';
-            -webkit-font-smoothing: antialiased;
-            vertical-align: middle; /* Giữ nguyên căn chỉnh icon */
-        }
 
         /* === RESPONSIVE DESIGN === */
         @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-            textarea#markdown-input {
-                 min-height: 200px;
-            }
-            button {
-                 padding: 0.8rem;
-                 font-size: 0.9rem;
-             }
+            .container { margin:1rem; padding:1.5rem; }
+            h1 { font-size:1.5rem; }
+            textarea#markdown-input { min-height:180px; }
+            button { padding:0.8rem; font-size:0.9rem; }
         }
 
-        /* Thêm CSS để định dạng cơ bản cho HTML được tạo ra từ Markdown
-           Bạn có thể tùy chỉnh thêm phần này nếu muốn HTML output đẹp hơn nữa
-           trong ngữ cảnh của theme futuristic.
-        */
-        #output-placeholder h1,
-        #output-placeholder h2,
-        #output-placeholder h3,
-        #output-placeholder h4,
-        #output-placeholder h5,
-        #output-placeholder h6 {
-            color: var(--primary);
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(110, 0, 255, 0.3);
+
+        /* === CSS DÙNG CHO TEMPLATE HTML ĐẦU RA (ĐỊNH DẠNG MARKDOWN) === */
+        /* Sẽ được nhúng vào file HTML cuối */
+        .final-template-styles { /* Dùng class khác để tránh xung đột */
+             /* (Sao chép các quy tắc CSS tương tự như `.template-styles` ở code trước) */
         }
+        .final-template-styles h1, .final-template-styles h2, .final-template-styles h3, .final-template-styles h4, .final-template-styles h5, .final-template-styles h6 { color: var(--primary); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 300; letter-spacing: 1px; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(110, 0, 255, 0.3); }
+        .final-template-styles h1 { font-size: 1.6rem; } .final-template-styles h2 { font-size: 1.4rem; color: var(--accent); } .final-template-styles h3 { font-size: 1.2rem; }
+        .final-template-styles p { margin-bottom: 1rem; color: var(--text-light); }
+        .final-template-styles a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: var(--transition); } .final-template-styles a:hover { color: var(--primary); border-bottom-style: solid; }
+        .final-template-styles ul, .final-template-styles ol { margin-left: 2rem; margin-bottom: 1rem; color: var(--text-light); } .final-template-styles li { margin-bottom: 0.5rem; }
+        .final-template-styles blockquote { border-left: 4px solid var(--secondary); padding-left: 1rem; margin: 1.5rem 0; color: var(--text-dim); font-style: italic; background: rgba(110, 0, 255, 0.05); padding: 1rem; border-radius: 0 var(--border-radius) var(--border-radius) 0; }
+        .final-template-styles code { background-color: var(--bg-lighter); color: var(--accent); padding: 0.2em 0.4em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; }
+        .final-template-styles pre { background-color: var(--bg-darker); padding: 1rem; border-radius: var(--border-radius); overflow-x: auto; margin-bottom: 1rem; border: 1px solid rgba(110, 0, 255, 0.2); box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); }
+        .final-template-styles pre code { background-color: transparent; padding: 0; color: var(--text-lighter); }
+        .final-template-styles hr { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); margin: 2rem 0; }
+        .final-template-styles table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: var(--bg-lighter); border: 1px solid rgba(110, 0, 255, 0.3); border-radius: var(--border-radius); overflow: hidden; }
+        .final-template-styles th, .final-template-styles td { border: 1px solid rgba(110, 0, 255, 0.3); padding: 0.8rem 1rem; text-align: left; }
+        .final-template-styles th { background: rgba(110, 0, 255, 0.2); color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .final-template-styles tr:nth-child(even) { background: rgba(0, 247, 255, 0.03); }
 
-        #output-placeholder h1 { font-size: 1.6rem; }
-        #output-placeholder h2 { font-size: 1.4rem; color: var(--accent); }
-        #output-placeholder h3 { font-size: 1.2rem; }
+        /* === CSS Cho Phần Password Form TRONG TEMPLATE ĐẦU RA === */
+        /* (Dùng lại các style tương tự màn hình login gốc) */
+         .final-page-password-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; /* Căn giữa form */ }
+         .final-page-input-group { position: relative; }
+         .final-page-input-group label { display: block; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; }
+         .final-page-input-group input[type="password"] { /* Đảm bảo là type password */ width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 2px; }
+         .final-page-input-group input[type="password"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
+         .final-page-button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+         .final-page-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
+         .final-page-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient( to bottom right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100% ); transform: rotate(45deg); animation: shine 3s infinite linear; }
+         .final-page-error-message { color: var(--error); text-align: center; margin-top: 1rem; font-size: 0.95rem; height: 1.5rem; font-weight: bold; }
+         .final-page-input-group input[type="password"].shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; } /* Dùng lại anim shake */
+         .final-page-donation-prompt { text-align: center; margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(255, 204, 0, 0.1); border-left: 4px solid var(--warning); border-radius: var(--border-radius); color: var(--warning); font-size: 0.85rem; line-height: 1.4; font-style: italic; }
+         .final-page-donation-prompt strong { font-weight: bold; color: var(--text-lighter); }
 
-        #output-placeholder p {
-            margin-bottom: 1rem;
-            color: var(--text-light);
-        }
-
-        #output-placeholder a {
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px dashed var(--accent);
-            transition: var(--transition);
-        }
-        #output-placeholder a:hover {
-            color: var(--primary);
-            border-bottom-style: solid;
-        }
-
-        #output-placeholder ul,
-        #output-placeholder ol {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-            color: var(--text-light);
-        }
-         #output-placeholder li {
-             margin-bottom: 0.5rem;
-         }
-
-        #output-placeholder blockquote {
-            border-left: 4px solid var(--secondary);
-            padding-left: 1rem;
-            margin: 1.5rem 0;
-            color: var(--text-dim);
-            font-style: italic;
-            background: rgba(110, 0, 255, 0.05);
-            padding: 1rem;
-            border-radius: 0 var(--border-radius) var(--border-radius) 0;
-        }
-
-        #output-placeholder code {
-            background-color: var(--bg-lighter);
-            color: var(--accent);
-            padding: 0.2em 0.4em;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Monaco', monospace;
-        }
-
-        #output-placeholder pre {
-            background-color: var(--bg-darker);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(110, 0, 255, 0.2);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        #output-placeholder pre code {
-            background-color: transparent;
-            padding: 0;
-            color: var(--text-lighter);
-        }
-         #output-placeholder hr {
-            border: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin: 2rem 0;
-         }
-         #output-placeholder table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-            background: var(--bg-lighter);
-            border: 1px solid rgba(110, 0, 255, 0.3);
-            border-radius: var(--border-radius); /* Chỉ bo viền ngoài */
-            overflow: hidden; /* Đảm bảo bo góc được áp dụng */
-         }
-         #output-placeholder th,
-         #output-placeholder td {
-             border: 1px solid rgba(110, 0, 255, 0.3);
-             padding: 0.8rem 1rem;
-             text-align: left;
-         }
-         #output-placeholder th {
-             background: rgba(110, 0, 255, 0.2);
-             color: var(--primary);
-             font-weight: bold;
-             text-transform: uppercase;
-             letter-spacing: 1px;
-         }
-         #output-placeholder tr:nth-child(even) {
-             background: rgba(0, 247, 255, 0.03); /* Nền khác màu nhẹ cho hàng chẵn */
-         }
-
-
+         /* Class để ẩn/hiện content */
+         .final-content-section.hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- Background Effects (Giữ nguyên) -->
+    <!-- Background Effects (Only for Generator page) -->
     <div class="particles-container" id="particles"></div>
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
 
-    <!-- Converter Container -->
-    <div class="container" id="converter-container">
-        <h1><i class="material-icons">transform</i> Markdown to Futuristic HTML</h1>
+    <!-- Generator Container -->
+    <div class="container" id="generator-container">
+        <h1><i class="material-icons">build_circle</i> Markdown to Protected HTML Generator</h1>
 
-        <div class="converter-form">
+        <div class="generator-form">
             <div class="input-group">
-                <label for="markdown-input"><i class="material-icons">notes</i> Paste Your Markdown Here:</label>
-                <textarea id="markdown-input" placeholder="## Tiêu đề của bạn&#10;* Nội dung viết bằng Markdown...&#10;* Ví dụ: **in đậm**, `code`..."></textarea>
+                <label for="markdown-input"><i class="material-icons">description</i> Nội Dung Markdown:</label>
+                <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây..."></textarea>
             </div>
 
-            <button type="button" id="convert-button">
-                <i class="material-icons">settings_ethernet</i> Generate HTML Source
+             <!-- Input để SET mật khẩu cho file đầu ra -->
+             <div class="input-group">
+                 <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Cho File HTML:</label>
+                 <input type="text" id="output-password-input" placeholder="Nhập mật khẩu bạn muốn đặt">
+                 <!-- Note: type="text" để dễ test, đổi thành "password" nếu muốn ẩn -->
+             </div>
+
+            <button type="button" id="generate-button">
+                <i class="material-icons">generating_tokens</i> Tạo Mã Nguồn HTML
             </button>
 
             <button type="button" id="copy-button" disabled>
-                <i class="material-icons">content_copy</i> Copy Full HTML Code
+                <i class="material-icons">content_copy</i> Sao Chép Mã Nguồn
             </button>
 
             <div class="status-message" id="status-message"></div>
         </div>
 
-        <!-- Ghi chú về công cụ -->
-        <div class="donation-note" style="margin-top: 2.5rem; border-left-color: var(--success);"> {/*Đổi màu viền chút */}
-            <i class="material-icons" style="color: var(--success); vertical-align: middle; margin-right: 5px;">info_outline</i>
-            Dán nội dung Markdown vào ô trên, nhấn "Generate" và sau đó "Copy" để lấy toàn bộ mã HTML bao gồm cả giao diện Futuristic này nhé! Siêu tiện lợi! ✨
-        </div>
     </div>
 
-    <!-- NƠI CHỨA CẤU TRÚC HTML HOÀN CHỈNH SẼ ĐƯỢC SAO CHÉP -->
-    <!-- Chúng ta sẽ tạo ra cấu trúc này trong JavaScript -->
-
     <script>
-        // ====== CONFIGURATION & ELEMENTS ======
+        // ====== CONFIGURATION & ELEMENTS (Generator Page) ======
         const markdownInput = document.getElementById('markdown-input');
-        const convertButton = document.getElementById('convert-button');
+        const outputPasswordInput = document.getElementById('output-password-input'); // Input mới
+        const generateButton = document.getElementById('generate-button'); // Đổi tên nút Generate
         const copyButton = document.getElementById('copy-button');
         const statusMessage = document.getElementById('status-message');
-        let fullHtmlToCopy = ''; // Biến lưu trữ toàn bộ HTML để sao chép
+        let fullHtmlToCopy = ''; // Stores the complete generated HTML source
 
-        // ====== UTILITY FUNCTIONS (Giữ nguyên tạo particles) ======
-        function createParticles() {
-             const particlesContainer = document.getElementById('particles');
-             if (!particlesContainer) return;
-             particlesContainer.innerHTML = ''; // Xóa particles cũ
-             const numParticles = window.innerWidth > 768 ? 100 : 50;
-
-             for (let i = 0; i < numParticles; i++) {
-                 const particle = document.createElement('div');
-                 particle.classList.add('particle');
-                 const size = Math.random() * 6 + 2;
-                 const posX = Math.random() * window.innerWidth;
-                 const delay = Math.random() * 10;
-                 const duration = Math.random() * 15 + 10;
-                 const opacity = Math.random() * 0.5 + 0.1;
-
-                 particle.style.width = `${size}px`;
-                 particle.style.height = `${size}px`;
-                 particle.style.left = `${posX}px`;
-                 particle.style.bottom = `-${size}px`;
-                 particle.style.animationDuration = `${duration}s`;
-                 particle.style.animationDelay = `${delay}s`;
-                 particle.style.opacity = opacity;
-                 particlesContainer.appendChild(particle);
-             }
+        // ====== UTILITY FUNCTIONS (Particles for Generator Page) ======
+        function createParticles() { /* (Giữ nguyên code tạo particle như trước) */
+            const particlesContainer = document.getElementById('particles'); if (!particlesContainer) return; particlesContainer.innerHTML = ''; const numParticles = window.innerWidth > 768 ? 100 : 50;
+            for (let i = 0; i < numParticles; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const size = Math.random() * 6 + 2; const posX = Math.random() * window.innerWidth; const delay = Math.random() * 10; const duration = Math.random() * 15 + 10; const opacity = Math.random() * 0.5 + 0.1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${posX}px`; particle.style.bottom = `-${size}px`; particle.style.animationDuration = `${duration}s`; particle.style.animationDelay = `${delay}s`; particle.style.opacity = opacity; particlesContainer.appendChild(particle); }
         }
 
-        // ====== MARKDOWN CONVERSION & HTML GENERATION ======
+        // ====== HTML TEMPLATE GENERATION FUNCTION (Generates HTML for the FINAL protected page) ======
+        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword) {
+            // Chuyển đổi password thành chuỗi an toàn để nhúng vào JS (escape backticks, etc.)
+            const escapedPassword = pagePassword.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const donateMessage = `🤫 Đôn nết <strong>10K</strong> vào số điện thoại <strong>0901574726</strong> để nhận được mật khẩu bạn nhé! 😉`; // Include donate message here
 
-        // --- Đây là "linh hồn" của trang đích bạn muốn tạo ra ---
-        // Nó bao gồm toàn bộ HTML gốc, CSS, JS hiệu ứng, và MỘT CHỖ ĐỂ NHÉT NỘI DUNG MARKDOWN
-        function generateTargetHtmlTemplate(markdownContentHtml) {
-            // Lưu ý: Sử dụng backticks (`) để tạo chuỗi đa dòng dễ dàng
+            // --- Template for the FINAL HTML PAGE ---
             return `<!DOCTYPE html>
-<html lang="en"> {/* Hoặc lang="vi" tùy bạn */}
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Futuristic Page</title> {/* Tiêu đề có thể tùy chỉnh */}
+    <title>Protected Content</title>
     <style>
-        /* === PASTE TOÀN BỘ CSS GỐC VÀO ĐÂY === */
-        /* Ví dụ: */
-        :root {
-            --primary: #00f7ff; /* Xanh dương neon chủ đạo */
-            --secondary: #6e00ff; /* Tím neon phụ */
-            --accent: #ff00aa;  /* Hồng neon nhấn */
-            --error: #ff3d71; /* Đỏ báo lỗi */
-            --success: #00ff88; /* Xanh lá thành công */
-            --warning: #ffcc00; /* Vàng cảnh báo */
-            --bg-dark: #0a0a20; /* Nền tối đậm */
-            --bg-darker: #050510; /* Nền tối hơn */
-            --bg-light: rgba(20, 20, 50, 0.5); /* Nền sáng nhẹ (có độ trong) */
-            --bg-lighter: rgba(30, 30, 70, 0.3); /* Nền sáng hơn (có độ trong) */
-            --text-light: #e0e0ff; /* Màu chữ sáng */
-            --text-lighter: #ffffff; /* Màu chữ trắng */
-            --text-dim: rgba(224, 224, 255, 0.6); /* Màu chữ mờ */
-            --border-radius: 12px; /* Bo góc */
-            --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2); /* Đổ bóng neon */
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng chuyển động mượt */
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            min-height: 100vh;
-            overflow-x: hidden;
-            line-height: 1.6;
-            position: relative;
-        }
-        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
-        .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
-        @keyframes particle-anim { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.6; } 100% { transform: translateY(-1500px) rotate(720deg); opacity: 0; } }
-        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; pointer-events: none; }
-        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px); z-index: -1; pointer-events: none; animation: scanline 8s linear infinite; }
-        @keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }
-        .container { max-width: 800px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 15s infinite alternate; }
-        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 0.8; } }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; }
-        h1::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
-        .content-area { /* Đặt tên cho vùng chứa nội dung chính */ padding-top: 1rem; /* Thêm khoảng cách nhỏ phía trên nội dung */}
+        /* === PASTE ALL CSS RULES from the generator page's <style> block HERE === */
+        /* Including base, background, container, markdown styles (.final-template-styles), AND password form styles (.final-page-...) */
+        :root{/*...*/--border-radius:12px;--transition:all .4s cubic-bezier(.175,.885,.32,1.275);--primary:#00f7ff;--secondary:#6e00ff;--accent:#ff00aa;--error:#ff3d71;--success:#00ff88;--warning:#ffcc00;--bg-dark:#0a0a20;--bg-darker:#050510;--bg-light:rgba(20,20,50,.5);--bg-lighter:rgba(30,30,70,.3);--text-light:#e0e0ff;--text-lighter:#fff;--text-dim:rgba(224,224,255,.6);--box-shadow:0 0 30px rgba(0,247,255,.2)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;line-height:1.6;position:relative}.particles-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden}.particle{position:absolute;background:radial-gradient(circle,var(--primary) 0,transparent 70%);border-radius:50%;opacity:.6;animation:particle-anim linear infinite}@keyframes particle-anim{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-1500px) rotate(720deg);opacity:0}}.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(110,0,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(110,0,255,.05) 1px,transparent 1px);background-size:40px 40px;z-index:-1;pointer-events:none}.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,rgba(0,247,255,.03),rgba(0,247,255,.03) 1px,transparent 1px,transparent 3px);z-index:-1;pointer-events:none;animation:scanline 8s linear infinite}@keyframes scanline{0%{background-position:0 0}100%{background-position:0 100%}}.container{max-width:800px;margin:2rem auto;padding:2.5rem;background:rgba(10,10,32,.85);backdrop-filter:blur(12px);border-radius:var(--border-radius);box-shadow:var(--box-shadow);border:1px solid rgba(110,0,255,.3);position:relative;overflow:hidden;transition:var(--transition);animation:float 6s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}.container::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,247,255,.1) 0,transparent 60%);z-index:-1;animation:pulse 15s infinite alternate}@keyframes pulse{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.2);opacity:.8}}
+        /* Specific Title Style for Generated Page */
+        .page-title { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; }
+        .page-title::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
 
-        /* THÊM CSS CHO CÁC PHẦN TỬ TẠO BỞI MARKDOWN (Copy từ phần CSS ở trên) */
-        .content-area h1, .content-area h2, .content-area h3, .content-area h4, .content-area h5, .content-area h6 { color: var(--primary); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 300; letter-spacing: 1px; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(110, 0, 255, 0.3); }
-        .content-area h1 { font-size: 1.6rem; } .content-area h2 { font-size: 1.4rem; color: var(--accent); } .content-area h3 { font-size: 1.2rem; }
-        .content-area p { margin-bottom: 1rem; color: var(--text-light); }
-        .content-area a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: var(--transition); } .content-area a:hover { color: var(--primary); border-bottom-style: solid; }
-        .content-area ul, .content-area ol { margin-left: 2rem; margin-bottom: 1rem; color: var(--text-light); } .content-area li { margin-bottom: 0.5rem; }
-        .content-area blockquote { border-left: 4px solid var(--secondary); padding-left: 1rem; margin: 1.5rem 0; color: var(--text-dim); font-style: italic; background: rgba(110, 0, 255, 0.05); padding: 1rem; border-radius: 0 var(--border-radius) var(--border-radius) 0; }
-        .content-area code { background-color: var(--bg-lighter); color: var(--accent); padding: 0.2em 0.4em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; }
-        .content-area pre { background-color: var(--bg-darker); padding: 1rem; border-radius: var(--border-radius); overflow-x: auto; margin-bottom: 1rem; border: 1px solid rgba(110, 0, 255, 0.2); box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); }
-        .content-area pre code { background-color: transparent; padding: 0; color: var(--text-lighter); }
-        .content-area hr { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); margin: 2rem 0; }
-        .content-area table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: var(--bg-lighter); border: 1px solid rgba(110, 0, 255, 0.3); border-radius: var(--border-radius); overflow: hidden; }
-        .content-area th, .content-area td { border: 1px solid rgba(110, 0, 255, 0.3); padding: 0.8rem 1rem; text-align: left; }
-        .content-area th { background: rgba(110, 0, 255, 0.2); color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .content-area tr:nth-child(even) { background: rgba(0, 247, 255, 0.03); }
+        /* Markdown Content Styles */
+        .final-template-styles h1,.final-template-styles h2,.final-template-styles h3,.final-template-styles h4,.final-template-styles h5,.final-template-styles h6{color:var(--primary);margin-top:1.5rem;margin-bottom:1rem;font-weight:300;letter-spacing:1px;padding-bottom:.5rem;border-bottom:1px solid rgba(110,0,255,.3)}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.4rem;color:var(--accent)}.final-template-styles h3{font-size:1.2rem}.final-template-styles p{margin-bottom:1rem;color:var(--text-light)}.final-template-styles a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent);transition:var(--transition)}.final-template-styles a:hover{color:var(--primary);border-bottom-style:solid}.final-template-styles ul,.final-template-styles ol{margin-left:2rem;margin-bottom:1rem;color:var(--text-light)}.final-template-styles li{margin-bottom:.5rem}.final-template-styles blockquote{border-left:4px solid var(--secondary);padding-left:1rem;margin:1.5rem 0;color:var(--text-dim);font-style:italic;background:rgba(110,0,255,.05);padding:1rem;border-radius:0 var(--border-radius) var(--border-radius) 0}.final-template-styles code{background-color:var(--bg-lighter);color:var(--accent);padding:.2em .4em;border-radius:4px;font-family:'Consolas','Monaco',monospace}.final-template-styles pre{background-color:var(--bg-darker);padding:1rem;border-radius:var(--border-radius);overflow-x:auto;margin-bottom:1rem;border:1px solid rgba(110,0,255,.2);box-shadow:inset 0 0 10px rgba(0,0,0,.5)}.final-template-styles pre code{background-color:transparent;padding:0;color:var(--text-lighter)}.final-template-styles hr{border:0;height:1px;background:linear-gradient(90deg,transparent,var(--primary),transparent);margin:2rem 0}.final-template-styles table{width:100%;border-collapse:collapse;margin-bottom:1rem;background:var(--bg-lighter);border:1px solid rgba(110,0,255,.3);border-radius:var(--border-radius);overflow:hidden}.final-template-styles th,.final-template-styles td{border:1px solid rgba(110,0,255,.3);padding:.8rem 1rem;text-align:left}.final-template-styles th{background:rgba(110,0,255,.2);color:var(--primary);font-weight:700;text-transform:uppercase;letter-spacing:1px}.final-template-styles tr:nth-child(even){background:rgba(0,247,255,.03)}
 
-        /* Icon Fonts CSS (vẫn cần thiết nếu dùng icon trong content) */
-        @font-face { font-family: 'Material Icons'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2'); }
-        .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; vertical-align: middle; }
-        /* --- HẾT CSS --- */
+        /* Password Form Styles for Final Page */
+        .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}.final-page-input-group{position:relative}.final-page-input-group label{display:block;margin-bottom:.5rem;color:var(--text-light);font-size:.9rem;letter-spacing:1px}.final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1rem;transition:var(--transition);outline:0;letter-spacing:2px}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}.final-page-button{background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:var(--transition);box-shadow:0 4px 20px rgba(110,0,255,.4);position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}.final-page-button:hover{transform:translateY(-3px);box-shadow:0 6px 25px rgba(0,247,255,.6)}.final-page-button::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,transparent 0,rgba(255,255,255,.1) 50%,transparent 100%);transform:rotate(45deg);animation:shine 3s infinite linear}.final-page-error-message{color:var(--error);text-align:center;margin-top:1rem;font-size:.95rem;height:1.5rem;font-weight:700}.final-page-input-group input[type=password].shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both}@keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-5px)}20%,40%,60%,80%{transform:translateX(5px)}}.final-page-donation-prompt{text-align:center;margin-top:1rem;padding:.8rem 1rem;background:rgba(255,204,0,.1);border-left:4px solid var(--warning);border-radius:var(--border-radius);color:var(--warning);font-size:.85rem;line-height:1.4;font-style:italic}.final-page-donation-prompt strong{font-weight:700;color:var(--text-lighter)}
+
+        /* Hide/Show Class */
+        .final-content-section.hidden{display:none}
+
+        /* Icon font needed on final page if icons used in markdown/layout */
+         @font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2')}.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;vertical-align:middle}
+        /* --- End of CSS --- */
     </style>
 </head>
 <body>
-    <!-- Background Effects -->
-    <div class="particles-container" id="particles"></div>
+    <!-- Background Effects (Included for final page) -->
+    <div class="particles-container" id="final-particles"></div>
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
 
-    <!-- Main Content Container -->
+    <!-- Main Container for Final Page -->
     <div class="container">
-        <h1> <i class="material-icons">article</i> Your Generated Content</h1> {/* Có thể đổi Icon */}
 
-        <div class="content-area">
-            <!-- NỘI DUNG MARKDOWN SAU KHI CONVERT SẼ ĐƯỢC CHÈN VÀO ĐÂY -->
-            ${markdownContentHtml}
-            <!-- KẾT THÚC PHẦN NỘI DUNG CHÈN -->
+        <!-- Password Section (Visible Initially) -->
+        <div id="final-password-section">
+            <h1 class="page-title"><i class="material-icons">lock</i> Nội dung được bảo vệ</h1>
+            <form class="final-page-password-form" onsubmit="checkFinalPagePassword(); return false;">
+                <div class="final-page-input-group">
+                    <label for="final-password-input">Nhập Mật Khẩu Truy Cập:</label>
+                    <input type="password" id="final-password-input" placeholder="············" autocomplete="off">
+                </div>
+                 <!-- Donate Message on Final Page -->
+                 <div class="final-page-donation-prompt">${donateMessage}</div>
+                <button type="submit" class="final-page-button" id="final-submit-btn">
+                    <i class="material-icons">lock_open</i> Mở Khóa Nội Dung
+                </button>
+                <div class="final-page-error-message" id="final-error-message"></div>
+            </form>
         </div>
 
-        <div style="text-align: center; margin-top: 2rem; color: var(--text-dim); font-size: 0.8rem;">
-            Generated using the Futuristic Markdown Converter
+        <!-- Content Section (Hidden Initially) -->
+        <div id="final-content-section" class="final-content-section hidden">
+            <div class="final-template-styles">
+                <!-- MARKDOWN HTML GETS PLACED HERE -->
+                ${markdownContentHtml}
+            </div>
+             <div style="text-align: center; margin-top: 2rem; color: var(--text-dim); font-size: 0.8rem;">Powered by Futuristic Generator</div>
         </div>
+
     </div>
 
-    <!-- JavaScript cho hiệu ứng nền (particle effect) -->
+    <!-- JavaScript for Final Page (Particles & Password Check) -->
     <script>
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            if (!particlesContainer) return;
-            particlesContainer.innerHTML = '';
-            const numParticles = window.innerWidth > 768 ? 100 : 50;
-            for (let i = 0; i < numParticles; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                const size = Math.random() * 6 + 2;
-                const posX = Math.random() * window.innerWidth;
-                const delay = Math.random() * 10;
-                const duration = Math.random() * 15 + 10;
-                const opacity = Math.random() * 0.5 + 0.1;
-                particle.style.width = \`\${size}px\`; particle.style.height = \`\${size}px\`;
-                particle.style.left = \`\${posX}px\`; particle.style.bottom = \`-\${size}px\`;
-                particle.style.animationDuration = \`\${duration}s\`;
-                particle.style.animationDelay = \`\${delay}s\`; particle.style.opacity = opacity;
-                particlesContainer.appendChild(particle);
+        // Embedded Password for the Final Page
+        const CORRECT_FINAL_PASSWORD = \`${escapedPassword}\`; // Use the escaped password
+
+        // Elements for the Final Page Logic
+        const finalPasswordSection = document.getElementById('final-password-section');
+        const finalContentSection = document.getElementById('final-content-section');
+        const finalPasswordInput = document.getElementById('final-password-input');
+        const finalErrorMessage = document.getElementById('final-error-message');
+
+        // Password Check Function for the Final Page
+        function checkFinalPagePassword() {
+            const enteredPassword = finalPasswordInput.value;
+
+            if (enteredPassword === CORRECT_FINAL_PASSWORD) {
+                // Correct Password
+                if (finalPasswordSection) finalPasswordSection.style.display = 'none'; // Hide password form
+                if (finalContentSection) finalContentSection.classList.remove('hidden'); // Show content
+                 // You might want to stop particle animation or remove password elements fully for performance
+            } else {
+                // Incorrect Password
+                if (finalErrorMessage) finalErrorMessage.textContent = 'Trên đời này không có bữa ăn nào là miễn phí';
+                if (finalPasswordInput) {
+                    finalPasswordInput.value = ''; // Clear input
+                    finalPasswordInput.focus();
+                     // Add shake effect
+                     finalPasswordInput.classList.add('shake');
+                     setTimeout(() => {
+                         finalPasswordInput.classList.remove('shake');
+                     }, 500);
+                 }
             }
         }
-        document.addEventListener('DOMContentLoaded', createParticles);
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-             clearTimeout(resizeTimeout);
-             resizeTimeout = setTimeout(createParticles, 200);
-         });
-         // Đặt JS của hiệu ứng (particles, etc.) vào đây
+
+         // Clear error message when user types again on final page
+         if (finalPasswordInput) {
+            finalPasswordInput.addEventListener('input', () => {
+                if (finalErrorMessage && finalErrorMessage.textContent) {
+                    finalErrorMessage.textContent = '';
+                }
+            });
+         }
+
+
+        // Particle Effect Script for Final Page (Needs unique container ID)
+        function createFinalParticles() {
+            const particlesContainer = document.getElementById('final-particles'); // Use unique ID
+            if (!particlesContainer) return; particlesContainer.innerHTML = ''; const numParticles = window.innerWidth > 768 ? 100 : 50;
+            for (let i = 0; i < numParticles; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const size = Math.random() * 6 + 2; const posX = Math.random() * window.innerWidth; const delay = Math.random() * 10; const duration = Math.random() * 15 + 10; const opacity = Math.random() * 0.5 + 0.1; particle.style.width = \`\${size}px\`; particle.style.height = \`\${size}px\`; particle.style.left = \`\${posX}px\`; particle.style.bottom = \`-\${size}px\`; particle.style.animationDuration = \`\${duration}s\`; particle.style.animationDelay = \`\${delay}s\`; particle.style.opacity = opacity; particlesContainer.appendChild(particle); }
+        }
+        document.addEventListener('DOMContentLoaded', createFinalParticles);
+        let finalResizeTimeout; window.addEventListener('resize',()=>{clearTimeout(finalResizeTimeout); finalResizeTimeout = setTimeout(createFinalParticles,200);});
     <\/script>
 </body>
 </html>`;
         }
 
 
-        function handleConvert() {
+        // ====== MARKDOWN CONVERSION & HTML GENERATION (Generator Page Logic) ======
+        function handleGenerate() {
             const markdownText = markdownInput.value;
+            const outputPassword = outputPasswordInput.value;
+
+            outputPasswordInput.classList.remove('error'); // Clear previous error style
+
             if (!markdownText.trim()) {
-                showStatus("⚠️ Ôi bạn ơi, chưa nhập gì cả kìa!", "info");
-                copyButton.disabled = true;
+                showStatus("⚠️ Vui lòng nhập nội dung Markdown.", "info");
+                markdownInput.focus();
+                return;
+            }
+            if (!outputPassword.trim()) {
+                showStatus("🔑 Vui lòng đặt mật khẩu cho file HTML!", "error");
+                outputPasswordInput.classList.add('error'); // Highlight password input
+                outputPasswordInput.focus();
                 return;
             }
 
             try {
-                // Sử dụng marked.js để chuyển đổi
-                // Bật tùy chọn breaks để xuống dòng tự động như GFM
-                marked.setOptions({
-                  breaks: true, // Chuyển đổi ngắt dòng trong Markdown thành <br>
-                  gfm: true // Sử dụng GitHub Flavored Markdown
-                });
+                marked.setOptions({ breaks: true, gfm: true });
                 const convertedHtml = marked.parse(markdownText);
+                // Generate the final HTML source WITH the embedded password
+                fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword);
 
-                // Tạo toàn bộ mã HTML đích bằng cách nhét HTML vừa convert vào template
-                fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml);
-
-                showStatus("✅ Chuyển đổi thành công! Sẵn sàng để sao chép.", "success");
-                copyButton.disabled = false; // Bật nút sao chép
-                copyButton.classList.remove('copied'); // Reset trạng thái nút copy nếu trước đó đã copy
-                copyButton.innerHTML = '<i class="material-icons">content_copy</i> Copy Full HTML Code';
+                showStatus("✅ Tạo mã nguồn thành công! Sẵn sàng để sao chép.", "success");
+                copyButton.disabled = false; // Enable the copy button
+                copyButton.classList.remove('copied');
+                copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
 
 
             } catch (error) {
                 console.error("Lỗi chuyển đổi Markdown:", error);
-                showStatus("❌ Oops! Có lỗi xảy ra khi chuyển đổi. Kiểm tra Console nhé.", "error");
-                copyButton.disabled = true;
-                fullHtmlToCopy = ''; // Xóa mã nguồn cũ nếu có lỗi
+                showStatus("❌ Lỗi khi tạo mã nguồn. Kiểm tra Console.", "error");
+                fullHtmlToCopy = ''; // Clear if error
+                copyButton.disabled = true; // Disable copy button
             }
         }
 
-        // ====== COPY FUNCTIONALITY ======
+        // ====== COPY FUNCTIONALITY (Generator Page Logic - Simplified) ======
         function handleCopy() {
             if (!fullHtmlToCopy) {
-                 showStatus("🤔 Chưa có gì để copy cả bạn ơi.", "info");
+                 showStatus("🤔 Bạn cần 'Tạo Mã Nguồn' trước nhé.", "info");
                 return;
             }
 
             navigator.clipboard.writeText(fullHtmlToCopy)
                 .then(() => {
-                    showStatus("✨ Đã sao chép vào clipboard! Dùng ngay thôi!", "success");
-                    copyButton.classList.add('copied'); // Thêm class để đổi style
-                    copyButton.innerHTML = '<i class="material-icons">check_circle</i> Copied!'; // Đổi icon và chữ
+                    showStatus("✨ Đã sao chép vào clipboard!", "success");
+                    copyButton.classList.add('copied');
+                    copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Sao Chép!';
 
-                    // Reset nút sau vài giây
+                    // Reset button style after a few seconds
                     setTimeout(() => {
                          copyButton.classList.remove('copied');
-                         copyButton.innerHTML = '<i class="material-icons">content_copy</i> Copy Full HTML Code';
+                         copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
                      }, 2500);
                 })
                 .catch(err => {
                     console.error('Lỗi sao chép: ', err);
-                     showStatus("🔥 Hỏng rồi! Không sao chép được. Thử lại xem sao.", "error");
+                     showStatus("🔥 Hỏng rồi! Không sao chép được.", "error");
                 });
         }
 
-        // ====== STATUS MESSAGE HELPER ======
+        // ====== STATUS MESSAGE HELPER (Generator Page) ======
         function showStatus(message, type = "info") {
              statusMessage.textContent = message;
              statusMessage.className = 'status-message'; // Reset class
-             if (type === 'error') {
-                 statusMessage.classList.add('error');
-             } else if (type === 'success') {
-                 statusMessage.classList.add('success');
-             } else {
-                  statusMessage.classList.add('info');
-             }
+             if (type === 'error') statusMessage.classList.add('error');
+             else if (type === 'success') statusMessage.classList.add('success');
+             else statusMessage.classList.add('info');
 
-             // Xóa thông báo sau vài giây để đỡ rối mắt
              setTimeout(() => {
-                  if(statusMessage.textContent === message) { // Chỉ xóa nếu thông báo chưa bị thay đổi
-                     statusMessage.textContent = '';
-                     statusMessage.className = 'status-message';
+                  if(statusMessage.textContent === message) {
+                     statusMessage.textContent = ''; statusMessage.className = 'status-message';
                  }
-             }, 5000); // 5 giây
+             }, 5000); // 5 seconds
         }
 
-
-        // ====== INITIALIZATION ======
+        // ====== INITIALIZATION (Generator Page) ======
         document.addEventListener('DOMContentLoaded', function() {
-            // Create particles (giữ nguyên)
-            createParticles();
+            createParticles(); // Init particles for generator page
 
-            // Attach event listeners
-            if (convertButton) {
-                convertButton.addEventListener('click', handleConvert);
+            // Attach event listeners for Generator Page
+            if (generateButton) {
+                generateButton.addEventListener('click', handleGenerate);
             }
             if (copyButton) {
                 copyButton.addEventListener('click', handleCopy);
             }
+            // Clear password error style when user types in password input
+            if (outputPasswordInput) {
+                outputPasswordInput.addEventListener('input', () => {
+                    outputPasswordInput.classList.remove('error');
+                });
+            }
 
-             // Thông báo chào mừng nhẹ nhàng
-            showStatus("🚀 Sẵn sàng biến Markdown của bạn thành kiệt tác HTML!", "info");
 
+            showStatus("🚀 Nhập Markdown và đặt mật khẩu để tạo trang bảo vệ!", "info");
 
-            // Resize handler (giữ nguyên)
             let resizeTimeout;
             window.addEventListener('resize', () => {
                  clearTimeout(resizeTimeout);
-                 resizeTimeout = setTimeout(createParticles, 200);
+                 resizeTimeout = setTimeout(createParticles, 200); // Use generator's particle func
              });
         });
 
