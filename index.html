@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12A2 TOOLS</title> 
+    <title>12A2 TOOLS - Tạo HTML Bảo Mật Nâng Cao</title>
+    <!-- Thư viện chuyển đổi Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Thư viện mã hóa/giải mã (CHO TRANG GỐC NÀY) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Font Icon -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
             --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa;
@@ -17,153 +22,248 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark);
-            color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
         }
 
-        /* === BACKGROUND EFFECTS (GIỮ NGUYÊN) === */
-        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
-        .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
-        @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
-        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; pointer-events: none; }
-        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px); z-index: -1; pointer-events: none; animation: scanline 8s linear infinite; }
-        @keyframes scanline { 0%{background-position:0 0;} 100%{background-position:0 100%;} }
+        /* Background Effects */
+        .particles-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
+        }
+        .particle {
+            position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite;
+        }
+        @keyframes particle-anim {
+            0%{transform:translateY(0) rotate(0deg);opacity:0;}
+            10%{opacity:0.6;}
+            100%{transform:translateY(-1500px) rotate(720deg);opacity:0;}
+        }
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1; pointer-events: none;
+        }
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px);
+            z-index: -1; pointer-events: none; animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0%{background-position:0 0;}
+            100%{background-position:0 100%;}
+        }
+        .glow-effect {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%);
+            z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.3; transform: scale(0.95); }
+            100% { opacity: 0.7; transform: scale(1.05); }
+        }
 
-        /* === MAIN CONTAINER === */
+        /* Main Container */
         .container {
-            max-width: 900px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85);
-            backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow);
+            max-width: 900px; margin: 2rem auto; padding: 2.5rem;
+            background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px);
+            border-radius: var(--border-radius); box-shadow: var(--box-shadow);
             border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden;
             transition: var(--transition); animation: float 6s ease-in-out infinite;
         }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .container::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index:-1; animation:pulse 15s infinite alternate; }
-        @keyframes pulse { 0%{transform:scale(0.8);opacity:0.5;} 100%{transform:scale(1.2);opacity:0.8;} }
-        h1 { text-align:center; color:var(--primary); margin-bottom:2rem; font-weight:300; letter-spacing:2px; text-transform:uppercase; font-size:1.8rem; text-shadow:0 0 15px rgba(0, 247, 255, 0.5); position:relative; padding-bottom:1rem; }
-        h1::after { content:''; position:absolute; bottom:0; left:25%; width:50%; height:2px; background:linear-gradient(90deg, transparent, var(--primary), transparent); }
-
-        /* === GENERATOR FORM STYLES === */
-        .generator-form { display:flex; flex-direction:column; gap:1.5rem; margin-top:2rem; }
-        .input-group label { display:block; margin-bottom:0.5rem; color:var(--text-light); font-size:0.9rem; letter-spacing:1px; text-transform:uppercase; }
-        textarea#markdown-input {
-            width:100%; min-height:200px; padding:1.5rem; background:var(--bg-light);
-            border:1px solid rgba(110, 0, 255, 0.5); border-radius:var(--border-radius);
-            color:var(--text-lighter); font-size:1rem; font-family:'Consolas', 'Monaco', monospace;
-            transition:var(--transition); outline:none; letter-spacing:1px; resize:vertical; line-height:1.5;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
-        textarea#markdown-input:focus { border-color:var(--primary); box-shadow:0 0 15px rgba(0, 247, 255, 0.5); transform:translateY(-2px); }
-        input[type="text"]#output-password-input { /* Changed type to text for visibility, can change back to password */
-             width:100%; padding:1rem 1.5rem; background:var(--bg-light);
-             border:1px solid rgba(110, 0, 255, 0.5); border-radius:var(--border-radius);
-             color:var(--text-light); font-size:1rem; transition:var(--transition); outline:none; letter-spacing:1px;
+        .container::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%);
+            z-index: -1; animation: pulse 15s infinite alternate; /* Different pulse for container bg */
+        }
+        h1 {
+            text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300;
+            letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem;
+            text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem;
+        }
+        h1::after {
+            content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        h1 > .material-icons { vertical-align: middle; font-size: 2.2rem; margin-right: 0.5rem;} /* Icon styling */
+
+        /* Generator Form */
+        .generator-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+        .input-group { position: relative; } /* For potential future icon positioning */
+        .input-group label {
+            display: flex; align-items: center; gap: 0.5rem;
+            margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .input-group .material-icons { font-size: 1.2rem; color: var(--secondary); } /* Label icons */
+        textarea#markdown-input {
+            width: 100%; min-height: 200px; padding: 1.5rem; background: var(--bg-light);
+            border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius);
+            color: var(--text-lighter); font-size: 1rem; font-family: 'Consolas', 'Monaco', monospace;
+            transition: var(--transition); outline: none; letter-spacing: 1px; resize: vertical; line-height: 1.5;
+        }
+        textarea#markdown-input:focus {
+            border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px);
+        }
+        input[type="text"]#output-password-input {
+             width: 100%; padding: 1rem 1.5rem; background: var(--bg-light);
+             border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius);
+             color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none;
+             letter-spacing: 1px;
          }
          input[type="text"]#output-password-input:focus {
-             border-color:var(--primary); box-shadow:0 0 15px rgba(0, 247, 255, 0.5); transform:translateY(-2px);
+             border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px);
          }
-         input[type="text"]#output-password-input.error { /* Style for password input error */
-             border-color: var(--error);
+         input[type="text"]#output-password-input.error {
+             border-color: var(--error) !important; /* Ensure error border shows */
+             box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important; /* Ensure error shadow shows */
+             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; /* Shake on error */
          }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
 
-
-        /* === BUTTON STYLES (General) === */
+        /* Button Styles */
         button {
-            background:linear-gradient(135deg, var(--secondary), var(--primary)); color:white;
-            border:none; padding:1rem; border-radius:var(--border-radius); cursor:pointer;
-            font-size:1rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px;
-            transition:var(--transition); box-shadow:0 4px 20px rgba(110, 0, 255, 0.4);
-            position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
+            background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none;
+            padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
-        button:hover { transform:translateY(-3px); box-shadow:0 6px 25px rgba(0, 247, 255, 0.6); }
-        button::before { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform:rotate(45deg); animation:shine 3s infinite linear; }
-        @keyframes shine { 0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);} }
-        /* Copy button style */
-        #copy-button { /* Default disabled style */
-             background:var(--bg-lighter); color:var(--text-dim); cursor:not-allowed;
-             box-shadow:none; opacity:0.5; border:1px solid rgba(110, 0, 255, 0.3);
+        button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
+        button::before { /* Shine effect */
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(45deg); animation: shine 3s infinite linear; opacity: 0.5;
         }
-        #copy-button::before { display:none; }
-        #copy-button:not(:disabled) { /* Activated style */
-            background:linear-gradient(135deg, #008040, var(--success)); box-shadow:0 4px 20px rgba(0, 255, 136, 0.4);
-            opacity:1; color:white; cursor:pointer;
+        @keyframes shine {
+            0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);}
         }
-        #copy-button:not(:disabled):hover { box-shadow:0 6px 25px rgba(0, 255, 136, 0.6); transform:translateY(-3px); }
-        #copy-button:not(:disabled)::before { display:block; }
-        #copy-button.copied { /* Style when copied */
-             background:var(--accent); box-shadow:0 4px 20px rgba(255, 0, 170, 0.5);
-         }
+        button > .material-icons { font-size: 1.4rem; } /* Button icons */
+
+        /* Copy Button Specifics */
+        #copy-button {
+            background: var(--bg-lighter); color: var(--text-dim); cursor: not-allowed;
+            box-shadow: none; opacity: 0.5; border: 1px solid rgba(110, 0, 255, 0.3);
+        }
+        #copy-button::before { display: none; } /* Hide shine when disabled */
+        #copy-button:not(:disabled) {
+            background: linear-gradient(135deg, #008040, var(--success)); /* Green gradient when enabled */
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4); opacity: 1; color: white; cursor: pointer;
+        }
+        #copy-button:not(:disabled):hover {
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6); transform: translateY(-3px);
+        }
+        #copy-button:not(:disabled)::before { display: block; } /* Show shine when enabled */
+        #copy-button.copied {
+            background: var(--accent); /* Pink when copied */
+            box-shadow: 0 4px 20px rgba(255, 0, 170, 0.5);
+        }
+        #copy-button.copied > .material-icons { animation: spin 0.5s ease-in-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 
-        /* === STATUS MESSAGE === */
+        /* Status Message */
         .status-message {
-            color: var(--success); text-align: center; margin-top: 1rem; font-size: 0.9rem;
-            height: 1.5rem; transition: all 0.3s ease; font-weight: bold;
+            color: var(--success); text-align: center; margin-top: 1rem; font-size: 0.95rem; /* Slightly larger */
+            height: 1.5rem; transition: all 0.3s ease; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; gap: 0.5rem;
+            background: rgba(0, 255, 136, 0.1); padding: 0.5rem 1rem; border-radius: var(--border-radius);
+            border-left: 4px solid var(--success); opacity: 0; visibility: hidden; /* Start hidden */
         }
-        .status-message.error { color: var(--error); }
-        .status-message.info { color: var(--warning); }
+        .status-message.show { opacity: 1; visibility: visible; } /* Animate in */
+        .status-message.error {
+            color: var(--error); border-left-color: var(--error); background: rgba(255, 61, 113, 0.1);
+        }
+        .status-message.info {
+            color: var(--warning); border-left-color: var(--warning); background: rgba(255, 204, 0, 0.1);
+        }
+        .status-message .material-icons { font-size: 1.3rem; } /* Status icons */
 
+        /* Icons - Material Icons (already linked in <head>) */
+        .material-icons {
+            font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px;
+            line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block;
+            white-space: nowrap; word-wrap: normal; direction: ltr;
+            -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; vertical-align: middle;
+        }
 
-        /* === ICON FONTS === */
-        @font-face { font-family:'Material Icons'; font-style:normal; font-weight:400; src:url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2'); }
-        .material-icons { font-family:'Material Icons'; font-weight:normal; font-style:normal; font-size:20px; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; vertical-align:middle; }
+        /* Security Warning Modal */
+        .warning-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(5, 5, 16, 0.9); backdrop-filter: blur(10px);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease; pointer-events: none; /* Start hidden and non-interactive */
+        }
+        .warning-modal:not(.hidden) {
+            opacity: 1; pointer-events: auto; /* Show and make interactive */
+        }
+        .warning-content {
+            background: var(--bg-dark); border: 1px solid var(--error);
+            border-radius: var(--border-radius); padding: 2.5rem; max-width: 600px; width: 90%;
+            box-shadow: 0 0 40px rgba(255, 61, 113, 0.3); position: relative;
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Entry animation */
+            transform: scale(0.9); /* Start smaller for animation */
+        }
+        .warning-modal:not(.hidden) .warning-content {
+            transform: scale(1); /* Animate to full size */
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .warning-title {
+            color: var(--error); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;
+            text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center;
+            justify-content: center; gap: 0.5rem;
+        }
+        .warning-title .material-icons { font-size: 1.8rem; }
+        .warning-message { color: var(--text-light); margin-bottom: 2rem; line-height: 1.7; }
+        .warning-message p { margin-bottom: 1rem; }
+        .warning-message strong { color: var(--warning); }
+        .warning-button {
+            background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; border: none;
+            padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            width: 100%; text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4);
+        }
+        .warning-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); }
+        .warning-button .material-icons { font-size: 1.4rem; }
 
-
-        /* === RESPONSIVE DESIGN === */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .container { margin:1rem; padding:1.5rem; }
-            h1 { font-size:1.5rem; }
-            textarea#markdown-input { min-height:180px; }
-            button { padding:0.8rem; font-size:0.9rem; }
+            .container { margin: 1rem; padding: 1.5rem; animation: none; } /* Disable float on mobile */
+            h1 { font-size: 1.5rem; }
+            textarea#markdown-input { min-height: 180px; padding: 1rem; }
+            input[type="text"]#output-password-input { padding: 0.8rem 1rem; }
+            button { padding: 0.8rem; font-size: 0.9rem; }
+            .warning-content { padding: 1.5rem; max-width: 95%; }
+            .warning-title { font-size: 1.3rem; }
         }
-
-
-        /* === CSS DÙNG CHO TEMPLATE HTML ĐẦU RA (ĐỊNH DẠNG MARKDOWN) === */
-        /* Sẽ được nhúng vào file HTML cuối */
-        .final-template-styles { /* Dùng class khác để tránh xung đột */
-             /* (Sao chép các quy tắc CSS tương tự như `.template-styles` ở code trước) */
-        }
-        .final-template-styles h1, .final-template-styles h2, .final-template-styles h3, .final-template-styles h4, .final-template-styles h5, .final-template-styles h6 { color: var(--primary); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 300; letter-spacing: 1px; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(110, 0, 255, 0.3); }
-        .final-template-styles h1 { font-size: 1.6rem; } .final-template-styles h2 { font-size: 1.4rem; color: var(--accent); } .final-template-styles h3 { font-size: 1.2rem; }
-        .final-template-styles p { margin-bottom: 1rem; color: var(--text-light); }
-        .final-template-styles a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: var(--transition); } .final-template-styles a:hover { color: var(--primary); border-bottom-style: solid; }
-        .final-template-styles ul, .final-template-styles ol { margin-left: 2rem; margin-bottom: 1rem; color: var(--text-light); } .final-template-styles li { margin-bottom: 0.5rem; }
-        .final-template-styles blockquote { border-left: 4px solid var(--secondary); padding-left: 1rem; margin: 1.5rem 0; color: var(--text-dim); font-style: italic; background: rgba(110, 0, 255, 0.05); padding: 1rem; border-radius: 0 var(--border-radius) var(--border-radius) 0; }
-        .final-template-styles code { background-color: var(--bg-lighter); color: var(--accent); padding: 0.2em 0.4em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; }
-        .final-template-styles pre { background-color: var(--bg-darker); padding: 1rem; border-radius: var(--border-radius); overflow-x: auto; margin-bottom: 1rem; border: 1px solid rgba(110, 0, 255, 0.2); box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); }
-        .final-template-styles pre code { background-color: transparent; padding: 0; color: var(--text-lighter); }
-        .final-template-styles hr { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); margin: 2rem 0; }
-        .final-template-styles table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; background: var(--bg-lighter); border: 1px solid rgba(110, 0, 255, 0.3); border-radius: var(--border-radius); overflow: hidden; }
-        .final-template-styles th, .final-template-styles td { border: 1px solid rgba(110, 0, 255, 0.3); padding: 0.8rem 1rem; text-align: left; }
-        .final-template-styles th { background: rgba(110, 0, 255, 0.2); color: var(--primary); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .final-template-styles tr:nth-child(even) { background: rgba(0, 247, 255, 0.03); }
-
-        /* === CSS Cho Phần Password Form TRONG TEMPLATE ĐẦU RA === */
-        /* (Dùng lại các style tương tự màn hình login gốc) */
-         .final-page-password-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; /* Căn giữa form */ }
-         .final-page-input-group { position: relative; }
-         .final-page-input-group label { display: block; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; }
-         .final-page-input-group input[type="password"] { /* Đảm bảo là type password */ width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 2px; }
-         .final-page-input-group input[type="password"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
-         .final-page-button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
-         .final-page-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
-         .final-page-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient( to bottom right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100% ); transform: rotate(45deg); animation: shine 3s infinite linear; }
-         .final-page-error-message { color: var(--error); text-align: center; margin-top: 1rem; font-size: 0.95rem; height: 1.5rem; font-weight: bold; }
-         .final-page-input-group input[type="password"].shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; } /* Dùng lại anim shake */
-         .final-page-donation-prompt { text-align: center; margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(255, 204, 0, 0.1); border-left: 4px solid var(--warning); border-radius: var(--border-radius); color: var(--warning); font-size: 0.85rem; line-height: 1.4; font-style: italic; }
-         .final-page-donation-prompt strong { font-weight: bold; color: var(--text-lighter); }
-
-         /* Class để ẩn/hiện content */
-         .final-content-section.hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- Background Effects (Only for Generator page) -->
+    <!-- Background Effects -->
     <div class="particles-container" id="particles"></div>
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
+    <div class="glow-effect"></div>
 
     <!-- Generator Container -->
     <div class="container" id="generator-container">
-        <h1><i class="material-icons">build_circle</i> Markdown to Protected HTML Generator</h1>
+        <h1><i class="material-icons">security</i> Markdown to Secure HTML</h1>
 
         <div class="generator-form">
             <div class="input-group">
@@ -171,279 +271,705 @@
                 <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây..."></textarea>
             </div>
 
-             <!-- Input để SET mật khẩu cho file đầu ra -->
-             <div class="input-group">
-                 <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Cho File HTML:</label>
-                 <input type="text" id="output-password-input" placeholder="Nhập mật khẩu bạn muốn đặt">
-                 <!-- Note: type="text" để dễ test, đổi thành "password" nếu muốn ẩn -->
-             </div>
+            <div class="input-group">
+                <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Bảo Mật:</label>
+                <input type="text" id="output-password-input" placeholder="Ít nhất 8 ký tự, bảo mật mạnh!">
+            </div>
 
             <button type="button" id="generate-button">
-                <i class="material-icons">generating_tokens</i> Tạo Mã Nguồn HTML
+                <i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn Bảo Mật
             </button>
 
             <button type="button" id="copy-button" disabled>
                 <i class="material-icons">content_copy</i> Sao Chép Mã Nguồn
             </button>
 
-            <div class="status-message" id="status-message"></div>
+            <div class="status-message" id="status-message">
+                <!-- Status messages appear here -->
+            </div>
         </div>
+    </div>
 
+    <!-- Security Warning Modal (Hidden initially) -->
+    <div class="warning-modal hidden" id="warning-modal">
+        <div class="warning-content">
+            <h2 class="warning-title"><i class="material-icons">warning</i> CẢNH BÁO BẢO MẬT</h2>
+            <div class="warning-message">
+                <p>Nội dung sắp được tạo sẽ được bảo vệ bởi <strong>10 lớp mã hóa AES</strong>. Mật khẩu bạn đặt là chìa khóa duy nhất.</p>
+                <p>Việc chia sẻ hoặc cố gắng phá vỡ mã hóa này có thể vi phạm các quy định về bảo mật thông tin.</p>
+                <p>Hãy đảm bảo bạn giữ mật khẩu an toàn và chỉ chia sẻ file HTML cho những người được phép.</p>
+            </div>
+            <button class="warning-button" id="warning-confirm">
+                <i class="material-icons">check_circle</i> TÔI HIỂU VÀ TIẾP TỤC
+            </button>
+        </div>
     </div>
 
     <script>
-        // ====== CONFIGURATION & ELEMENTS (Generator Page) ======
+        // ====== CONFIGURATION & ELEMENTS ======
         const markdownInput = document.getElementById('markdown-input');
-        const outputPasswordInput = document.getElementById('output-password-input'); // Input mới
-        const generateButton = document.getElementById('generate-button'); // Đổi tên nút Generate
+        const outputPasswordInput = document.getElementById('output-password-input');
+        const generateButton = document.getElementById('generate-button');
         const copyButton = document.getElementById('copy-button');
         const statusMessage = document.getElementById('status-message');
-        let fullHtmlToCopy = ''; // Stores the complete generated HTML source
+        const warningModal = document.getElementById('warning-modal');
+        const warningConfirm = document.getElementById('warning-confirm');
+        const particlesContainer = document.getElementById('particles'); // Generator page particles
+        let fullHtmlToCopy = '';
+        let statusTimeout = null; // To manage status message clearing
 
-        // ====== UTILITY FUNCTIONS (Particles for Generator Page) ======
-        function createParticles() { /* (Giữ nguyên code tạo particle như trước) */
-            const particlesContainer = document.getElementById('particles'); if (!particlesContainer) return; particlesContainer.innerHTML = ''; const numParticles = window.innerWidth > 768 ? 100 : 50;
-            for (let i = 0; i < numParticles; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const size = Math.random() * 6 + 2; const posX = Math.random() * window.innerWidth; const delay = Math.random() * 10; const duration = Math.random() * 15 + 10; const opacity = Math.random() * 0.5 + 0.1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${posX}px`; particle.style.bottom = `-${size}px`; particle.style.animationDuration = `${duration}s`; particle.style.animationDelay = `${delay}s`; particle.style.opacity = opacity; particlesContainer.appendChild(particle); }
+        // ====== UTILITY FUNCTIONS ======
+        function createParticles(container, idPrefix = '') {
+             if (!container) return;
+             container.innerHTML = ''; // Clear existing
+             const numParticles = window.innerWidth > 768 ? 150 : 75;
+
+             for (let i = 0; i < numParticles; i++) {
+                 const particle = document.createElement('div');
+                 particle.classList.add('particle');
+                 if(idPrefix) particle.id = `${idPrefix}-particle-${i}`; // Unique ID if needed
+
+                 const size = Math.random() * 6 + 2;
+                 const posX = Math.random() * window.innerWidth;
+                 const delay = Math.random() * 10;
+                 const duration = Math.random() * 15 + 10;
+                 const opacity = Math.random() * 0.5 + 0.1;
+
+                 particle.style.width = `${size}px`;
+                 particle.style.height = `${size}px`;
+                 particle.style.left = `${posX}px`;
+                 particle.style.bottom = `-${size}px`;
+                 particle.style.animationDuration = `${duration}s`;
+                 particle.style.animationDelay = `${delay}s`;
+                 particle.style.opacity = opacity;
+
+                 // Randomize colors for more visual interest
+                 const colors = ['#00f7ff', '#6e00ff', '#ff00aa', '#00ff88', '#ffcc00', '#ffffff'];
+                 const color = colors[Math.floor(Math.random() * colors.length)];
+                 particle.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+
+                 container.appendChild(particle);
+             }
         }
 
-        // ====== HTML TEMPLATE GENERATION FUNCTION (Generates HTML for the FINAL protected page) ======
-        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword) {
-            // Chuyển đổi password thành chuỗi an toàn để nhúng vào JS (escape backticks, etc.)
-            const escapedPassword = pagePassword.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-            const donateMessage = `🤫 Đôn nết <strong>10K</strong> vào số điện thoại <strong>0901574726</strong> để nhận được mật khẩu bạn nhé! 😉`; // Include donate message here
+        function showStatus(message, type = "info", icon = "info", duration = 5000) {
+             clearTimeout(statusTimeout); // Clear previous timeout if any
+             statusMessage.innerHTML = `<i class="material-icons">${icon}</i> ${message}`;
+             statusMessage.className = 'status-message'; // Reset classes
+             statusMessage.classList.add(type); // Add specific type class (error, success, info)
+             statusMessage.classList.add('show'); // Make it visible with animation
 
-            // --- Template for the FINAL HTML PAGE ---
+             if (duration > 0) {
+                statusTimeout = setTimeout(() => {
+                     statusMessage.classList.remove('show'); // Hide it
+                 }, duration);
+             }
+        }
+
+        // ====== SECURITY FUNCTIONS (Mã hóa) ======
+        // Sử dụng trên trang Generator này để mã hóa
+        function multiLayerEncrypt(content, password, layers = 10) {
+            let encrypted = content;
+            for (let i = 0; i < layers; i++) {
+                // IMPORTANT: Embed the original password and layer index into the payload
+                // This allows the decryption side to verify the password at each step
+                const combined = `${encrypted}|${password}|${i}`; // Payload|Password|LayerIndex
+
+                // Key derivation for this layer: password + layer index
+                const layerKey = password + i;
+
+                // AES encryption
+                encrypted = CryptoJS.AES.encrypt(combined, layerKey).toString();
+
+                // Base64 encoding for safe transport/embedding in HTML
+                encrypted = btoa(unescape(encodeURIComponent(encrypted))); // Handles UTF-8 correctly
+            }
+            return encrypted;
+        }
+
+        // ====== HTML TEMPLATE GENERATION (Đã sửa lỗi) ======
+        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword) {
+            // Mã hóa nội dung HTML đã chuyển đổi với 10 lớp, dùng mật khẩu người dùng cung cấp
+            const encryptedContent = multiLayerEncrypt(markdownContentHtml, pagePassword, 10);
+
+            // Thoát các ký tự đặc biệt trong mật khẩu để nhúng an toàn vào JS trong template
+            const escapedPassword = pagePassword.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+
+            // Thông điệp nhỏ vui vẻ
+            const donateMessage = `🤫 Cần gợi ý mật khẩu? Đôn nết <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong> và nhắn 'Xin gợi ý cho file...' nha! 😉`;
+
+            // --- BẮT ĐẦU TEMPLATE STRING CHO FILE HTML ĐÍCH ---
+            // Quan trọng: Sử dụng template literals (`) để dễ dàng viết HTML nhiều dòng và nhúng biến.
             return `<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protected Content</title>
+    <title>Nội Dung Bảo Mật</title>
+    <!-- =========================================================== -->
+    <!-- === !! QUAN TRỌNG: Nhúng CryptoJS CHO FILE ĐÍCH !! === -->
+    <!-- =========================================================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script>
+    <!-- Link Font Icons (Material Icons) cho file đích -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* === PASTE ALL CSS RULES from the generator page's <style> block HERE === */
-        /* Including base, background, container, markdown styles (.final-template-styles), AND password form styles (.final-page-...) */
-        :root{/*...*/--border-radius:12px;--transition:all .4s cubic-bezier(.175,.885,.32,1.275);--primary:#00f7ff;--secondary:#6e00ff;--accent:#ff00aa;--error:#ff3d71;--success:#00ff88;--warning:#ffcc00;--bg-dark:#0a0a20;--bg-darker:#050510;--bg-light:rgba(20,20,50,.5);--bg-lighter:rgba(30,30,70,.3);--text-light:#e0e0ff;--text-lighter:#fff;--text-dim:rgba(224,224,255,.6);--box-shadow:0 0 30px rgba(0,247,255,.2)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;line-height:1.6;position:relative}.particles-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden}.particle{position:absolute;background:radial-gradient(circle,var(--primary) 0,transparent 70%);border-radius:50%;opacity:.6;animation:particle-anim linear infinite}@keyframes particle-anim{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.6}100%{transform:translateY(-1500px) rotate(720deg);opacity:0}}.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(110,0,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(110,0,255,.05) 1px,transparent 1px);background-size:40px 40px;z-index:-1;pointer-events:none}.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,rgba(0,247,255,.03),rgba(0,247,255,.03) 1px,transparent 1px,transparent 3px);z-index:-1;pointer-events:none;animation:scanline 8s linear infinite}@keyframes scanline{0%{background-position:0 0}100%{background-position:0 100%}}.container{max-width:800px;margin:2rem auto;padding:2.5rem;background:rgba(10,10,32,.85);backdrop-filter:blur(12px);border-radius:var(--border-radius);box-shadow:var(--box-shadow);border:1px solid rgba(110,0,255,.3);position:relative;overflow:hidden;transition:var(--transition);animation:float 6s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}.container::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,247,255,.1) 0,transparent 60%);z-index:-1;animation:pulse 15s infinite alternate}@keyframes pulse{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.2);opacity:.8}}
-        /* Specific Title Style for Generated Page */
-        .page-title { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; }
-        .page-title::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
+        /* === BASE STYLES (Copy từ trang gốc, bạn có thể tùy chỉnh riêng) === */
+        :root {
+            --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa;
+            --error: #ff3d71; --success: #00ff88; --warning: #ffcc00;
+            --bg-dark: #0a0a20; --bg-darker: #050510; --bg-light: rgba(20, 20, 50, 0.5);
+            --bg-lighter: rgba(30, 30, 70, 0.3); --text-light: #e0e0ff;
+            --text-lighter: #ffffff; --text-dim: rgba(224, 224, 255, 0.6);
+            --border-radius: 12px; --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark); color: var(--text-light);
+            min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative;
+            display: flex; align-items: center; justify-content: center; /* Center content vertically/horizontally */
+        }
 
-        /* Markdown Content Styles */
-        .final-template-styles h1,.final-template-styles h2,.final-template-styles h3,.final-template-styles h4,.final-template-styles h5,.final-template-styles h6{color:var(--primary);margin-top:1.5rem;margin-bottom:1rem;font-weight:300;letter-spacing:1px;padding-bottom:.5rem;border-bottom:1px solid rgba(110,0,255,.3)}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.4rem;color:var(--accent)}.final-template-styles h3{font-size:1.2rem}.final-template-styles p{margin-bottom:1rem;color:var(--text-light)}.final-template-styles a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent);transition:var(--transition)}.final-template-styles a:hover{color:var(--primary);border-bottom-style:solid}.final-template-styles ul,.final-template-styles ol{margin-left:2rem;margin-bottom:1rem;color:var(--text-light)}.final-template-styles li{margin-bottom:.5rem}.final-template-styles blockquote{border-left:4px solid var(--secondary);padding-left:1rem;margin:1.5rem 0;color:var(--text-dim);font-style:italic;background:rgba(110,0,255,.05);padding:1rem;border-radius:0 var(--border-radius) var(--border-radius) 0}.final-template-styles code{background-color:var(--bg-lighter);color:var(--accent);padding:.2em .4em;border-radius:4px;font-family:'Consolas','Monaco',monospace}.final-template-styles pre{background-color:var(--bg-darker);padding:1rem;border-radius:var(--border-radius);overflow-x:auto;margin-bottom:1rem;border:1px solid rgba(110,0,255,.2);box-shadow:inset 0 0 10px rgba(0,0,0,.5)}.final-template-styles pre code{background-color:transparent;padding:0;color:var(--text-lighter)}.final-template-styles hr{border:0;height:1px;background:linear-gradient(90deg,transparent,var(--primary),transparent);margin:2rem 0}.final-template-styles table{width:100%;border-collapse:collapse;margin-bottom:1rem;background:var(--bg-lighter);border:1px solid rgba(110,0,255,.3);border-radius:var(--border-radius);overflow:hidden}.final-template-styles th,.final-template-styles td{border:1px solid rgba(110,0,255,.3);padding:.8rem 1rem;text-align:left}.final-template-styles th{background:rgba(110,0,255,.2);color:var(--primary);font-weight:700;text-transform:uppercase;letter-spacing:1px}.final-template-styles tr:nth-child(even){background:rgba(0,247,255,.03)}
+        /* === BACKGROUND EFFECTS (Copy từ trang gốc) === */
+        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
+        @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
+        .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; pointer-events: none; }
+        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px); z-index: -1; pointer-events: none; animation: scanline 8s linear infinite; }
+        @keyframes scanline { 0%{background-position:0 0;} 100%{background-position:0 100%;} }
+        .glow-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%); z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate; }
+        @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.7; transform: scale(1.05); } }
 
-        /* Password Form Styles for Final Page */
-        .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}.final-page-input-group{position:relative}.final-page-input-group label{display:block;margin-bottom:.5rem;color:var(--text-light);font-size:.9rem;letter-spacing:1px}.final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1rem;transition:var(--transition);outline:0;letter-spacing:2px}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}.final-page-button{background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:var(--transition);box-shadow:0 4px 20px rgba(110,0,255,.4);position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}.final-page-button:hover{transform:translateY(-3px);box-shadow:0 6px 25px rgba(0,247,255,.6)}.final-page-button::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,transparent 0,rgba(255,255,255,.1) 50%,transparent 100%);transform:rotate(45deg);animation:shine 3s infinite linear}.final-page-error-message{color:var(--error);text-align:center;margin-top:1rem;font-size:.95rem;height:1.5rem;font-weight:700}.final-page-input-group input[type=password].shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both}@keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-5px)}20%,40%,60%,80%{transform:translateX(5px)}}.final-page-donation-prompt{text-align:center;margin-top:1rem;padding:.8rem 1rem;background:rgba(255,204,0,.1);border-left:4px solid var(--warning);border-radius:var(--border-radius);color:var(--warning);font-size:.85rem;line-height:1.4;font-style:italic}.final-page-donation-prompt strong{font-weight:700;color:var(--text-lighter)}
+        /* === MAIN CONTAINER (Cho form mật khẩu và nội dung) === */
+        .container {
+            max-width: 800px; width: 90%; /* Make it responsive */
+            margin: 2rem auto; padding: 2.5rem;
+            background: rgba(10, 10, 32, 0.9); /* Slightly more opaque */
+            backdrop-filter: blur(12px); border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3);
+            position: relative; overflow: hidden; transition: var(--transition);
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } /* Reduced float */
+        .container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 15s infinite alternate; }
 
-        /* Hide/Show Class */
-        .final-content-section.hidden{display:none}
+        /* === TITLE STYLES === */
+        .page-title {
+            text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300;
+            letter-spacing: 2px; text-transform: uppercase; font-size: 1.6rem; /* Slightly smaller */
+            text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+        }
+        .page-title .material-icons { font-size: 2rem; }
+        .page-title::after { content: ''; position: absolute; bottom: 0; left: 30%; width: 40%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
 
-        /* Icon font needed on final page if icons used in markdown/layout */
-         @font-face{font-family:'Material Icons';font-style:normal;font-weight:400;src:url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2')}.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;vertical-align:middle}
-        /* --- End of CSS --- */
+        /* === PASSWORD FORM STYLES === */
+        .final-page-password-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .final-page-input-group { position: relative; }
+        .final-page-input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
+        .final-page-input-group label .material-icons { color: var(--secondary); font-size: 1.2rem;}
+        .final-page-input-group input[type="password"] {
+            width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5);
+            border-radius: var(--border-radius); color: var(--text-light); font-size: 1.1rem; /* Larger font for password */
+            transition: var(--transition); outline: none; letter-spacing: 3px; /* More spacing */
+        }
+        .final-page-input-group input[type="password"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
+        .final-page-button {
+            background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem;
+            border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4);
+            position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .final-page-button .material-icons { font-size: 1.4rem; }
+        .final-page-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
+        .final-page-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform: rotate(45deg); animation: shine 3s infinite linear; opacity: 0.5;}
+        @keyframes shine { 0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);} }
+        .final-page-error-message {
+            color: var(--error); text-align: center; margin-top: 0.5rem; font-size: 0.95rem; height: 1.5rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .final-page-error-message.show { opacity: 1; }
+        .final-page-error-message .material-icons { font-size: 1.2rem; }
+        .final-page-input-group input[type="password"].shake { animation: shake-final 0.5s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--error); }
+        @keyframes shake-final { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); } 20%, 40%, 60%, 80% { transform: translateX(6px); } }
+        .final-page-donation-prompt { text-align: center; margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(255, 204, 0, 0.1); border-left: 4px solid var(--warning); border-radius: var(--border-radius); color: var(--warning); font-size: 0.9rem; line-height: 1.5; font-style: italic; }
+        .final-page-donation-prompt strong { font-weight: bold; color: var(--text-lighter); }
+
+        /* === MARKDOWN CONTENT STYLES (Định dạng nội dung sau khi giải mã) === */
+        /* Sử dụng tiền tố .final-template-styles để tránh xung đột CSS */
+        #final-content-section {
+            animation: fadeIn 0.8s ease-out; /* Animation khi nội dung xuất hiện */
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .final-template-styles { /* Container cho nội dung markdown đã render */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8; color: var(--text-light); padding: 1rem 0; /* Add padding top/bottom */
+            max-width: 100%; /* Fill container width */
+        }
+        /* Tinh chỉnh style cho các thẻ HTML sinh ra từ Markdown */
+        .final-template-styles h1, .final-template-styles h2, .final-template-styles h3,
+        .final-template-styles h4, .final-template-styles h5, .final-template-styles h6 {
+            color: var(--primary); margin-top: 2rem; margin-bottom: 1rem; font-weight: 400; letter-spacing: 1px;
+            padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+        .final-template-styles h1 { font-size: 2rem; color: var(--primary); border-bottom-color: var(--primary); }
+        .final-template-styles h2 { font-size: 1.6rem; color: var(--accent); }
+        .final-template-styles h3 { font-size: 1.3rem; }
+        .final-template-styles p { margin-bottom: 1.5rem; color: var(--text-light); font-size: 1.05rem; }
+        .final-template-styles a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: var(--transition); font-weight: 600; }
+        .final-template-styles a:hover { color: var(--primary); border-bottom-style: solid; text-decoration: none; }
+        .final-template-styles ul, .final-template-styles ol { margin-left: 2rem; margin-bottom: 1.5rem; }
+        .final-template-styles li { margin-bottom: 0.6rem; }
+        .final-template-styles blockquote { border-left: 4px solid var(--secondary); padding: 1rem 1.5rem; margin: 2rem 0; background: rgba(110, 0, 255, 0.08); border-radius: 0 var(--border-radius) var(--border-radius) 0; font-style: italic; }
+        .final-template-styles code { background: var(--bg-lighter); color: var(--accent); padding: 0.3em 0.5em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9em;}
+        .final-template-styles pre { background: var(--bg-darker); padding: 1.5rem; border-radius: var(--border-radius); overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid rgba(110, 0, 255, 0.2); }
+        .final-template-styles pre code { background: transparent; padding: 0; color: var(--text-light); font-size: 0.95em; line-height: 1.6;}
+        .final-template-styles hr { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--secondary), transparent); margin: 2.5rem 0; }
+        .final-template-styles table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; background: var(--bg-light); overflow: hidden; border-radius: var(--border-radius); border: 1px solid rgba(110, 0, 255, 0.3); }
+        .final-template-styles th, .final-template-styles td { border: 1px solid rgba(110, 0, 255, 0.2); padding: 0.8rem 1rem; text-align: left; }
+        .final-template-styles th { background: rgba(110, 0, 255, 0.2); color: var(--primary); font-weight: bold; text-transform: uppercase; font-size: 0.9em;}
+        .final-template-styles img { max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; } /* Style images */
+
+
+        /* === WARNING MODAL (Cho trang đích) === */
+        .warning-modal { /* Using same class name, it's fine */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(5, 5, 16, 0.9); backdrop-filter: blur(10px); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+        }
+        .warning-modal:not(.hidden) { opacity: 1; pointer-events: auto; }
+        .warning-content {
+            background: var(--bg-dark); border: 1px solid var(--error); border-radius: var(--border-radius);
+            padding: 2.5rem; max-width: 600px; width: 90%; box-shadow: 0 0 40px rgba(255, 61, 113, 0.3);
+            animation: scaleInFinal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(0.9);
+        }
+         .warning-modal:not(.hidden) .warning-content { transform: scale(1); }
+         @keyframes scaleInFinal { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .warning-title { color: var(--error); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;}
+        .warning-title .material-icons { font-size: 1.8rem; }
+        .warning-message { color: var(--text-light); margin-bottom: 2rem; line-height: 1.7; }
+        .warning-message p { margin-bottom: 1rem; }
+        .warning-message strong { color: var(--warning); }
+        .warning-button {
+            background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4); transition: var(--transition);
+        }
+         .warning-button .material-icons { font-size: 1.4rem; }
+        .warning-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); }
+
+        /* === UTILITY CLASSES === */
+        .hidden { display: none !important; /* Force hide */ }
+        .text-center { text-align: center; }
+        .mt-3 { margin-top: 1.5rem; }
+        .footer-note { text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--text-dim); opacity: 0.7; }
     </style>
 </head>
 <body>
-    <!-- Background Effects (Included for final page) -->
+    <!-- Background Effects (Cho trang đích) -->
     <div class="particles-container" id="final-particles"></div>
     <div class="grid-overlay"></div>
     <div class="scanlines"></div>
+    <div class="glow-effect"></div>
 
-    <!-- Main Container for Final Page -->
+    <!-- Main Container (Cho trang đích) -->
     <div class="container">
-
-        <!-- Password Section (Visible Initially) -->
+        <!-- == SECTION 1: Password Input Form == -->
         <div id="final-password-section">
-            <h1 class="page-title"><i class="material-icons">lock</i> Nội dung được bảo vệ</h1>
-            <form class="final-page-password-form" onsubmit="checkFinalPagePassword(); return false;">
+            <h1 class="page-title"><i class="material-icons">lock_outline</i> Nội Dung Được Bảo Mật</h1>
+            <!-- Form xử lý việc nhập mật khẩu, gọi hàm checkFinalPagePassword khi submit -->
+            <form class="final-page-password-form" onsubmit="checkFinalPagePassword(event)">
                 <div class="final-page-input-group">
-                    <label for="final-password-input">Nhập Mật Khẩu Truy Cập:</label>
-                    <input type="password" id="final-password-input" placeholder="············" autocomplete="off">
+                    <label for="final-password-input"><i class="material-icons">password</i> Nhập Mật Khẩu:</label>
+                    <input type="password" id="final-password-input" placeholder="••••••••••••" autocomplete="current-password" required>
                 </div>
-                 <!-- Donate Message on Final Page -->
-                 <div class="final-page-donation-prompt">${donateMessage}</div>
+                <div class="final-page-donation-prompt">
+                    ${donateMessage}
+                </div>
                 <button type="submit" class="final-page-button" id="final-submit-btn">
                     <i class="material-icons">lock_open</i> Mở Khóa Nội Dung
                 </button>
-                <div class="final-page-error-message" id="final-error-message"></div>
+                <!-- Nơi hiển thị thông báo lỗi mật khẩu -->
+                <div class="final-page-error-message" id="final-error-message">
+                     <!-- Error messages here -->
+                </div>
             </form>
         </div>
 
-        <!-- Content Section (Hidden Initially) -->
-        <div id="final-content-section" class="final-content-section hidden">
-            <div class="final-template-styles">
-                <!-- MARKDOWN HTML GETS PLACED HERE -->
-                ${markdownContentHtml}
+        <!-- == SECTION 2: Decrypted Content Area (Hidden initially) == -->
+        <div id="final-content-section" class="hidden">
+            <!-- Nội dung đã giải mã sẽ được chèn vào div này -->
+            <div class="final-template-styles" id="final-content">
+                <!-- Decrypted content will be injected here -->
             </div>
-             <div style="text-align: center; margin-top: 2rem; color: var(--text-dim); font-size: 0.8rem;">Powered by Futuristic Generator</div>
+            <div class="footer-note">
+                <i class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">verified_user</i> Nội dung được bảo vệ bởi 10 lớp mã hóa AES.
+            </div>
         </div>
-
     </div>
 
-    <!-- JavaScript for Final Page (Particles & Password Check) -->
-    <script>
-        // Embedded Password for the Final Page
-        const CORRECT_FINAL_PASSWORD = \`${escapedPassword}\`; // Use the escaped password
+    <!-- Security Warning Modal (Cho trang đích) -->
+    <div class="warning-modal hidden" id="final-warning-modal">
+        <div class="warning-content">
+            <h2 class="warning-title"><i class="material-icons">gpp_bad</i> CẢNH BÁO AN NINH</h2>
+            <div class="warning-message">
+                <p>Bạn đang truy cập vào khu vực nội dung được mã hóa bảo mật cao (10 lớp AES).</p>
+                <p>Mọi hành vi cố gắng giải mã trái phép, dò mật khẩu tự động, hoặc phân phối lại nội dung mà không có sự cho phép đều là vi phạm và có thể bị theo dõi.</p>
+                <p>Hãy đảm bảo bạn có quyền truy cập hợp lệ và sử dụng mật khẩu được cung cấp một cách có trách nhiệm.</p>
+                <p><strong>Luôn cảnh giác và bảo mật thông tin!</strong></p>
+            </div>
+            <!-- Nút để đóng modal cảnh báo -->
+            <button class="warning-button" onclick="document.getElementById('final-warning-modal').classList.add('hidden');">
+                <i class="material-icons">check_circle_outline</i> TÔI ĐÃ HIỂU VÀ CAM KẾT TUÂN THỦ
+            </button>
+        </div>
+    </div>
 
-        // Elements for the Final Page Logic
+    <!-- =========================================== -->
+    <!-- === JavaScript CHO TRANG ĐÍCH (quan trọng) === -->
+    <!-- =========================================== -->
+    <script>
+        // Embedded Encrypted Content (Nhúng dữ liệu đã mã hóa vào đây)
+        const encryptedContent = \`${encryptedContent}\`;
+
+        // DOM Elements for the final page
         const finalPasswordSection = document.getElementById('final-password-section');
         const finalContentSection = document.getElementById('final-content-section');
         const finalPasswordInput = document.getElementById('final-password-input');
         const finalErrorMessage = document.getElementById('final-error-message');
+        const finalContent = document.getElementById('final-content');
+        const finalWarningModal = document.getElementById('final-warning-modal');
+        const finalParticlesContainer = document.getElementById('final-particles');
 
-        // Password Check Function for the Final Page
-        function checkFinalPagePassword() {
-            const enteredPassword = finalPasswordInput.value;
+        // Function to create particles on the final page
+        function createFinalParticles() {
+             if (!finalParticlesContainer) return;
+             finalParticlesContainer.innerHTML = ''; // Clear existing
+             const numParticles = window.innerWidth > 768 ? 150 : 75;
+             for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 1; // Smaller particles
+                const posX = Math.random() * window.innerWidth;
+                const delay = Math.random() * 12;
+                const duration = Math.random() * 18 + 12;
+                const opacity = Math.random() * 0.4 + 0.1; // Fainter
+                particle.style.width = \`\${size}px\`; particle.style.height = \`\${size}px\`;
+                particle.style.left = \`\${posX}px\`; particle.style.bottom = \`-\${size}px\`;
+                particle.style.animationDuration = \`\${duration}s\`; particle.style.animationDelay = \`\${delay}s\`;
+                particle.style.opacity = opacity;
+                const colors = ['#00f7ff', '#6e00ff', '#ff00aa']; // Fewer, themed colors
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = \`radial-gradient(circle, \${color} 0%, transparent 70%)\`;
+                finalParticlesContainer.appendChild(particle);
+             }
+        }
 
-            if (enteredPassword === CORRECT_FINAL_PASSWORD) {
-                // Correct Password
-                if (finalPasswordSection) finalPasswordSection.style.display = 'none'; // Hide password form
-                if (finalContentSection) finalContentSection.classList.remove('hidden'); // Show content
-                 // You might want to stop particle animation or remove password elements fully for performance
-            } else {
-                // Incorrect Password
-                if (finalErrorMessage) finalErrorMessage.textContent = 'Trên đời này không có bữa ăn nào là miễn phí';
-                if (finalPasswordInput) {
-                    finalPasswordInput.value = ''; // Clear input
-                    finalPasswordInput.focus();
-                     // Add shake effect
-                     finalPasswordInput.classList.add('shake');
-                     setTimeout(() => {
-                         finalPasswordInput.classList.remove('shake');
-                     }, 500);
-                 }
+
+        /* ================================================================== */
+        /* === Multi-Layer Decryption Function (QUAN TRỌNG NHẤT Ở ĐÂY) === */
+        /* ================================================================== */
+        function multiLayerDecrypt(encryptedData, password, layers = 10) {
+            // !!! Đảm bảo rằng CryptoJS đã được nạp (do thẻ script ở trên) !!!
+            if (typeof CryptoJS === 'undefined') {
+                console.error("CryptoJS library is missing! Cannot decrypt.");
+                throw new Error("Lỗi thư viện mã hóa. Không thể giải mã.");
+            }
+
+            let decrypted = encryptedData;
+            try {
+                // Giải mã từng lớp, từ lớp ngoài cùng (layers - 1) vào trong (0)
+                for (let i = layers - 1; i >= 0; i--) {
+
+                    // 1. Base64 Decode: Chuyển đổi chuỗi Base64 về lại chuỗi nhị phân gốc
+                    let base64Decoded;
+                    try {
+                         // Sử dụng escape/unescape để xử lý các ký tự Unicode có thể có trong payload gốc trước khi mã hóa
+                        base64Decoded = decodeURIComponent(escape(atob(decrypted)));
+                    } catch (e) {
+                        console.error(\`Base64 Decode Error at layer \${i}:\`, e);
+                        throw new Error(\`Lỗi giải mã Base64 ở lớp \${i}\`);
+                    }
+
+                    // 2. AES Decrypt: Giải mã AES sử dụng mật khẩu + chỉ số lớp làm key
+                    let decryptedBytes;
+                    const layerKey = password + i; // Key phải khớp với key lúc mã hóa
+                    try {
+                        decryptedBytes = CryptoJS.AES.decrypt(base64Decoded, layerKey);
+                    } catch(e) {
+                         console.error(\`AES Decryption Error at layer \${i}:\`, e);
+                         throw new Error(\`Lỗi giải mã AES ở lớp \${i}\`);
+                    }
+
+
+                    // 3. Convert to UTF8: Chuyển đổi kết quả giải mã về chuỗi UTF-8
+                    let utf8Decoded;
+                    try {
+                        utf8Decoded = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                    } catch (e) {
+                        console.error(\`UTF8 Conversion Error at layer \${i}:\`, e);
+                         // Lỗi này thường xảy ra nếu key sai hoặc dữ liệu bị hỏng, dẫn đến giải mã ra byte không hợp lệ
+                         throw new Error(\`Dữ liệu giải mã không hợp lệ ở lớp \${i} (Có thể sai mật khẩu hoặc dữ liệu lỗi)\`);
+                    }
+
+                    // !!! KIỂM TRA QUAN TRỌNG !!!
+                    // Nếu toString(CryptoJS.enc.Utf8) trả về chuỗi rỗng, điều đó *gần như chắc chắn* nghĩa là MẬT KHẨU SAI ở lớp này
+                    if (!utf8Decoded) {
+                         console.warn(\`Decryption resulted in empty string at layer \${i}. Likely wrong password or corrupt data.\`);
+                        throw new Error(\`Giải mã thất bại ở lớp \${i} - Mật khẩu không khớp?\`);
+                    }
+
+                    // 4. Split and Validate Payload: Tách chuỗi đã giải mã (NộiDung|PasswordGốc|LayerIndex)
+                    const parts = utf8Decoded.split("|");
+
+                    // Xác thực:
+                    // a) Phải có đủ 3 phần tử sau khi tách.
+                    // b) Phần tử thứ 2 (parts[1]) phải chính xác là mật khẩu mà người dùng đã nhập (password).
+                    // c) Phần tử thứ 3 (parts[2]) phải chính xác là chỉ số lớp hiện tại (i). (Tùy chọn, nhưng tăng cường bảo mật)
+                    if (parts.length < 3 || parts[1] !== password /*|| parseInt(parts[2]) !== i*/) {
+                         console.error(\`Payload validation failed at layer \${i}. Expected password "\${password}" | Found "\${parts[1]}". Expected layer \${i} | Found \${parts[2]}. Parts: \`, parts);
+                         throw new Error(\`Xác thực dữ liệu thất bại ở lớp \${i}. Mật khẩu có thể không đúng.\`);
+                    }
+
+                    // 5. Extract Content: Nếu mọi thứ OK, lấy phần nội dung thực sự (parts[0]) để giải mã lớp tiếp theo
+                    decrypted = parts[0];
+                }
+                // Sau khi vòng lặp kết thúc thành công, 'decrypted' chính là nội dung HTML gốc
+                return decrypted;
+            } catch (e) {
+                // Bắt bất kỳ lỗi nào xảy ra trong vòng lặp
+                console.error("Decryption process failed:", e);
+                // Không trả về nội dung lỗi, chỉ trả về null để biết thất bại
+                return null;
             }
         }
 
-         // Clear error message when user types again on final page
-         if (finalPasswordInput) {
-            finalPasswordInput.addEventListener('input', () => {
-                if (finalErrorMessage && finalErrorMessage.textContent) {
-                    finalErrorMessage.textContent = '';
-                }
-            });
-         }
+        // Password Check Function (Called on form submit)
+        function checkFinalPagePassword(event) {
+            event.preventDefault(); // Ngăn chặn form submit và tải lại trang
+
+            const enteredPassword = finalPasswordInput.value;
+            finalErrorMessage.textContent = ''; // Xóa lỗi cũ
+            finalErrorMessage.classList.remove('show'); // Ẩn thông báo lỗi cũ
+            finalPasswordInput.classList.remove('shake'); // Xóa hiệu ứng lắc cũ
+
+            if (!enteredPassword) {
+                finalErrorMessage.innerHTML = '<i class="material-icons">error_outline</i> Vui lòng nhập mật khẩu';
+                finalErrorMessage.classList.add('show');
+                finalPasswordInput.focus();
+                finalPasswordInput.classList.add('shake');
+                return;
+            }
+
+            // Vô hiệu hóa nút submit trong khi xử lý
+            const submitButton = document.getElementById('final-submit-btn');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="material-icons spin">hourglass_top</i> Đang giải mã...';
 
 
-        // Particle Effect Script for Final Page (Needs unique container ID)
-        function createFinalParticles() {
-            const particlesContainer = document.getElementById('final-particles'); // Use unique ID
-            if (!particlesContainer) return; particlesContainer.innerHTML = ''; const numParticles = window.innerWidth > 768 ? 100 : 50;
-            for (let i = 0; i < numParticles; i++) { const particle = document.createElement('div'); particle.classList.add('particle'); const size = Math.random() * 6 + 2; const posX = Math.random() * window.innerWidth; const delay = Math.random() * 10; const duration = Math.random() * 15 + 10; const opacity = Math.random() * 0.5 + 0.1; particle.style.width = \`\${size}px\`; particle.style.height = \`\${size}px\`; particle.style.left = \`\${posX}px\`; particle.style.bottom = \`-\${size}px\`; particle.style.animationDuration = \`\${duration}s\`; particle.style.animationDelay = \`\${delay}s\`; particle.style.opacity = opacity; particlesContainer.appendChild(particle); }
+            // Sử dụng setTimeout để giải mã không chặn giao diện người dùng ngay lập tức
+            setTimeout(() => {
+                 try {
+                     // ---> Gọi hàm giải mã đa lớp <---
+                     const decryptedHtml = multiLayerDecrypt(encryptedContent, enteredPassword, 10); // Sử dụng 10 lớp
+
+                     if (decryptedHtml !== null) {
+                         // --- THÀNH CÔNG ---
+                         finalContent.innerHTML = decryptedHtml; // Chèn HTML đã giải mã
+                         finalPasswordSection.style.display = 'none'; // Ẩn form mật khẩu
+                         finalContentSection.classList.remove('hidden'); // Hiện khu vực nội dung
+                         console.log('Decryption Successful:', new Date().toLocaleString());
+                         // Có thể thêm hiệu ứng vào cho đẹp
+                         finalContentSection.style.opacity = '0';
+                         requestAnimationFrame(() => { finalContentSection.style.opacity = '1'; });
+
+                     } else {
+                         // --- THẤT BẠI (multiLayerDecrypt trả về null) ---
+                         throw new Error("Mật khẩu không chính xác hoặc dữ liệu bị lỗi."); // Ném lỗi để khối catch xử lý
+                     }
+
+                 } catch (e) {
+                     // --- XỬ LÝ LỖI (Từ multiLayerDecrypt hoặc từ khối try ở trên) ---
+                     console.error('Decryption failed:', e.message);
+                     finalErrorMessage.innerHTML = \`<i class="material-icons">warning</i> \${e.message || 'Mật khẩu không chính xác!'}\`;
+                     finalErrorMessage.classList.add('show');
+                     finalPasswordInput.value = ''; // Xóa mật khẩu đã nhập sai
+                     finalPasswordInput.focus();
+                     finalPasswordInput.classList.add('shake'); // Lắc nhẹ báo lỗi
+
+                 } finally {
+                      // Dù thành công hay thất bại, bật lại nút submit
+                      submitButton.disabled = false;
+                      submitButton.innerHTML = '<i class="material-icons">lock_open</i> Mở Khóa Nội Dung';
+                 }
+            }, 50); // Delay nhỏ để UI kịp cập nhật trạng thái "Đang giải mã"
+
         }
-        document.addEventListener('DOMContentLoaded', createFinalParticles);
-        let finalResizeTimeout; window.addEventListener('resize',()=>{clearTimeout(finalResizeTimeout); finalResizeTimeout = setTimeout(createFinalParticles,200);});
+
+        // Initial setup when the final page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createFinalParticles(); // Tạo hiệu ứng hạt
+            finalWarningModal.classList.remove('hidden'); // Hiện cảnh báo bảo mật ban đầu
+            finalPasswordInput.focus(); // Focus vào ô nhập mật khẩu
+
+             // Thêm hiệu ứng quay cho icon loading trên nút submit
+             const style = document.createElement('style');
+             style.innerHTML = \`
+                 @keyframes spin {
+                     from { transform: rotate(0deg); }
+                     to { transform: rotate(360deg); }
+                 }
+                 .spin { animation: spin 1s linear infinite; }
+             \`;
+             document.head.appendChild(style);
+        });
+
+        // Handle window resize for particles on final page
+        let finalResizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(finalResizeTimeout);
+            finalResizeTimeout = setTimeout(createFinalParticles, 250); // Debounce
+        });
     <\/script>
 </body>
 </html>`;
+        // --- KẾT THÚC TEMPLATE STRING CHO FILE HTML ĐÍCH ---
         }
 
 
-        // ====== MARKDOWN CONVERSION & HTML GENERATION (Generator Page Logic) ======
+        // ====== GENERATOR PAGE FUNCTIONS (Logic cho trang tạo mã) ======
         function handleGenerate() {
             const markdownText = markdownInput.value;
             const outputPassword = outputPasswordInput.value;
 
-            outputPasswordInput.classList.remove('error'); // Clear previous error style
+            outputPasswordInput.classList.remove('error'); // Xóa lỗi cũ ở ô password
 
+            // === Validation ===
             if (!markdownText.trim()) {
-                showStatus("⚠️ Vui lòng nhập nội dung Markdown.", "info");
+                showStatus("Vui lòng nhập nội dung Markdown.", "error", "edit_note");
                 markdownInput.focus();
                 return;
             }
-            if (!outputPassword.trim()) {
-                showStatus("🔑 Vui lòng đặt mật khẩu cho file HTML!", "error");
-                outputPasswordInput.classList.add('error'); // Highlight password input
+            if (!outputPassword) { // Check cả chuỗi rỗng
+                 showStatus("Bạn chưa đặt mật khẩu bảo mật!", "error", "key_off");
+                outputPasswordInput.classList.add('error');
                 outputPasswordInput.focus();
                 return;
             }
+             if (outputPassword.length < 8) { // Yêu cầu độ dài tối thiểu
+                 showStatus("Mật khẩu quá ngắn (cần ít nhất 8 ký tự)!", "error", "password");
+                outputPasswordInput.classList.add('error');
+                outputPasswordInput.focus();
+                 return;
+            }
+            // Có thể thêm kiểm tra độ phức tạp mật khẩu ở đây (chữ hoa, thường, số, ký tự đặc biệt)
 
+            // === Markdown Conversion ===
             try {
-                marked.setOptions({ breaks: true, gfm: true });
-                const convertedHtml = marked.parse(markdownText);
-                // Generate the final HTML source WITH the embedded password
-                fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword);
+                 marked.setOptions({
+                     breaks: true,    // Convert newlines to <br>
+                     gfm: true,       // Enable GitHub Flavored Markdown
+                     mangle: false,   // Tắt mã hóa email để tránh lỗi không mong muốn
+                     headerIds: false // Tắt tạo ID tự động cho header nếu không cần
+                 });
+                 const convertedHtml = marked.parse(markdownText);
 
-                showStatus("✅ Tạo mã nguồn thành công! Sẵn sàng để sao chép.", "success");
-                copyButton.disabled = false; // Enable the copy button
-                copyButton.classList.remove('copied');
-                copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
+                // === Show Security Warning Modal Before Generation ===
+                warningModal.classList.remove('hidden'); // Hiện modal
 
+                // === Handle Confirmation ===
+                // Sử dụng .onclick để dễ dàng gỡ bỏ listener cũ nếu có
+                warningConfirm.onclick = function() {
+                     warningModal.classList.add('hidden'); // Ẩn modal
 
-            } catch (error) {
-                console.error("Lỗi chuyển đổi Markdown:", error);
-                showStatus("❌ Lỗi khi tạo mã nguồn. Kiểm tra Console.", "error");
-                fullHtmlToCopy = ''; // Clear if error
-                copyButton.disabled = true; // Disable copy button
+                     // ---> Generate the Final HTML <---
+                     try {
+                          fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword);
+                          showStatus("Tạo mã nguồn thành công! Sẵn sàng để sao chép.", "success", "check_circle");
+                          copyButton.disabled = false; // Bật nút sao chép
+                          copyButton.classList.remove('copied'); // Reset trạng thái nút copy
+                          copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
+                          console.log("HTML generated successfully.");
+                     } catch (genError) {
+                         console.error("Error during HTML template generation:", genError);
+                         showStatus("Lỗi khi tạo template HTML. Kiểm tra Console.", "error", "error");
+                         fullHtmlToCopy = '';
+                         copyButton.disabled = true;
+                     }
+                };
+
+            } catch (markdownError) {
+                console.error("Lỗi chuyển đổi Markdown:", markdownError);
+                showStatus("Lỗi cú pháp Markdown. Kiểm tra lại nội dung.", "error", "error");
+                fullHtmlToCopy = '';
+                copyButton.disabled = true;
             }
         }
 
-        // ====== COPY FUNCTIONALITY (Generator Page Logic - Simplified) ======
         function handleCopy() {
             if (!fullHtmlToCopy) {
-                 showStatus("🤔 Bạn cần 'Tạo Mã Nguồn' trước nhé.", "info");
+                 showStatus("Chưa có gì để sao chép. Hãy tạo mã nguồn trước.", "info", "info");
                 return;
             }
 
             navigator.clipboard.writeText(fullHtmlToCopy)
                 .then(() => {
-                    showStatus("✨ Đã sao chép vào clipboard!", "success");
+                    showStatus("Đã sao chép mã nguồn vào clipboard!", "success", "done_all", 2500); // Tự ẩn sau 2.5s
                     copyButton.classList.add('copied');
                     copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Sao Chép!';
 
-                    // Reset button style after a few seconds
+                    // Không cần setTimeout để reset nút ở đây, showStatus đã xử lý ẩn thông báo
+                    // Reset nút copy sau 1 thời gian để người dùng biết đã copy
                     setTimeout(() => {
-                         copyButton.classList.remove('copied');
-                         copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
-                     }, 2500);
+                        if (copyButton.classList.contains('copied')) { // Chỉ reset nếu vẫn đang ở trạng thái copied
+                            copyButton.classList.remove('copied');
+                            copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
+                        }
+                    }, 2500);
                 })
                 .catch(err => {
-                    console.error('Lỗi sao chép: ', err);
-                     showStatus("🔥 Hỏng rồi! Không sao chép được.", "error");
+                    console.error('Lỗi sao chép vào clipboard: ', err);
+                    showStatus("Lỗi sao chép! Trình duyệt không hỗ trợ hoặc cần cấp quyền.", "error", "report_problem");
+                    // Có thể hiện nội dung trong textarea để người dùng copy thủ công
                 });
         }
 
-        // ====== STATUS MESSAGE HELPER (Generator Page) ======
-        function showStatus(message, type = "info") {
-             statusMessage.textContent = message;
-             statusMessage.className = 'status-message'; // Reset class
-             if (type === 'error') statusMessage.classList.add('error');
-             else if (type === 'success') statusMessage.classList.add('success');
-             else statusMessage.classList.add('info');
-
-             setTimeout(() => {
-                  if(statusMessage.textContent === message) {
-                     statusMessage.textContent = ''; statusMessage.className = 'status-message';
-                 }
-             }, 5000); // 5 seconds
-        }
-
-        // ====== INITIALIZATION (Generator Page) ======
+        // ====== INITIALIZATION (Chạy khi trang Generator tải xong) ======
         document.addEventListener('DOMContentLoaded', function() {
-            createParticles(); // Init particles for generator page
+            createParticles(particlesContainer); // Tạo hiệu ứng cho trang generator
 
-            // Attach event listeners for Generator Page
-            if (generateButton) {
-                generateButton.addEventListener('click', handleGenerate);
-            }
-            if (copyButton) {
-                copyButton.addEventListener('click', handleCopy);
-            }
-            // Clear password error style when user types in password input
-            if (outputPasswordInput) {
-                outputPasswordInput.addEventListener('input', () => {
+            // Event listeners
+            generateButton.addEventListener('click', handleGenerate);
+            copyButton.addEventListener('click', handleCopy);
+
+            // Xóa lỗi khi người dùng nhập lại mật khẩu
+            outputPasswordInput.addEventListener('input', () => {
+                if (outputPasswordInput.value) {
                     outputPasswordInput.classList.remove('error');
-                });
-            }
+                }
+            });
 
+            // Đặt listener để đóng modal cảnh báo nếu click ra ngoài (overlay)
+            warningModal.addEventListener('click', function(event) {
+                if (event.target === warningModal) { // Chỉ đóng khi click vào nền mờ
+                    warningModal.classList.add('hidden');
+                    if(warningConfirm.onclick) { // Hủy bỏ hành động confirm nếu người dùng đóng modal
+                        warningConfirm.onclick = null;
+                    }
+                }
+            });
 
-            showStatus("🚀 Nhập Markdown và đặt mật khẩu để tạo trang bảo vệ!", "info");
+            // Initial status message
+            showStatus("🚀 Sẵn sàng mã hóa Markdown thành HTML siêu bảo mật!", "info", "rocket_launch", 7000);
 
+            // Handle window resize for generator page particles
             let resizeTimeout;
             window.addEventListener('resize', () => {
-                 clearTimeout(resizeTimeout);
-                 resizeTimeout = setTimeout(createParticles, 200); // Use generator's particle func
-             });
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => createParticles(particlesContainer), 250); // Debounce resize
+            });
         });
-
     </script>
 </body>
 </html>
