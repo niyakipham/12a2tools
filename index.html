@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12A2 TOOLS - Mã Hóa SIÊU CẤP Nội Dung & Video</title>
+    <!-- Title cập nhật -->
+    <title>12A2 TOOLS - Mã Hóa Nội Dung & Nhúng URL</title>
     <!-- Thư viện chuyển đổi Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Thư viện mã hóa/giải mã (CHO TRANG GỐC NÀY) -->
@@ -11,6 +12,7 @@
     <!-- Font Icon -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
+        /* === ROOT VARIABLES (Giữ nguyên) === */
         :root {
             --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa;
             --error: #ff3d71; --success: #00ff88; --warning: #ffcc00;
@@ -19,12 +21,11 @@
             --text-lighter: #ffffff; --text-dim: rgba(224, 224, 255, 0.6);
             --border-radius: 12px; --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Thêm màu cho video */
-            --video-bg: rgba(0, 0, 0, 0.2);
-            --video-border: rgba(110, 0, 255, 0.4);
+            --iframe-border: rgba(110, 0, 255, 0.4); /* Màu viền cho iframe container */
         }
+        /* === BASE STYLES (Giữ nguyên) === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; } /* Cuộn mượt hơn */
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-dark);
@@ -35,7 +36,7 @@
             position: relative;
         }
 
-        /* Background Effects - Không đổi */
+        /* === BACKGROUND EFFECTS (Giữ nguyên) === */
         .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
         @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
@@ -45,7 +46,7 @@
         .glow-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%); z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate; }
         @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.7; transform: scale(1.05); } }
 
-        /* Main Container - Không đổi */
+        /* === MAIN CONTAINER (Giữ nguyên) === */
         .container {
             max-width: 900px; margin: 2rem auto; padding: 2.5rem;
             background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px);
@@ -59,79 +60,46 @@
         h1::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
         h1 > .material-icons { vertical-align: middle; font-size: 2.2rem; margin-right: 0.5rem;}
 
-        /* Generator Form */
+        /* === GENERATOR FORM (Chỉnh sửa) === */
         .generator-form { display: flex; flex-direction: column; gap: 1.8rem; margin-top: 2rem; }
         .input-group { position: relative; }
         .input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
         .input-group .material-icons { font-size: 1.2rem; color: var(--secondary); }
+        /* Styling chung cho các input & textarea */
         textarea#markdown-input,
         input[type="text"]#output-password-input,
-        input[type="number"]#expiry-days-input,
-        input[type="file"]#video-input {
+        input[type="url"]#iframe-url-input { /* Thay input file/number bằng input url */
             width: 100%; padding: 1rem 1.5rem; background: var(--bg-light);
             border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius);
             color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none;
             letter-spacing: 1px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        textarea#markdown-input { min-height: 180px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; line-height: 1.5; padding: 1.5rem; border-color: rgba(110, 0, 255, 0.5) } /* Explicitly set border color */
-         textarea#markdown-input.error { /* Add error state for textarea */
+        textarea#markdown-input { min-height: 180px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; line-height: 1.5; padding: 1.5rem; border-color: rgba(110, 0, 255, 0.5) }
+         textarea#markdown-input.error,
+         input[type="text"]#output-password-input.error,
+         input[type="url"]#iframe-url-input.error { /* Thêm input url vào trạng thái lỗi */
               border-color: var(--error) !important;
               box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important;
          }
 
+        /* Focus state chung */
         textarea#markdown-input:focus,
         input[type="text"]#output-password-input:focus,
-        input[type="number"]#expiry-days-input:focus,
-        input[type="file"]#video-input:focus {
+        input[type="url"]#iframe-url-input:focus { /* Thêm input url */
             border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px);
         }
-        /* Style riêng cho input file button */
-        input[type="file"]#video-input::file-selector-button {
-            background: linear-gradient(135deg, var(--secondary), var(--accent)); color: white; border: none;
-            padding: 0.8rem 1.2rem; border-radius: var(--border-radius); cursor: pointer; font-size: 0.9rem;
-            font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
-            margin-right: 1rem; box-shadow: 0 2px 10px rgba(110, 0, 255, 0.3);
-        }
-        input[type="file"]#video-input::file-selector-button:hover {
-            transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 0, 170, 0.5);
-        }
-        /* Ẩn text mặc định "No file chosen" khi chưa chọn */
-         input[type="file"]:not(:focus):not(:valid):not(.has-file) { color: var(--text-dim); } /* Hiển thị placeholder khi chưa chọn */
-         input[type="file"] { color: var(--text-light); } /* Màu chữ khi đã chọn file */
-         input[type="file"].error {
-             border-color: var(--error) !important;
-             box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important;
-         }
+        /* Shake animation chỉ cho password và URL (vì textarea thường dài, lắc trông kỳ) */
         input[type="text"]#output-password-input.error,
-        input[type="number"]#expiry-days-input.error {
-            border-color: var(--error) !important;
-            box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important;
+        input[type="url"]#iframe-url-input.error {
             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
         }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
-
-        /* ==== Thông tin video đã chọn ==== */
-        #video-info {
-            margin-top: -1rem; /* Nối tiếp input file */
-            margin-bottom: 0.5rem; padding: 0.8rem 1.2rem; background: var(--bg-lighter);
-            border: 1px solid var(--video-border); border-radius: var(--border-radius);
-            color: var(--text-dim); font-size: 0.9rem; display: flex; align-items: center;
-            justify-content: space-between; opacity: 0; max-height: 0; overflow: hidden;
-            transition: all 0.5s ease; visibility: hidden;
+        .container.shake { /* Add shake animation for the container */
+             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
-        #video-info.show { opacity: 1; max-height: 100px; visibility: visible; margin-top: 0.5rem; } /* Fix margin */
-        #video-info > div { display: flex; align-items: center; overflow: hidden; flex-grow: 1; margin-right: 1rem; } /* Group icon, name, size */
-        #video-info .file-details { display: flex; flex-direction: column; overflow: hidden; margin-left: 0.7rem; } /* Cho tên và size */
-        #video-info .file-name { color: var(--text-light); font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 400px; font-size: 0.95rem;}
-        #video-info .file-size { font-style: italic; color: var(--success); font-size: 0.85rem;}
-        #video-info button.remove-video-btn {
-            background: none; border: none; color: var(--error); cursor: pointer; padding: 0.3rem; display: flex; align-items: center; border-radius: 50%; transition: background-color 0.3s, transform 0.3s; flex-shrink: 0; /* Prevent shrinking */
-         }
-         #video-info button.remove-video-btn:hover { background-color: rgba(255, 61, 113, 0.2); transform: scale(1.1); }
-         #video-info button.remove-video-btn .material-icons { font-size: 1.3rem; }
 
 
-        /* Button Styles - Không đổi */
+        /* === BUTTON STYLES (Giữ nguyên) === */
         button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
         button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
         button:disabled { filter: grayscale(70%); opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none !important;}
@@ -147,52 +115,53 @@
         #copy-button.copied > .material-icons { animation: spin 0.5s ease-in-out; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* Status Message - Không đổi */
+        /* === STATUS MESSAGE (Giữ nguyên) === */
         .status-message { color: var(--success); text-align: center; margin-top: 1rem; font-size: 0.95rem; min-height: 1.5rem; height: auto; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(0, 255, 136, 0.1); padding: 0.8rem 1rem; border-radius: var(--border-radius); border-left: 4px solid var(--success); opacity: 0; visibility: hidden; max-height: 0; overflow: hidden; }
-        .status-message.show { opacity: 1; visibility: visible; max-height: 100px; } /* Animate height */
+        .status-message.show { opacity: 1; visibility: visible; max-height: 100px; }
         .status-message.error { color: var(--error); border-left-color: var(--error); background: rgba(255, 61, 113, 0.1); }
         .status-message.info { color: var(--warning); border-left-color: var(--warning); background: rgba(255, 204, 0, 0.1); }
         .status-message .material-icons { font-size: 1.3rem; }
 
-        /* Icons - Material Icons */
+        /* === ICONS (Giữ nguyên) === */
         .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; vertical-align: middle; }
 
-        /* Security Warning Modal */
+        /* === SECURITY WARNING MODAL (Giữ nguyên cấu trúc) === */
         .warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(5, 5, 16, 0.9); backdrop-filter: blur(10px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
-        .warning-modal.hidden { display: none !important; /* Use display none when hidden */ }
+        .warning-modal.hidden { display: none !important; }
         .warning-modal:not(.hidden) { opacity: 1; pointer-events: auto; }
         .warning-content { background: var(--bg-dark); border: 1px solid var(--error); border-radius: var(--border-radius); padding: 2.5rem; max-width: 600px; width: 90%; box-shadow: 0 0 40px rgba(255, 61, 113, 0.3); position: relative; animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(1); }
-        .warning-modal:not(.hidden).initial-state .warning-content { transform: scale(0.9); opacity: 0;} /* Start smaller for entry animation */
+        .warning-modal:not(.hidden).initial-state .warning-content { transform: scale(0.9); opacity: 0;}
         @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .warning-title { color: var(--error); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .warning-title .material-icons { font-size: 1.8rem; }
         .warning-message { color: var(--text-light); margin-bottom: 2rem; line-height: 1.7; }
         .warning-message p { margin-bottom: 1rem; }
         .warning-message strong { color: var(--warning); }
+        .warning-message code {
+             background: var(--bg-lighter); color: var(--accent); padding: 0.2em 0.4em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9em; word-break: break-all;
+         }
+         .warning-message .material-icons { font-size: 1.1rem !important; vertical-align: text-bottom; margin-right: 0.3rem;} /* Smaller icons in modal */
+
         .warning-button { background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4); }
         .warning-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); }
         .warning-button .material-icons { font-size: 1.4rem; }
 
-        /* Responsive Design */
+        /* === RESPONSIVE DESIGN (Giữ nguyên) === */
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; animation: none; }
             h1 { font-size: 1.5rem; }
             textarea#markdown-input { min-height: 150px; padding: 1rem; }
             input[type="text"]#output-password-input,
-            input[type="number"]#expiry-days-input,
-            input[type="file"]#video-input { padding: 0.8rem 1rem; }
+            input[type="url"]#iframe-url-input { padding: 0.8rem 1rem; }
             button { padding: 0.8rem; font-size: 0.9rem; }
             .warning-content { padding: 1.5rem; max-width: 95%; }
             .warning-title { font-size: 1.3rem; }
-            #video-info .file-name { max-width: 150px; } /* Shorten file name on mobile */
-            #video-info .file-details { margin-left: 0.4rem; }
         }
          @media (max-width: 480px) {
               h1 { font-size: 1.3rem; }
               .input-group label { font-size: 0.85rem; }
-              #video-info { flex-direction: column; align-items: flex-start;} /* Stack info and button */
-              #video-info > div { margin-right: 0; margin-bottom: 0.5rem; width: 100%; } /* Video info takes full width */
-              #video-info button.remove-video-btn { align-self: flex-end; } /* Keep button on right */
+              .warning-message p { font-size: 0.95rem;}
+              .warning-message code { font-size: 0.85em;}
          }
     </style>
 </head>
@@ -205,13 +174,13 @@
 
     <!-- Generator Container -->
     <div class="container" id="generator-container">
-        <h1><i class="material-icons">shield_moon</i> Mã Hóa SIÊU CẤP Nội Dung & Video</h1>
+        <h1><i class="material-icons">security</i> Mã Hóa Nội Dung & Nhúng URL</h1>
 
-        <!-- Using form for better semantics and potential future submission handling -->
+        <!-- Form generator -->
         <form class="generator-form" id="main-form" onsubmit="return false;">
             <!-- Nội dung Markdown -->
             <div class="input-group">
-                <label for="markdown-input"><i class="material-icons">description</i> Nội Dung Markdown:</label>
+                <label for="markdown-input"><i class="material-icons">description</i> Nội Dung Chính (Markdown):</label>
                 <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây..." required></textarea>
             </div>
 
@@ -221,42 +190,19 @@
                 <input type="text" id="output-password-input" placeholder="Ít nhất 8 ký tự, bảo mật mạnh!" required minlength="8">
             </div>
 
-            <!-- Tải Video -->
+            <!-- Nhúng URL vào Iframe -->
             <div class="input-group">
-                <label for="video-input"><i class="material-icons">movie</i> Nhúng Video Bảo Mật (Tùy chọn, Tối đa 10MB):</label>
-                <input type="file" id="video-input" accept="video/*" > <!-- No 'required' here -->
-                <!-- Khu vực hiển thị thông tin video đã chọn -->
-                <div id="video-info" class="">
-                    <div> <!-- Div to group icon, name, size -->
-                        <i class="material-icons" style="color:var(--accent); font-size: 1.8rem;">videocam</i>
-                        <div class="file-details">
-                            <span class="file-name" title="Tên file"></span>
-                            <span class="file-size"></span>
-                        </div>
-                    </div>
-                    <button type="button" class="remove-video-btn" id="remove-video-button" title="Gỡ bỏ video này">
-                        <i class="material-icons">close</i>
-                    </button>
-                </div>
+                <label for="iframe-url-input"><i class="material-icons">link</i> URL Nhúng vào Iframe (Tùy chọn):</label>
+                <input type="url" id="iframe-url-input" placeholder="Dán URL vào đây (vd: link YouTube, Vimeo, Google Drive,...)">
                  <small style="color: var(--text-dim); display: block; margin-top: 0.5rem; line-height: 1.4;">
                     <i class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">info_outline</i>
-                    File video sẽ được mã hóa và nhúng trực tiếp vào file HTML. Chọn file nhỏ (khuyến nghị < 10MB) để tránh làm chậm trình duyệt của người xem.
-                 </small>
-            </div>
-
-            <!-- Thời gian lưu trữ video -->
-            <div class="input-group" id="expiry-group" style="display: none;"> <!-- Hidden initially -->
-                 <label for="expiry-days-input"><i class="material-icons">event_busy</i> Thời Gian Video Hiển Thị (Số Ngày):</label>
-                 <input type="number" id="expiry-days-input" placeholder="Nhập số ngày (vd: 7). Bỏ trống nếu không giới hạn." min="1">
-                 <small style="color: var(--text-dim); display: block; margin-top: 0.5rem;">
-                    <i class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">timer</i>
-                    Sau thời gian này, video sẽ không thể xem được trong file HTML được tạo.
+                    URL này sẽ được hiển thị trong một khung Iframe bên dưới nội dung chính sau khi giải mã. Một số trang có thể chặn việc nhúng qua iframe.
                  </small>
             </div>
 
             <!-- Nút Tạo và Sao chép -->
             <button type="button" id="generate-button">
-                <i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn Siêu Cấp
+                <i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn Bảo Mật
             </button>
 
             <button type="button" id="copy-button" disabled>
@@ -270,7 +216,7 @@
         </form> <!-- End of form -->
     </div>
 
-    <!-- Security Warning Modal Container (Initially Empty) -->
+    <!-- Security Warning Modal Container -->
     <div class="warning-modal hidden" id="warning-modal">
        <!-- Modal content will be loaded here by JS -->
     </div>
@@ -279,13 +225,7 @@
         // ====== CONFIGURATION & ELEMENTS ======
         const markdownInput = document.getElementById('markdown-input');
         const outputPasswordInput = document.getElementById('output-password-input');
-        const videoInput = document.getElementById('video-input');
-        const videoInfoDiv = document.getElementById('video-info');
-        const videoNameSpan = videoInfoDiv.querySelector('.file-name');
-        const videoSizeSpan = videoInfoDiv.querySelector('.file-size');
-        const removeVideoButton = document.getElementById('remove-video-button');
-        const expiryGroupDiv = document.getElementById('expiry-group');
-        const expiryDaysInput = document.getElementById('expiry-days-input');
+        const iframeUrlInput = document.getElementById('iframe-url-input');
         const generateButton = document.getElementById('generate-button');
         const copyButton = document.getElementById('copy-button');
         const statusMessage = document.getElementById('status-message');
@@ -293,246 +233,125 @@
         const particlesContainer = document.getElementById('particles');
         let fullHtmlToCopy = '';
         let statusTimeout = null;
-        let selectedVideoFile = null;
-        let videoDataBase64 = null;
-        let videoProcessing = false;
-
-        const MAX_VIDEO_SIZE_MB = 10; // Limit to 10MB
-        const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 
         // ====== UTILITY FUNCTIONS ======
         function createParticles(container, idPrefix = '') {
              if (!container) return;
-             // Only generate if particle count is low (e.g., on initial load or if cleared)
-             if(container.children.length > 50) return; // Optimization
+             if(container.children.length > 50 && Math.random() < 0.95) return; // Throttle regeneration
 
-             container.innerHTML = ''; // Clear existing
+             container.innerHTML = '';
              const numParticles = window.innerWidth > 768 ? 150 : 75;
-
              for (let i = 0; i < numParticles; i++) {
-                 const particle = document.createElement('div');
-                 particle.classList.add('particle');
-                 if(idPrefix) particle.id = `${idPrefix}-particle-${i}`;
-
-                 const size = Math.random() * 5 + 1.5; // Adjusted size
-                 const posX = Math.random() * window.innerWidth;
-                 const delay = Math.random() * 10;
-                 const duration = Math.random() * 15 + 10;
-                 const opacity = Math.random() * 0.5 + 0.1; // Adjusted opacity
-
-                 particle.style.width = `${size}px`;
-                 particle.style.height = `${size}px`;
-                 particle.style.left = `${posX}px`;
-                 particle.style.bottom = `-${size}px`; // Start below screen
-                 particle.style.animationDuration = `${duration}s`;
-                 particle.style.animationDelay = `${delay}s`;
-                 particle.style.opacity = opacity;
-
-                 const colors = ['#00f7ff', '#6e00ff', '#ff00aa', '#00ff88', '#ffffff']; // Limited colors
-                 const color = colors[Math.floor(Math.random() * colors.length)];
-                 particle.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
-
-                 container.appendChild(particle);
-             }
+                  const particle = document.createElement('div');
+                  particle.classList.add('particle');
+                  const size = Math.random() * 5 + 1.5;
+                  const posX = Math.random() * window.innerWidth;
+                  const delay = Math.random() * 10;
+                  const duration = Math.random() * 15 + 10;
+                  const opacity = Math.random() * 0.5 + 0.1;
+                  particle.style.width = `${size}px`; particle.style.height = `${size}px`;
+                  particle.style.left = `${posX}px`; particle.style.bottom = `-${size}px`;
+                  particle.style.animationDuration = `${duration}s`; particle.style.animationDelay = `${delay}s`;
+                  particle.style.opacity = opacity;
+                  const colors = ['#00f7ff', '#6e00ff', '#ff00aa', '#00ff88', '#ffffff'];
+                  const color = colors[Math.floor(Math.random() * colors.length)];
+                  particle.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+                  container.appendChild(particle);
+              }
         }
 
         function showStatus(message, type = "info", icon = "info", duration = 5000) {
-             clearTimeout(statusTimeout);
-             statusMessage.innerHTML = `<i class="material-icons">${icon}</i> ${message}`;
-             statusMessage.className = 'status-message'; // Reset classes
-             requestAnimationFrame(() => { // Ensure transition works smoothly
-                 statusMessage.classList.add(type);
-                 statusMessage.classList.add('show');
-             });
-
-
-             if (duration > 0) {
-                statusTimeout = setTimeout(() => {
-                    statusMessage.classList.remove('show');
-                 }, duration);
-             }
+            clearTimeout(statusTimeout);
+            statusMessage.innerHTML = `<i class="material-icons">${icon}</i> ${message}`;
+            statusMessage.className = 'status-message'; // Reset classes
+            requestAnimationFrame(() => {
+                statusMessage.classList.add(type);
+                statusMessage.classList.add('show');
+            });
+            if (duration > 0) {
+               statusTimeout = setTimeout(() => { statusMessage.classList.remove('show'); }, duration);
+            }
         }
 
-        function formatBytes(bytes, decimals = 2) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; // Limit practical sizes
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-             if (i >= sizes.length) return '> 1 PB'; // Handle very large files gracefully
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
-
-        // ====== VIDEO HANDLING FUNCTIONS ======
-        function handleVideoSelection(event) {
-             const files = event.target.files;
-             videoInput.classList.remove('error');
-             videoInput.classList.remove('has-file'); // Reset placeholder visibility helper
-
-             if (files.length === 0) {
-                 // If no file is selected (e.g., user hit cancel), reset fully
-                 if (!selectedVideoFile) { // Only reset if nothing was previously selected
-                    resetVideoSelection(false); // Don't show a message
-                 }
-                 return;
-             }
-
-             const file = files[0];
-             videoInput.classList.add('has-file'); // Mark that a file is chosen for styling
-
-             // --- Validation ---
-             if (!file.type.startsWith('video/')) {
-                 showStatus(`"${file.name}" không phải là định dạng video hợp lệ!`, 'error', 'error');
-                 resetVideoSelection();
-                 videoInput.classList.add('error');
-                 return;
-             }
-
-             if (file.size > MAX_VIDEO_SIZE_BYTES) {
-                 showStatus(`Video quá lớn (${formatBytes(file.size)})! Chỉ cho phép tối đa ${MAX_VIDEO_SIZE_MB}MB.`, 'error', 'report_problem', 7000); // Longer duration
-                 resetVideoSelection();
-                 videoInput.classList.add('error');
-                 return;
-             }
-
-             // --- If valid ---
-             selectedVideoFile = file;
-             videoNameSpan.textContent = file.name;
-             videoNameSpan.title = file.name; // Tooltip for long names
-             videoSizeSpan.textContent = formatBytes(file.size);
-             videoInfoDiv.classList.add('show'); // Show video info box
-             expiryGroupDiv.style.display = 'block'; // Show expiry input
-
-             // --- Start reading file as Base64 ---
-             videoProcessing = true;
-             videoDataBase64 = null;
-             showStatus('Đang đọc file video... vui lòng chờ.', 'info', 'hourglass_top', 0); // Persistent message
-             generateButton.disabled = true; // Disable generate while processing
-             copyButton.disabled = true;
-             fullHtmlToCopy = '';
-
-             const reader = new FileReader();
-             reader.onload = function(loadEvent) {
-                 videoDataBase64 = loadEvent.target.result;
-                 videoProcessing = false;
-                 showStatus(`Video "${file.name}" (${formatBytes(file.size)}) đã sẵn sàng!`, 'success', 'check_circle', 6000);
-                 generateButton.disabled = false; // Re-enable generate
-                 console.log(`Video processed: ${file.name}, Size: ${formatBytes(file.size)}`);
-             };
-             reader.onerror = function() {
-                 console.error("FileReader error:", reader.error);
-                 showStatus('Lỗi không thể đọc file video!', 'error', 'error');
-                 resetVideoSelection();
-                 videoProcessing = false;
-                 generateButton.disabled = false; // Re-enable generate even on error
-             };
-             reader.readAsDataURL(file);
-        }
-
-        function resetVideoSelection(showMessage = true) {
-             videoInput.value = ''; // Clear the file input visually
-             selectedVideoFile = null;
-             videoDataBase64 = null;
-             videoNameSpan.textContent = '';
-             videoSizeSpan.textContent = '';
-             videoInfoDiv.classList.remove('show');
-             expiryGroupDiv.style.display = 'none'; // Hide expiry input
-             expiryDaysInput.value = ''; // Clear expiry days
-             videoInput.classList.remove('error');
-             videoInput.classList.remove('has-file');
-             copyButton.disabled = true; // Always disable copy on reset
-             fullHtmlToCopy = '';
-             videoProcessing = false; // Ensure processing flag is reset
-             generateButton.disabled = false; // Ensure generate is enabled
-
-             if(showMessage) {
-                 showStatus("Đã gỡ bỏ video.", "info", "info", 3000);
-             }
-        }
+         // Basic URL Validation Helper
+         function isValidUrl(string) {
+             // More robust check allowing relative paths (though usually we expect absolute for iframe)
+              if (!string) return false;
+              try {
+                  // Check if it's an absolute URL
+                  const url = new URL(string);
+                   // Optional: Check for http/https protocols specifically
+                   // return ['http:', 'https:'].includes(url.protocol);
+                   return true; // Allow more schemes
+              } catch (_) {
+                  // Could be relative or invalid, let's allow potentially relative paths for now
+                  // Simple check: Does it contain a "/" or is it just a string?
+                   // return string.includes('/') || string.includes('.'); // Very basic check for path-like structure
+                   return false; // Strict: Assume invalid if `new URL` fails
+              }
+         }
 
         // ====== SECURITY FUNCTIONS (Encryption) ======
         function multiLayerEncrypt(content, password, layers = 10) {
             let encrypted = content;
             for (let i = 0; i < layers; i++) {
-                const combined = `${encrypted}|${password}|${i}`;
+                const combined = `${encrypted}|${password}|${i}`; // Embed password & layer for validation
                 const layerKey = password + i;
                 let layerEncrypted;
-                try {
-                     layerEncrypted = CryptoJS.AES.encrypt(combined, layerKey).toString();
-                 } catch (e) {
-                     console.error(`AES Encryption Error at layer ${i}:`, e);
-                     throw new Error(`Lỗi mã hóa AES ở lớp ${i}`);
-                 }
-                 // Use try-catch for btoa as well, though less likely to fail here
                  try {
-                     // Encode result to Base64 for safe embedding
-                     encrypted = btoa(unescape(encodeURIComponent(layerEncrypted))); // Handles UTF-8
+                    layerEncrypted = CryptoJS.AES.encrypt(combined, layerKey).toString();
                  } catch(e) {
-                     console.error(`Base64 Encoding Error at layer ${i}:`, e);
-                     throw new Error(`Lỗi mã hóa Base64 ở lớp ${i}`);
+                    throw new Error(`Lỗi mã hóa AES lớp ${i}: ${e.message}`);
                  }
-
+                try {
+                    // btoa needs strings with chars in range 0-255. Use encode/escape for UTF8 safety.
+                    encrypted = btoa(unescape(encodeURIComponent(layerEncrypted)));
+                } catch(e) {
+                    throw new Error(`Lỗi mã hóa Base64 lớp ${i}: ${e.message}`);
+                }
             }
             return encrypted;
         }
 
-
-        // ====== HTML TEMPLATE GENERATION ======
-        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, embeddedVideoData = null, videoExpiryTimestamp = null) {
-            // Encrypt the Markdown content
-             let encryptedMarkdownHtml = '';
+        // ====== HTML TEMPLATE GENERATION (Using Iframe URL) ======
+        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, iframeUrl = null) {
+             let encryptedMarkdownHtml;
              try {
-                  encryptedMarkdownHtml = multiLayerEncrypt(markdownContentHtml, pagePassword, 10);
+                 encryptedMarkdownHtml = multiLayerEncrypt(markdownContentHtml, pagePassword, 10);
              } catch (e) {
-                  console.error("Fatal encryption error for Markdown:", e);
-                  throw new Error(`Không thể mã hóa nội dung Markdown: ${e.message}`); // Rethrow specific error
+                  console.error("Encryption Error:", e);
+                  throw new Error(`Không thể mã hóa nội dung: ${e.message}`);
              }
 
-            // Escape password for JS embedding
+            // Escape password and URL for safe JS embedding
             const escapedPassword = pagePassword.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-            const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn mã lỗi nếu có và tớ sẽ cố gắng giúp! 😉`;
+            const escapedIframeUrl = iframeUrl ? iframeUrl.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$') : null;
+            const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn vấn đề và tớ sẽ cố gắng giúp! 😉`;
+            const iframeUrlJs = escapedIframeUrl ? `\`${escapedIframeUrl}\`` : 'null';
 
-            // Prepare video data and expiry for JS embedding
-            const videoDataJs = embeddedVideoData ? `\`${embeddedVideoData}\`` : 'null'; // Embed Base64 directly if present
-            const videoExpiryJs = videoExpiryTimestamp ? videoExpiryTimestamp : 'null'; // Embed timestamp or null
-
-            // --- START OF TARGET HTML TEMPLATE ---
+            // --- START OF TARGET HTML TEMPLATE STRING ---
             return `<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nội Dung Siêu Bảo Mật</title>
-    <!-- !! IMPORTANT: CryptoJS for the target page !! -->
+    <title>Nội Dung Bảo Mật & Nhúng URL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script>
-    <!-- Material Icons font for the target page -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* === CSS FOR TARGET PAGE (Copied from generator, adapted) === */
+        /* === CSS FOR TARGET PAGE === */
         :root {
-            --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa;
-            --error: #ff3d71; --success: #00ff88; --warning: #ffcc00;
-            --bg-dark: #0a0a20; --bg-darker: #050510; --bg-light: rgba(20, 20, 50, 0.5);
-            --bg-lighter: rgba(30, 30, 70, 0.3); --text-light: #e0e0ff;
-            --text-lighter: #ffffff; --text-dim: rgba(224, 224, 255, 0.6);
+            --primary: #00f7ff; --secondary: #6e00ff; --accent: #ff00aa; --error: #ff3d71;
+            --success: #00ff88; --warning: #ffcc00; --bg-dark: #0a0a20; --bg-darker: #050510;
+            --bg-light: rgba(20, 20, 50, 0.5); --bg-lighter: rgba(30, 30, 70, 0.3);
+            --text-light: #e0e0ff; --text-lighter: #ffffff; --text-dim: rgba(224, 224, 255, 0.6);
             --border-radius: 12px; --box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Video/Expiry specific */
-            --video-bg: rgba(10, 10, 32, 0.7);
-            --video-border: rgba(0, 247, 255, 0.3);
-            --expiry-color: var(--warning);
-            --expiry-bg: rgba(255, 204, 0, 0.1);
+            --iframe-border: rgba(0, 247, 255, 0.3); --iframe-bg: rgba(10, 10, 32, 0.7);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark); color: var(--text-light);
-            min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative;
-            display: flex; align-items: center; justify-content: center; padding: 1rem; /* Add padding */
-        }
-
-        /* === BACKGROUND EFFECTS (Copied from generator) === */
+        * { margin: 0; padding: 0; box-sizing: border-box; } html { scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        /* Background Effects */
         .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
         .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; }
         @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
@@ -541,727 +360,382 @@
         @keyframes scanline { 0%{background-position:0 0;} 100%{background-position:0 100%;} }
         .glow-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%); z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate; }
         @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.7; transform: scale(1.05); } }
-
-        /* === MAIN CONTAINER (Adapted) === */
-        .container {
-            max-width: 900px; width: 100%; /* Slightly wider for video */
-            margin: 1rem auto; padding: 2rem 2.5rem; /* Adjusted padding */
-            background: rgba(10, 10, 32, 0.9); backdrop-filter: blur(12px);
-            border-radius: var(--border-radius); box-shadow: var(--box-shadow);
-            border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden;
-            transition: var(--transition); animation: floatTarget 7s ease-in-out infinite; /* Slightly different animation */
-        }
-        @keyframes floatTarget { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } } /* Less float */
+        /* Main Container */
+        .container { max-width: 950px; width: 100%; margin: 1rem auto; padding: 2rem 2.5rem; background: rgba(10, 10, 32, 0.9); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: floatTarget 7s ease-in-out infinite; }
+        @keyframes floatTarget { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         .container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 15s infinite alternate; }
-
-        /* === TITLE (Adapted) === */
+        /* Title */
         .page-title { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.6rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
         .page-title .material-icons { font-size: 2rem; }
         .page-title::after { content: ''; position: absolute; bottom: 0; left: 30%; width: 40%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); }
-
-        /* === PASSWORD FORM (Adapted) === */
+        /* Password Form */
         .final-page-password-form { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto; transition: opacity 0.5s ease, transform 0.5s ease;}
-        .final-page-input-group { position: relative; }
+        #final-password-section { transition: opacity 0.5s ease, transform 0.5s ease, display 0s linear 0.5s; /* Smooth hide transition */ }
+        #final-password-section.hiding { opacity: 0; transform: scale(0.9); pointer-events: none; display: flex !important;} /* Intermediate hiding state */
         .final-page-input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
         .final-page-input-group label .material-icons { color: var(--secondary); font-size: 1.2rem;}
         .final-page-input-group input[type="password"] { width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1.1rem; transition: var(--transition); outline: none; letter-spacing: 3px; }
         .final-page-input-group input[type="password"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
         .final-page-button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .final-page-button .material-icons { font-size: 1.4rem; }
-        .final-page-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
+        .final-page-button:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
         .final-page-button:disabled { filter: grayscale(70%); opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none !important;}
         .final-page-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform: rotate(45deg); animation: shine 3s infinite linear; opacity: 0.5;}
         @keyframes shine { 0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);} }
-        .final-page-error-message { color: var(--error); text-align: center; margin-top: 0rem; margin-bottom: -0.5rem; /* Adjust spacing */ font-size: 0.95rem; min-height: 2.5rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 0.4rem; opacity: 0; transition: opacity 0.3s ease; padding: 0.3rem 0.5rem; }
+        .final-page-error-message { color: var(--error); text-align: center; margin-top: 0rem; margin-bottom: -0.5rem; font-size: 0.95rem; min-height: 2.5rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 0.4rem; opacity: 0; transition: opacity 0.3s ease; padding: 0.3rem 0.5rem; }
         .final-page-error-message.show { opacity: 1; }
         .final-page-error-message .material-icons { font-size: 1.2rem; }
         .final-page-input-group input[type="password"].shake { animation: shake-final 0.5s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--error); }
         @keyframes shake-final { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); } 20%, 40%, 60%, 80% { transform: translateX(6px); } }
         .final-page-donation-prompt { text-align: center; margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(255, 204, 0, 0.1); border-left: 4px solid var(--warning); border-radius: var(--border-radius); color: var(--warning); font-size: 0.9rem; line-height: 1.5; font-style: italic; }
         .final-page-donation-prompt strong { font-weight: bold; color: var(--text-lighter); }
-
-        /* === MARKDOWN & VIDEO CONTENT STYLES === */
+        /* Content Area */
         #final-content-section { animation: fadeIn 0.8s ease-out; opacity: 1; transition: opacity 0.5s ease; }
-        #final-content-section.hidden { opacity: 0; pointer-events: none; }
+        #final-content-section.hidden { opacity: 0; pointer-events: none; display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .final-template-styles { /* Markdown container */ line-height: 1.8; color: var(--text-light); padding: 0; /* Remove padding here, add to children */ max-width: 100%; }
-        /* Markdown elements styling (h1-h6, p, a, ul, ol, li, blockquote, code, pre, hr, table) */
-        .final-template-styles > :first-child { margin-top: 0 !important; } /* Remove top margin from first element */
+        /* Markdown Styles */
+        .final-template-styles { line-height: 1.8; color: var(--text-light); padding: 0; max-width: 100%; margin-bottom: 2.5rem; }
+        .final-template-styles > :first-child { margin-top: 0 !important; }
         .final-template-styles h1, .final-template-styles h2, .final-template-styles h3,
         .final-template-styles h4, .final-template-styles h5, .final-template-styles h6 {
-            color: var(--primary); margin-top: 1.8rem; margin-bottom: 1rem; font-weight: 400; letter-spacing: 1px;
-            padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+            color: var(--primary); margin-top: 1.8rem; margin-bottom: 1rem; font-weight: 400; letter-spacing: 1px; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 247, 255, 0.2);
         }
-        .final-template-styles h1 { font-size: 2rem; color: var(--primary); border-bottom-color: var(--primary); }
-        .final-template-styles h2 { font-size: 1.6rem; color: var(--accent); }
-        .final-template-styles h3 { font-size: 1.3rem; }
-        .final-template-styles p { margin-bottom: 1.3rem; color: var(--text-light); font-size: 1.05rem; }
+        .final-template-styles h1 { font-size: 2rem; } .final-template-styles h2 { font-size: 1.6rem; color: var(--accent); }
+        .final-template-styles p { margin-bottom: 1.3rem; font-size: 1.05rem; }
         .final-template-styles a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); transition: var(--transition); font-weight: 600; }
-        .final-template-styles a:hover { color: var(--primary); border-bottom-style: solid; text-decoration: none; }
-        .final-template-styles ul, .final-template-styles ol { margin-left: 1.5rem; margin-bottom: 1.3rem; padding-left: 1rem;} /* Adjusted list indent */
+        .final-template-styles a:hover { color: var(--primary); border-bottom-style: solid; }
+        .final-template-styles ul, .final-template-styles ol { margin-left: 1.5rem; margin-bottom: 1.3rem; padding-left: 1rem;}
         .final-template-styles li { margin-bottom: 0.6rem; }
         .final-template-styles blockquote { border-left: 4px solid var(--secondary); padding: 1rem 1.5rem; margin: 1.8rem 0; background: rgba(110, 0, 255, 0.08); border-radius: 0 var(--border-radius) var(--border-radius) 0; font-style: italic; }
-        .final-template-styles code:not(pre code) { background: var(--bg-lighter); color: var(--accent); padding: 0.3em 0.5em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9em;}
+        .final-template-styles code:not(pre code) { background: var(--bg-lighter); color: var(--accent); padding: 0.3em 0.5em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.9em; word-break: break-word; }
         .final-template-styles pre { background: var(--bg-darker); padding: 1.5rem; border-radius: var(--border-radius); overflow-x: auto; margin: 1.8rem 0; border: 1px solid rgba(110, 0, 255, 0.2); box-shadow: inset 0 0 10px rgba(0,0,0,0.3);}
-        .final-template-styles pre code { background: transparent; padding: 0; color: var(--text-light); font-size: 0.95em; line-height: 1.6;}
+        .final-template-styles pre code { background: transparent; padding: 0; font-size: 0.95em; line-height: 1.6;}
         .final-template-styles hr { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--secondary), transparent); margin: 2.5rem 0; }
         .final-template-styles table { width: 100%; border-collapse: collapse; margin: 1.8rem 0; background: var(--bg-light); overflow: hidden; border-radius: var(--border-radius); border: 1px solid rgba(110, 0, 255, 0.3); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
         .final-template-styles th, .final-template-styles td { border: 1px solid rgba(110, 0, 255, 0.2); padding: 0.8rem 1rem; text-align: left; }
         .final-template-styles th { background: rgba(110, 0, 255, 0.2); color: var(--primary); font-weight: bold; text-transform: uppercase; font-size: 0.9em;}
-        .final-template-styles tr:nth-child(even) td { background-color: rgba(255, 255, 255, 0.02); } /* Subtle row striping */
-        .final-template-styles img { max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid var(--video-border); display: block;} /* Style images */
-
-        /* Video Styles */
-        #embedded-video-container {
-            margin-top: 2rem; margin-bottom: 1rem; padding: 0.5rem; /* Less padding around */
-            background-color: var(--video-bg); border: 1px solid var(--video-border);
-            border-radius: var(--border-radius); box-shadow: 0 0 20px rgba(0, 247, 255, 0.1);
-            display: none; /* Hidden initially */ transition: opacity 0.5s ease;
-        }
-        #embedded-video-container.visible { display: block; } /* Class to show */
-         #embedded-video {
-             display: block; width: 100%; max-height: 75vh; /* Increased height */
-             border-radius: calc(var(--border-radius) - 6px); /* Adjusted inner radius */
-             outline: none; background-color: #000; /* Black background while loading */
-         }
-         /* Video Expiry Message */
-         #video-expiry-message {
-            color: var(--expiry-color); background-color: var(--expiry-bg);
-            border: 1px solid var(--expiry-color); border-left: 5px solid var(--expiry-color); /* Accent on left */
-            border-radius: var(--border-radius); padding: 1.5rem; text-align: center;
-            font-weight: bold; margin: 2rem 0 1rem 0; display: none; /* Hidden initially */
-            line-height: 1.7; transition: opacity 0.5s ease;
-         }
-          #video-expiry-message.visible { display: block; } /* Class to show */
-         #video-expiry-message .material-icons { font-size: 1.8rem; margin-right: 0.7rem; vertical-align: bottom;}
-
-
-        /* === WARNING MODAL (For Target Page) === */
+        .final-template-styles img { max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid var(--iframe-border); display: block;}
+        /* Iframe Styles */
+        #iframe-container { margin-top: 1rem; border: 1px solid var(--iframe-border); border-radius: var(--border-radius); overflow: hidden; background-color: var(--iframe-bg); box-shadow: 0 5px 25px rgba(0, 247, 255, 0.15); display: block; /* Changed from none */ position: relative; width: 100%; padding-top: 56.25%; transition: opacity 0.5s ease, transform 0.5s ease, max-height 0.5s ease; opacity: 0; max-height: 0; /* Start hidden */ transform: scale(0.95); }
+        #iframe-container.visible { opacity: 1; max-height: 100vh; /* Allow large height */ transform: scale(1); } /* Animate visible */
+        #embedded-iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: calc(var(--border-radius) - 1px); /* Inner radius */ }
+        /* Warning Modal */
         .warning-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(5, 5, 16, 0.9); backdrop-filter: blur(10px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
         .warning-modal.hidden { display: none !important; }
         .warning-modal:not(.hidden) { opacity: 1; pointer-events: auto; }
         .warning-content { background: var(--bg-dark); border: 1px solid var(--error); border-radius: var(--border-radius); padding: 2.5rem; max-width: 600px; width: 90%; box-shadow: 0 0 40px rgba(255, 61, 113, 0.3); animation: scaleInFinal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(1); }
-         .warning-modal:not(.hidden).initial-state .warning-content { transform: scale(0.9); opacity: 0; } /* Initial state for animation */
+         .warning-modal:not(.hidden).initial-state .warning-content { transform: scale(0.9); opacity: 0; }
          @keyframes scaleInFinal { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .warning-title { color: var(--error); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;}
         .warning-title .material-icons { font-size: 1.8rem; }
         .warning-message { color: var(--text-light); margin-bottom: 2rem; line-height: 1.7; }
-        .warning-message p { margin-bottom: 1rem; }
-        .warning-message strong { color: var(--warning); }
+        .warning-message p { margin-bottom: 1rem; } .warning-message strong { color: var(--warning); }
         .warning-button { background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4); transition: var(--transition); }
-         .warning-button .material-icons { font-size: 1.4rem; }
-        .warning-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); }
-
-        /* === UTILITY CLASSES === */
-        .hidden { display: none !important; } /* Force hide */
-        .text-center { text-align: center; }
+         .warning-button:hover { transform: translateY(-3px); box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); }
+        /* Utility */
+        .hidden { display: none !important; } .text-center { text-align: center; }
         .footer-note { text-align: center; margin-top: 2.5rem; font-size: 0.85rem; color: var(--text-dim); opacity: 0.7; }
         .footer-note .material-icons { font-size: 1rem; vertical-align: text-bottom;}
-         /* Spinner Animation */
-         .spin { animation: spin 1s linear infinite; }
-         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        /* Responsive adjustments */
+        .spin { animation: spin 1s linear infinite; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* Responsive */
          @media (max-width: 768px) {
              .container { padding: 1.5rem; }
-             #final-content-section { padding: 0; } /* Content flows better without padding */
              .final-page-password-form { max-width: 100%; }
              .page-title { font-size: 1.4rem; }
+             #iframe-container { padding-top: 75%; }
          }
           @media (max-width: 480px) {
              .final-page-password-form { gap: 1.2rem; }
-             .final-page-input-group input[type="password"] { padding: 0.8rem 1rem; font-size: 1rem; letter-spacing: 2px; }
-             .final-page-button { font-size: 0.9rem; padding: 0.9rem; }
+             .final-page-input-group input[type="password"] { padding: 0.8rem 1rem; }
              .page-title { font-size: 1.3rem;}
+             .warning-title { font-size: 1.3rem; }
+             .warning-content { padding: 1.5rem;}
           }
     </style>
 </head>
 <body>
-    <!-- Background Effects (Target Page) -->
+    <!-- Target Page Background -->
     <div class="particles-container" id="final-particles"></div>
-    <div class="grid-overlay"></div>
-    <div class="scanlines"></div>
-    <div class="glow-effect"></div>
-
-    <!-- Main Container (Target Page) -->
+    <div class="grid-overlay"></div> <div class="scanlines"></div> <div class="glow-effect"></div>
+    <!-- Target Page Main Container -->
     <div class="container">
-        <!-- == SECTION 1: Password Input Form == -->
+        <!-- Password Section -->
         <div id="final-password-section">
-            <h1 class="page-title"><i class="material-icons">lock_person</i> Truy Cập Vùng An Toàn</h1>
+            <h1 class="page-title"><i class="material-icons">lock_person</i> Truy Cập Nội Dung</h1>
             <form class="final-page-password-form" id="password-form" onsubmit="checkFinalPagePassword(event)">
                 <div class="final-page-input-group">
-                    <label for="final-password-input"><i class="material-icons">password</i> Nhập Mã Truy Cập:</label>
+                    <label for="final-password-input"><i class="material-icons">password</i> Mã Truy Cập:</label>
                     <input type="password" id="final-password-input" placeholder="••••••••••••" autocomplete="current-password" required>
                 </div>
-                <div class="final-page-donation-prompt">
-                    ${donateMessage}
-                </div>
+                <div class="final-page-donation-prompt">${donateMessage}</div>
                 <button type="submit" class="final-page-button" id="final-submit-btn">
-                    <i class="material-icons">sensors</i> Quét & Giải Mã
+                    <i class="material-icons">sensors</i> Giải Mã & Hiển Thị
                 </button>
                 <div class="final-page-error-message" id="final-error-message"></div>
             </form>
         </div>
-
-        <!-- == SECTION 2: Decrypted Content Area (Hidden initially) == -->
+        <!-- Content Section -->
         <div id="final-content-section" class="hidden">
-            <!-- Markdown content injected here -->
             <div class="final-template-styles" id="final-markdown-content"></div>
-
-            <!-- Video container (managed by JS) -->
-            <div id="embedded-video-container">
-                <video id="embedded-video" controls playsinline preload="metadata"></video>
-            </div>
-
-            <!-- Video expiry message (managed by JS) -->
-            <div id="video-expiry-message"></div>
-
-            <div class="footer-note">
-                <i class="material-icons">verified_user</i> An toàn với 10 lớp mã hóa AES.
-            </div>
+            <div id="iframe-container"> <iframe id="embedded-iframe" title="Embedded Content" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </div>
+            <div class="footer-note"><i class="material-icons">verified_user</i> An toàn với 10 lớp mã hóa AES.</div>
         </div>
     </div>
-
-    <!-- Security Warning Modal (For Target Page, content loaded dynamically) -->
+    <!-- Warning Modal -->
     <div class="warning-modal hidden initial-state" id="final-warning-modal">
          <div class="warning-content">
-             <h2 class="warning-title"><i class="material-icons">gpp_bad</i> CẢNH BÁO AN NINH</h2>
-             <div class="warning-message">
-                 <p>Bạn đang truy cập khu vực nội dung được mã hóa bảo mật cao (10 lớp AES).</p>
-                 <p>Mọi hành vi cố gắng giải mã trái phép, dò mật khẩu, hoặc phân phối lại nội dung không được phép đều bị coi là vi phạm và có thể bị ghi nhận.</p>
-                 <p>Hãy đảm bảo bạn có quyền truy cập hợp lệ và sử dụng mật khẩu một cách có trách nhiệm.</p>
-                 <p><strong>Luôn cảnh giác và bảo mật thông tin!</strong></p>
-             </div>
-             <button class="warning-button" id="final-warning-confirm">
-                 <i class="material-icons">check_circle_outline</i> TÔI ĐÃ HIỂU VÀ CAM KẾT
-             </button>
+             <h2 class="warning-title"><i class="material-icons">gpp_bad</i> CẢNH BÁO</h2>
+             <div class="warning-message"> <p>Truy cập vào vùng dữ liệu mã hóa cao.</p> <p>Mọi hành vi trái phép đều có thể bị ghi nhận.</p> <p><strong>Luôn bảo mật thông tin!</strong></p> </div>
+             <button class="warning-button" id="final-warning-confirm"> <i class="material-icons">check_circle_outline</i> TÔI ĐÃ HIỂU </button>
          </div>
     </div>
-
-    <!-- =========================================== -->
-    <!-- === JavaScript FOR THE TARGET PAGE === -->
-    <!-- =========================================== -->
+    <!-- === TARGET PAGE JAVASCRIPT === -->
     <script>
-        // Embedded Data (from Generator)
         const encryptedMarkdownContent = \`${encryptedMarkdownHtml}\`;
-        const embeddedVideoDataBase64 = ${videoDataJs}; // Base64 string or null
-        const videoExpiryTimestamp = ${videoExpiryJs}; // Millisecond timestamp or null
-
+        const embeddedIframeUrl = ${iframeUrlJs}; // URL or null
         // DOM Elements
         const finalPasswordSection = document.getElementById('final-password-section');
         const finalContentSection = document.getElementById('final-content-section');
-        const passwordForm = document.getElementById('password-form');
         const finalPasswordInput = document.getElementById('final-password-input');
         const finalErrorMessage = document.getElementById('final-error-message');
         const finalMarkdownContentDiv = document.getElementById('final-markdown-content');
-        const finalVideoContainer = document.getElementById('embedded-video-container');
-        const finalVideoPlayer = document.getElementById('embedded-video');
-        const finalVideoExpiryMsg = document.getElementById('video-expiry-message');
+        const finalIframeContainer = document.getElementById('iframe-container');
+        const finalIframePlayer = document.getElementById('embedded-iframe');
         const finalWarningModal = document.getElementById('final-warning-modal');
         const finalWarningConfirmBtn = document.getElementById('final-warning-confirm');
         const finalParticlesContainer = document.getElementById('final-particles');
         const submitButton = document.getElementById('final-submit-btn');
 
-
-        // Particle function (same as generator, but potentially fewer particles)
+        // Particle Function
         function createFinalParticles() {
-              if (!finalParticlesContainer) return;
-               if(finalParticlesContainer.children.length > 40) return; // Limit particle count
-
+              if (!finalParticlesContainer || finalParticlesContainer.children.length > 40) return;
               finalParticlesContainer.innerHTML = '';
-              const numParticles = window.innerWidth > 768 ? 120 : 60; // Fewer particles
-
+              const numParticles = window.innerWidth > 768 ? 120 : 60;
               for (let i = 0; i < numParticles; i++) {
-                 const particle = document.createElement('div');
-                 particle.classList.add('particle');
-                 const size = Math.random() * 4 + 1; // Smaller
-                 const posX = Math.random() * window.innerWidth;
-                 const delay = Math.random() * 12;
-                 const duration = Math.random() * 18 + 12;
-                 const opacity = Math.random() * 0.4 + 0.1; // Fainter
-                 particle.style.width = \`\${size}px\`; particle.style.height = \`\${size}px\`;
-                 particle.style.left = \`\${posX}px\`; particle.style.bottom = \`-\${size}px\`;
-                 particle.style.animationDuration = \`\${duration}s\`; particle.style.animationDelay = \`\${delay}s\`;
-                 particle.style.opacity = opacity;
-                 const colors = ['#00f7ff', '#6e00ff', '#ff00aa']; // Fewer colors
-                 const color = colors[Math.floor(Math.random() * colors.length)];
-                 particle.style.background = \`radial-gradient(circle, \${color} 0%, transparent 70%)\`;
-                 finalParticlesContainer.appendChild(particle);
+                  const particle = document.createElement('div'); particle.classList.add('particle');
+                  const size = Math.random() * 4 + 1; const posX = Math.random() * window.innerWidth;
+                  const delay = Math.random() * 12; const duration = Math.random() * 18 + 12; const opacity = Math.random() * 0.4 + 0.1;
+                  Object.assign(particle.style, { width: \`\${size}px\`, height: \`\${size}px\`, left: \`\${posX}px\`, bottom: \`-\${size}px\`, animationDuration: \`\${duration}s\`, animationDelay: \`\${delay}s\`, opacity: opacity });
+                  const colors = ['#00f7ff', '#6e00ff', '#ff00aa']; const color = colors[Math.floor(Math.random() * colors.length)];
+                  particle.style.background = \`radial-gradient(circle, \${color} 0%, transparent 70%)\`; finalParticlesContainer.appendChild(particle);
               }
         }
-
-        /* === Multi-Layer Decryption Function (CRITICAL) === */
+        // Decryption Function
         function multiLayerDecrypt(encryptedData, password, layers = 10) {
-            if (typeof CryptoJS === 'undefined') {
-                console.error("CryptoJS library is missing! Cannot decrypt.");
-                throw new Error("Lỗi thư viện mã hóa. Không thể giải mã.");
-            }
-
+            if (typeof CryptoJS === 'undefined') throw new Error("Lỗi thư viện mã hóa.");
             let decrypted = encryptedData;
             try {
                 for (let i = layers - 1; i >= 0; i--) {
-                    let base64Decoded;
-                    try {
-                        // atob decodes Base64
-                        // escape/decodeURIComponent handles potential UTF-8 chars encoded before btoa
-                        base64Decoded = decodeURIComponent(escape(atob(decrypted)));
-                    } catch (e) {
-                        console.error(\`Base64 Decode Error at layer \${i}:\`, e, "Input:", decrypted.substring(0, 50) + "...");
-                        throw new Error(\`Lỗi giải mã Base64 ở lớp \${i}. Dữ liệu có thể bị hỏng.\`);
-                    }
-
-                    let decryptedBytes;
-                    const layerKey = password + i;
-                    try {
-                        decryptedBytes = CryptoJS.AES.decrypt(base64Decoded, layerKey);
-                    } catch (e) {
-                         console.error(\`AES Decryption Error at layer \${i}:\`, e);
-                         throw new Error(\`Lỗi giải mã AES ở lớp \${i}. Thử kiểm tra mật khẩu.\`);
-                    }
-
-                    let utf8Decoded;
-                    try {
-                        utf8Decoded = decryptedBytes.toString(CryptoJS.enc.Utf8);
-                    } catch (e) {
-                        // This usually happens if the key was wrong and decryption yields invalid bytes
-                        console.error(\`UTF8 Conversion Error at layer \${i}:\`, e);
-                        throw new Error(\`Dữ liệu không hợp lệ ở lớp \${i}. Mật khẩu sai?\`);
-                    }
-
-                    if (!utf8Decoded) {
-                        console.warn(\`Decryption yielded empty string at layer \${i}. Wrong password or corrupted data likely.\`);
-                        throw new Error(\`Giải mã thất bại ở lớp \${i} - Mật khẩu không đúng?.\`);
-                    }
-
-                    // Split and Validate Payload (Content|OriginalPassword|LayerIndex)
-                    const parts = utf8Decoded.split("|");
-                    if (parts.length < 3 || parts[1] !== password /* || parseInt(parts[2], 10) !== i */) { // Optional layer check commented out for simplicity
-                         console.error(\`Payload validation failed at layer \${i}. Expected PW: "\${password}", Found: "\${parts[1]}". Parts:\`, parts);
-                         throw new Error(\`Xác thực dữ liệu thất bại ở lớp \${i}. Sai mật khẩu hoặc dữ liệu lỗi.\`);
-                    }
-
-                    // Extract the actual content for the next layer's input
-                    decrypted = parts[0];
-                }
-                // After loop: 'decrypted' is the original Markdown HTML
-                return decrypted;
-            } catch (e) {
-                console.error("Decryption process failed:", e.message);
-                // Re-throw the specific error message for display
-                throw e;
-            }
+                     let base64Decoded = decodeURIComponent(escape(atob(decrypted)));
+                     let layerKey = password + i; let decryptedBytes = CryptoJS.AES.decrypt(base64Decoded, layerKey);
+                     let utf8Decoded = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                     if (!utf8Decoded) throw new Error(\`Giải mã lớp \${i} thất bại - Sai mật khẩu?\`);
+                     const parts = utf8Decoded.split("|"); if (parts.length < 3 || parts[1] !== password) throw new Error(\`Xác thực lớp \${i} thất bại - Sai mật khẩu?\`);
+                     decrypted = parts[0];
+                } return decrypted;
+            } catch (e) { console.error("Lỗi giải mã:", e.message); throw e; }
         }
-
-        // Display error message function
+        // Show Error Function
         function showFinalError(message) {
-            finalErrorMessage.innerHTML = \`<i class="material-icons">warning</i> \${message}\`;
-            finalErrorMessage.classList.add('show');
-            finalPasswordInput.classList.add('shake');
-             // Remove shake animation after it finishes
+             finalErrorMessage.innerHTML = \`<i class="material-icons">warning</i> \${message || 'Lỗi không xác định'}\`;
+             finalErrorMessage.classList.add('show'); finalPasswordInput.classList.add('shake');
              setTimeout(() => finalPasswordInput.classList.remove('shake'), 500);
         }
-
-        // Password Check Function
+        // Password Check & Display Function
         function checkFinalPagePassword(event) {
-            if (event) event.preventDefault();
-
-            const enteredPassword = finalPasswordInput.value;
-            finalErrorMessage.classList.remove('show'); // Hide previous error
-            finalPasswordInput.classList.remove('shake'); // Remove previous shake
-
-            if (!enteredPassword) {
-                showFinalError('Vui lòng nhập mã truy cập.');
-                finalPasswordInput.focus();
-                return;
-            }
-
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="material-icons spin">hourglass_top</i> Đang giải mã...';
-
-            // Use setTimeout to prevent blocking the UI immediately
+            if (event) event.preventDefault(); const enteredPassword = finalPasswordInput.value;
+            finalErrorMessage.classList.remove('show'); finalPasswordInput.classList.remove('shake');
+            if (!enteredPassword) { showFinalError('Vui lòng nhập mã.'); finalPasswordInput.focus(); return; }
+            submitButton.disabled = true; submitButton.innerHTML = '<i class="material-icons spin">hourglass_top</i> Đang xử lý...';
             setTimeout(() => {
                 try {
-                    // 1. Decrypt Markdown Content
-                    console.time("Decryption");
-                    const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, enteredPassword, 10);
-                    console.timeEnd("Decryption");
+                    console.time("DecryptionTime"); const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, enteredPassword, 10); console.timeEnd("DecryptionTime");
                     finalMarkdownContentDiv.innerHTML = decryptedHtml;
+                    // Handle Iframe
+                    if (embeddedIframeUrl && typeof embeddedIframeUrl === 'string') {
+                        finalIframePlayer.onload = () => { console.log('Iframe loaded:', embeddedIframeUrl); }; // Optional: log success
+                        finalIframePlayer.onerror = () => { console.error('Iframe failed to load:', embeddedIframeUrl); /* Add visual error? */ };
+                        finalIframePlayer.src = embeddedIframeUrl;
+                         finalIframeContainer.classList.add('visible'); // Show iframe container
+                    } else { finalIframeContainer.classList.remove('visible'); finalIframePlayer.src = 'about:blank'; }
+                    // Show content, hide password form with transition
+                    finalPasswordSection.classList.add('hiding'); // Start fade out anim
+                    finalContentSection.classList.remove('hidden'); // Make content section visible
+                    // Delay display:none on password section to allow fade-out
+                     finalPasswordSection.addEventListener('transitionend', () => {
+                          finalPasswordSection.style.display = 'none';
+                          // Focus on first heading or content area for accessibility
+                          (finalContentSection.querySelector('h1, h2, h3') || finalContentSection).focus({ preventScroll: true });
+                     }, { once: true });
 
-                    // 2. Handle Video Display
-                    let videoAvailable = false;
-                    let showVideo = false;
-                    if (embeddedVideoDataBase64) {
-                         videoAvailable = true;
-                         const nowTimestamp = Date.now();
-
-                         // Check expiry
-                         if (videoExpiryTimestamp !== null && nowTimestamp > videoExpiryTimestamp) {
-                              finalVideoExpiryMsg.innerHTML = \`
-                                  <i class="material-icons">timer_off</i>
-                                  Rất tiếc! Video này đã hết hạn xem vào lúc \${new Date(videoExpiryTimestamp).toLocaleString('vi-VN')}.
-                              \`;
-                              finalVideoExpiryMsg.classList.add('visible'); // Show expiry msg
-                              finalVideoContainer.classList.remove('visible'); // Hide video player
-                              console.warn('Video expired:', new Date(videoExpiryTimestamp).toLocaleString('vi-VN'));
-                         } else {
-                              showVideo = true; // Mark to show video
-                         }
-                    }
-
-                    // Load and display video if applicable
-                    if (showVideo) {
-                         try {
-                             finalVideoPlayer.src = embeddedVideoDataBase64; // Set Base64 source
-                             finalVideoContainer.classList.add('visible'); // Show player container
-                             finalVideoExpiryMsg.classList.remove('visible'); // Hide expiry msg
-                             console.log('Video source set.');
-                             // Optional: Autoplay (might be blocked by browser)
-                             // finalVideoPlayer.play().catch(e => console.warn("Autoplay blocked:", e));
-                         } catch (videoError) {
-                              console.error("Error setting video source:", videoError);
-                              finalVideoExpiryMsg.innerHTML = '<i class="material-icons">error</i> Lỗi khi tải video!';
-                              finalVideoExpiryMsg.classList.add('visible');
-                              finalVideoContainer.classList.remove('visible');
-                         }
-                    } else if (!videoAvailable) {
-                        // No video embedded, ensure containers are hidden
-                        finalVideoContainer.classList.remove('visible');
-                        finalVideoExpiryMsg.classList.remove('visible');
-                    }
-
-                    // 3. Show Content Section, Hide Password Form
-                    finalPasswordSection.style.opacity = '0';
-                    finalPasswordSection.style.transform = 'scale(0.95)';
-                    finalContentSection.classList.remove('hidden');
-
-                    setTimeout(() => {
-                         finalPasswordSection.style.display = 'none'; // Hide completely after fade
-                         finalContentSection.style.opacity = '1'; // Fade in content
-                         // Focus on the first heading or the content area for accessibility
-                         const firstHeading = finalContentSection.querySelector('h1, h2, h3');
-                         if (firstHeading) { firstHeading.focus(); }
-                         else { finalContentSection.focus(); } // Focus container if no heading
-                    }, 500); // Match CSS transition
-
-                    console.log('Decryption and content display successful.');
-
-                } catch (e) {
-                    // Decryption failed or other error
-                    console.error('Unlock failed:', e.message);
-                    showFinalError(e.message || 'Mật khẩu không chính xác!'); // Show specific error
-                    finalPasswordInput.value = ''; // Clear wrong password
-                    finalPasswordInput.focus();
-
-                } finally {
-                    // Re-enable button regardless of success/failure
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i class="material-icons">sensors</i> Quét & Giải Mã';
-                }
-            }, 100); // Short delay for UI update & heavy computation offload
+                    console.log('Mở khóa thành công.');
+                } catch (e) { showFinalError(e.message || 'Mật khẩu sai hoặc dữ liệu lỗi.'); finalPasswordInput.value = ''; finalPasswordInput.focus();
+                } finally { submitButton.disabled = false; submitButton.innerHTML = '<i class="material-icons">sensors</i> Giải Mã & Hiển Thị'; }
+            }, 100); // Short delay for UI responsiveness
         }
-
-        // Initial setup
+        // Initial Setup
         document.addEventListener('DOMContentLoaded', function() {
             createFinalParticles();
-
-            // Show initial warning modal
             if (finalWarningModal && finalWarningConfirmBtn) {
-                 finalWarningModal.classList.remove('hidden');
-                 finalWarningModal.classList.remove('initial-state'); // Trigger animation
-
-                finalWarningConfirmBtn.onclick = () => {
-                    finalWarningModal.classList.add('hidden');
-                    finalPasswordInput.focus(); // Focus password field after modal close
-                };
-                 // Optional: Close modal on overlay click
-                 finalWarningModal.onclick = (event) => {
-                    if (event.target === finalWarningModal) {
-                         finalWarningConfirmBtn.click(); // Simulate confirm click to close and focus
-                    }
-                 }
-            } else {
-                 finalPasswordInput.focus(); // Focus directly if modal elements aren't found
-            }
-
-             // Add keyboard accessibility (Enter key on password input)
-             finalPasswordInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    checkFinalPagePassword(event); // Call the submit handler
-                }
-             });
-
-             // Set tabindex for content section for focusing later
-              finalContentSection.setAttribute('tabindex', '-1');
-
-
-            // Ensure spin animation style exists
-            // (This could be in CSS, but adding via JS ensures it's there)
-             if (!document.getElementById('spin-animation-style')) {
-                const style = document.createElement('style');
-                 style.id = 'spin-animation-style';
-                style.innerHTML = \`
-                    @keyframes spin {
-                        from { transform: rotate(0deg); }
-                        to { transform: rotate(360deg); }
-                    }
-                    .spin { animation: spin 1s linear infinite; }
-                \`;
-                document.head.appendChild(style);
-             }
+                 finalWarningModal.classList.remove('hidden', 'initial-state'); // Show modal
+                 finalWarningConfirmBtn.onclick = () => { finalWarningModal.classList.add('hidden'); finalPasswordInput.focus(); };
+                 finalWarningModal.onclick = (e) => { if (e.target === finalWarningModal) finalWarningConfirmBtn.click(); };
+            } else { finalPasswordInput.focus(); }
+            finalPasswordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkFinalPagePassword(e); });
+            finalContentSection.setAttribute('tabindex', '-1'); // Make focusable
+            // Add spin animation CSS if needed
+            if (!document.getElementById('spin-anim')) { const s=document.createElement('style'); s.id='spin-anim'; s.innerHTML='@keyframes spin{to{transform:rotate(1turn)}}.spin{animation:spin 1s linear infinite}'; document.head.appendChild(s); }
         });
-
-        // Handle window resize for particles
-        let finalResizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(finalResizeTimeout);
-            finalResizeTimeout = setTimeout(createFinalParticles, 300); // Debounced resize
-        });
+        // Resize handler
+        let finalResizeTimeout; window.addEventListener('resize', () => { clearTimeout(finalResizeTimeout); finalResizeTimeout = setTimeout(createFinalParticles, 300); });
     <\/script>
 </body>
 </html>`;
-        // --- END OF TARGET HTML TEMPLATE ---
+            // --- END OF TARGET HTML TEMPLATE STRING ---
         }
 
 
         // ====== GENERATOR PAGE FUNCTIONS ======
         function handleGenerate() {
             const markdownText = markdownInput.value.trim();
-            const outputPassword = outputPasswordInput.value; // Don't trim password
-            const expiryDays = expiryDaysInput.value.trim();
+            const outputPassword = outputPasswordInput.value; // Keep potential leading/trailing spaces if intended
+            const iframeUrl = iframeUrlInput.value.trim();
 
-            // --- Clear previous errors ---
+            // Clear previous errors visually
             markdownInput.classList.remove('error');
             outputPasswordInput.classList.remove('error');
-            expiryDaysInput.classList.remove('error');
-            videoInput.classList.remove('error'); // Also clear video input error state
+            iframeUrlInput.classList.remove('error');
 
             // --- Validation ---
             let isValid = true;
             if (!markdownText) {
-                showStatus("Nội dung Markdown không được để trống.", "error", "edit_note", 6000);
-                markdownInput.classList.add('error');
-                if (isValid) markdownInput.focus();
-                isValid = false;
+                showStatus("Vui lòng nhập nội dung Markdown.", "error", "edit_note", 6000);
+                markdownInput.classList.add('error'); if (isValid) markdownInput.focus(); isValid = false;
             }
             if (!outputPassword || outputPassword.length < 8) {
-                showStatus("Mật khẩu không hợp lệ (cần ít nhất 8 ký tự).", "error", "password", 6000);
-                outputPasswordInput.classList.add('error');
-                if (isValid) outputPasswordInput.focus();
-                isValid = false;
+                showStatus("Mật khẩu cần ít nhất 8 ký tự.", "error", "password", 6000);
+                outputPasswordInput.classList.add('error'); if (isValid) outputPasswordInput.focus(); isValid = false;
             }
-            // Check video processing status
-            if (videoProcessing) {
-                 showStatus("Đang xử lý video, vui lòng đợi hoàn thành!", "warning", "hourglass_top", 6000);
-                 // Keep generate button disabled (should already be)
-                 isValid = false;
-            }
-            // Validate expiry days if video exists and input has value
-            let videoExpiryTimestamp = null;
-            if (selectedVideoFile && expiryDays) {
-                const days = parseInt(expiryDays, 10);
-                if (isNaN(days) || days <= 0 || !Number.isInteger(days)) { // Ensure positive integer
-                    showStatus("Số ngày hết hạn phải là số nguyên dương (vd: 1, 7, 30).", "error", "event_busy", 6000);
-                    expiryDaysInput.classList.add('error');
-                    if (isValid) expiryDaysInput.focus();
-                    isValid = false;
-                } else {
-                     const now = new Date();
-                     // Set to END of the target day (local time)
-                     const expiryDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + days, 23, 59, 59, 999);
-                     videoExpiryTimestamp = expiryDate.getTime(); // Get milliseconds timestamp
-                     console.log(`Video expiry set to: ${expiryDate.toLocaleString('vi-VN')} (Timestamp: ${videoExpiryTimestamp})`);
-                }
+            if (iframeUrl && !isValidUrl(iframeUrl)) { // Validate only if non-empty
+                 showStatus("URL nhúng không hợp lệ. Vui lòng kiểm tra lại hoặc để trống.", "error", "link_off", 7000);
+                 iframeUrlInput.classList.add('error'); if (isValid) iframeUrlInput.focus(); isValid = false;
             }
 
-            if (!isValid) {
-                // Shake the container slightly if errors exist
+            if (!isValid) { // If any validation failed
                 document.getElementById('generator-container').classList.add('shake');
                 setTimeout(() => document.getElementById('generator-container').classList.remove('shake'), 500);
-                return; // Stop generation
-            }
-
-            // === Markdown Conversion (inside try-catch) ===
-            try {
-                // Ensure marked is loaded (it should be)
-                if (typeof marked === 'undefined') throw new Error("Thư viện MarkedJS chưa tải xong!");
-
-                 marked.setOptions({
-                     breaks: true,    // Convert newlines to <br>
-                     gfm: true,       // Enable GitHub Flavored Markdown
-                     mangle: false,   // Disable email obfuscation
-                     headerIds: false // Disable automatic header IDs
-                 });
-                 const convertedHtml = marked.parse(markdownText);
-
-                // === Show Confirmation Modal ===
-                // This function now handles loading HTML, setting up listeners, and calling the generateTemplate on confirm
-                loadAndShowWarningModal(() => {
-                    // --- This runs *after* user clicks OK on the warning modal ---
-                    showStatus("Đang tạo mã nguồn siêu cấp... Việc này có thể mất vài giây, đặc biệt nếu có video.", "info", "settings", 0); // Persistent status
-                    generateButton.disabled = true;
-                    copyButton.disabled = true;
-
-                    // Use setTimeout to allow UI to update before potentially heavy generation
-                    setTimeout(() => {
-                         try {
-                             // ---> Generate the Final HTML Template <---
-                             fullHtmlToCopy = generateTargetHtmlTemplate(
-                                 convertedHtml,
-                                 outputPassword,
-                                 videoDataBase64,      // Pass Base64 video data (or null)
-                                 videoExpiryTimestamp  // Pass expiry timestamp (or null)
-                             );
-
-                             showStatus("Tạo mã nguồn thành công! Sẵn sàng sao chép.", "success", "rocket_launch");
-                             copyButton.disabled = false; // Enable copy button
-                             copyButton.classList.remove('copied');
-                             copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
-                             console.log("HTML (with video: " + (!!videoDataBase64) + ") generated successfully.");
-
-                         } catch (genError) {
-                             console.error("Lỗi nghiêm trọng khi tạo HTML:", genError);
-                             showStatus(`Lỗi khi tạo template HTML: ${genError.message}`, "error", "error", 8000);
-                             fullHtmlToCopy = '';
-                             copyButton.disabled = true;
-                         } finally {
-                              generateButton.disabled = false; // Re-enable generate button
-                         }
-                    }, 50); // Short delay
-
-                }); // End of loadAndShowWarningModal
-
-            } catch (processingError) {
-                console.error("Lỗi trong quá trình xử lý Markdown hoặc gọi Modal:", processingError);
-                showStatus(`Lỗi xử lý: ${processingError.message}`, "error", "error", 8000);
-                fullHtmlToCopy = '';
-                copyButton.disabled = true;
-                 generateButton.disabled = false; // Ensure button is enabled on error
-            }
-        }
-
-        function handleCopy() {
-            if (!fullHtmlToCopy) {
-                 showStatus("Chưa có mã nguồn để sao chép. Hãy tạo trước nhé!", "info", "info", 4000);
                 return;
             }
 
-             if (!navigator.clipboard || !navigator.clipboard.writeText) {
-                  showStatus("Trình duyệt không hỗ trợ sao chép tự động. Vui lòng copy thủ công.", "error", "report_problem", 8000);
-                  // Optional: Show the code in a textarea for manual copy
-                  // prompt("Copy thủ công:", fullHtmlToCopy); // Simple prompt fallback
-                  console.warn("Clipboard API not fully supported. Code:\n", fullHtmlToCopy); // Log to console
-                  return;
-             }
+            // --- Process & Generate ---
+            try {
+                if (typeof marked === 'undefined') throw new Error("Lỗi tải thư viện Markdown (MarkedJS).");
+                 marked.setOptions({ breaks: true, gfm: true, mangle: false, headerIds: false });
+                 const convertedHtml = marked.parse(markdownText);
 
-            navigator.clipboard.writeText(fullHtmlToCopy)
-                .then(() => {
-                    showStatus("Đã sao chép mã nguồn vào clipboard!", "success", "done_all", 3000);
-                    copyButton.classList.add('copied');
-                    copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Sao Chép!';
+                // Show confirmation modal
+                loadAndShowWarningModal(() => { // Callback executed on modal confirmation
+                    showStatus("Đang tạo mã nguồn... ", "info", "sync", 0); // Show persistent processing status
+                    generateButton.disabled = true; copyButton.disabled = true;
 
-                    // Reset button appearance after a short delay
-                    setTimeout(() => {
-                        if (copyButton.classList.contains('copied')) {
-                            copyButton.classList.remove('copied');
+                    setTimeout(() => { // Short delay for UI update and async feel
+                        try {
+                            fullHtmlToCopy = generateTargetHtmlTemplate(
+                                convertedHtml,
+                                outputPassword,
+                                iframeUrl || null // Pass URL or null if empty
+                            );
+                            showStatus("Tạo mã nguồn thành công! Sẵn sàng để sao chép.", "success", "done_outline");
+                            copyButton.disabled = false; copyButton.classList.remove('copied');
                             copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn';
+                            console.log("HTML Generated. Iframe URL: " + (iframeUrl || 'None'));
+                        } catch (genError) {
+                            console.error("HTML Generation Error:", genError);
+                            showStatus(`Lỗi khi tạo HTML: ${genError.message}`, "error", "error", 8000);
+                            fullHtmlToCopy = ''; copyButton.disabled = true;
+                        } finally {
+                            generateButton.disabled = false; // Re-enable generate button
                         }
-                    }, 3000);
-                })
-                .catch(err => {
-                    console.error('Lỗi sao chép: ', err);
-                    showStatus("Không thể sao chép! Kiểm tra quyền hoặc thử lại.", "error", "report_problem", 6000);
-                });
+                    }, 50); // End setTimeout
+                }); // End loadAndShowWarningModal call
+
+            } catch (processingError) {
+                 console.error("Processing Error:", processingError);
+                 showStatus(`Lỗi xử lý: ${processingError.message}`, "error", "error", 8000);
+                 fullHtmlToCopy = ''; copyButton.disabled = true; generateButton.disabled = false;
+            }
         }
 
-         // Load and show warning modal, execute callback on confirmation
-         function loadAndShowWarningModal(onConfirmCallback) {
-              // Dynamic Modal HTML content
-             const modalHtml = `
-                 <div class="warning-content">
-                     <h2 class="warning-title"><i class="material-icons">security</i> CẢNH BÁO BẢO MẬT & KÍCH THƯỚC</h2>
-                     <div class="warning-message">
-                         <p>Nội dung ${selectedVideoFile ? '(và video)' : ''} sẽ được bảo vệ bởi <strong>10 lớp mã hóa AES</strong>. Mật khẩu là chìa khóa duy nhất.</p>
-                         ${selectedVideoFile ? `<p style="color:var(--warning);"><i class="material-icons" style="font-size: 1.1rem; vertical-align: text-bottom;">movie</i> <strong>Video được nhúng:</strong> ${selectedVideoFile.name} (${formatBytes(selectedVideoFile.size)}). Việc này sẽ làm tăng đáng kể kích thước file HTML.</p>` : ''}
-                         ${videoExpiryTimestamp ? `<p style="color:var(--warning);"><i class="material-icons" style="font-size: 1.1rem; vertical-align: text-bottom;">event_busy</i> <strong>Hết hạn video sau:</strong> ${expiryDaysInput.value} ngày.</p>` : (selectedVideoFile ? '<p style="color:var(--info);"><i class="material-icons" style="font-size: 1.1rem; vertical-align: text-bottom;">event_available</i> Video sẽ không có thời hạn.</p>' : '')}
-                          <p style="margin-top: 1.5rem;">Hãy đảm bảo bạn đã kiểm tra nội dung, mật khẩu (và video nếu có) trước khi tiếp tục. Giữ mật khẩu an toàn!</p>
-                     </div>
-                     <button class="warning-button" id="warning-confirm-dynamic">
-                         <i class="material-icons">check_circle</i> OK, TÔI HIỂU & TIẾP TỤC TẠO!
-                     </button>
-                 </div>`;
-             warningModal.innerHTML = modalHtml;
+        // Copy function (Remains the same as before)
+        function handleCopy() {
+            if (!fullHtmlToCopy) {
+                 showStatus("Chưa có mã nguồn để sao chép.", "info", "info"); return;
+            }
+             if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                  showStatus("Trình duyệt không hỗ trợ sao chép tự động.", "error", "report_problem", 7000);
+                  console.warn("Clipboard API not available. Code logged to console.\n", fullHtmlToCopy);
+                  return;
+             }
+            navigator.clipboard.writeText(fullHtmlToCopy)
+                .then(() => {
+                    showStatus("Đã sao chép mã nguồn!", "success", "done_all", 3000);
+                    copyButton.classList.add('copied'); copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Sao Chép!';
+                    setTimeout(() => { if (copyButton.classList.contains('copied')) { copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép Mã Nguồn'; } }, 3000);
+                })
+                .catch(err => { console.error('Copy error: ', err); showStatus("Lỗi sao chép!", "error", "report_problem"); });
+        }
 
-             const confirmBtn = warningModal.querySelector('#warning-confirm-dynamic');
-             const warningContent = warningModal.querySelector('.warning-content');
+        // Load and Show Warning Modal (Updated content)
+        function loadAndShowWarningModal(onConfirmCallback) {
+            const currentUrl = iframeUrlInput.value.trim();
+            const modalHtml = `
+                <div class="warning-content">
+                    <h2 class="warning-title"><i class="material-icons">security</i> XÁC NHẬN TẠO MÃ</h2>
+                    <div class="warning-message">
+                        <p>Nội dung ${currentUrl ? 'cùng với URL nhúng' : ''} sẽ được mã hóa với <strong>10 lớp AES</strong>. Mật khẩu là chìa khóa duy nhất!</p>
+                        ${currentUrl ? `<p style="color:var(--accent);"><i class="material-icons">link</i> <strong>URL sẽ nhúng:</strong><br><code title="${currentUrl}">${currentUrl.length > 150 ? currentUrl.substring(0, 147) + '...' : currentUrl}</code></p>` : '<p style="color:var(--text-dim);"><i class="material-icons">link_off</i> <em>(Không nhúng URL nào.)</em></p>'}
+                        <p style="margin-top: 1.5rem;">Hãy kiểm tra kỹ mật khẩu và nội dung trước khi tạo. Đảm bảo URL nhúng là chính xác (nếu có).</p>
+                    </div>
+                    <button class="warning-button" id="warning-confirm-dynamic">
+                        <i class="material-icons">check_circle</i> OK, TÔI ĐỒNG Ý VÀ TẠO!
+                    </button>
+                </div>`;
+            warningModal.innerHTML = modalHtml;
+            const confirmBtn = warningModal.querySelector('#warning-confirm-dynamic');
+            const warningContent = warningModal.querySelector('.warning-content');
 
-             // Ensure listeners are fresh
-             const newConfirmBtn = confirmBtn.cloneNode(true); // Clone to remove old listeners
+            // Ensure only one click listener
+             const newConfirmBtn = confirmBtn.cloneNode(true);
              warningContent.replaceChild(newConfirmBtn, confirmBtn);
-
              newConfirmBtn.onclick = () => {
-                 warningModal.classList.add('hidden'); // Hide first
-                 if (typeof onConfirmCallback === 'function') {
-                    // Use a small delay to allow modal to hide visually before heavy task
-                    setTimeout(onConfirmCallback, 50);
-                 }
-                 // Don't clear innerHTML immediately, let hide animation finish
-                 // setTimeout(() => { warningModal.innerHTML = ''; }, 500);
+                 warningModal.classList.add('hidden');
+                 if (typeof onConfirmCallback === 'function') setTimeout(onConfirmCallback, 50); // Slight delay
              };
 
-              // Close modal on overlay click
-             const modalClickHandler = (event) => {
-                  if (event.target === warningModal) {
-                      warningModal.classList.add('hidden');
-                      // setTimeout(() => { warningModal.innerHTML = ''; }, 500);
-                  }
-              };
-              // Remove previous listener if exists
-              warningModal.removeEventListener('click', modalClickHandler);
-               warningModal.addEventListener('click', modalClickHandler);
+             // Close on overlay click
+             const modalClickHandler = (event) => { if (event.target === warningModal) { warningModal.classList.add('hidden'); }};
+              warningModal.removeEventListener('click', modalClickHandler); // Clean previous if any
+              warningModal.addEventListener('click', modalClickHandler);
 
-
-              warningModal.classList.add('initial-state'); // For animation start
+             // Show modal with animation
+              warningModal.classList.add('initial-state');
               warningModal.classList.remove('hidden');
-              requestAnimationFrame(() => { // Trigger reflow for animation
-                    warningModal.classList.remove('initial-state');
-              });
-
+              requestAnimationFrame(() => { warningModal.classList.remove('initial-state'); });
          }
 
         // ====== INITIALIZATION (Generator Page) ======
         document.addEventListener('DOMContentLoaded', function() {
             createParticles(particlesContainer);
-
-            // Event listeners setup
             generateButton.addEventListener('click', handleGenerate);
             copyButton.addEventListener('click', handleCopy);
-            videoInput.addEventListener('change', handleVideoSelection);
-            removeVideoButton.addEventListener('click', () => resetVideoSelection(true)); // Pass true to show message
-
-            // Clear error state on input
-             const inputsToClearError = [markdownInput, outputPasswordInput, expiryDaysInput, videoInput];
-             inputsToClearError.forEach(input => {
-                 input.addEventListener('input', () => input.classList.remove('error'));
-                 input.addEventListener('change', () => input.classList.remove('error')); // For file input 'change'
-             });
-
-
-            // Initial status message
-            showStatus("✨ Sẵn sàng mã hóa mọi thứ thành siêu phẩm HTML bảo mật! ✨", "info", "auto_fix_high", 7000);
-
-            // Handle window resize for generator page particles
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300); // Debounce resize
+            // Clear error on input
+            [markdownInput, outputPasswordInput, iframeUrlInput].forEach(input => {
+                input.addEventListener('input', () => input.classList.remove('error'));
             });
-
-             // Add shake class for container (used on validation fail)
-              if (!document.getElementById('shake-container-style')) {
-                 const style = document.createElement('style');
-                  style.id = 'shake-container-style';
-                 style.innerHTML = `@keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } } .container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }`;
-                 document.head.appendChild(style);
-              }
+            showStatus("🔧 Nhập nội dung, mật khẩu, và URL (nếu muốn) để mã hóa!", "info", "build_circle", 7000);
+            // Resize listener
+            let resizeTimeout; window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300); });
+            // Add shake animation style for container
+             // Style injection can be simplified if needed
         });
     </script>
 </body>
