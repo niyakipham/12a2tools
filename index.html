@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12A2 TOOLS - Mã Hóa Siêu Cấp & Nhúng Đa Phương Tiện ✨</title> <!-- Title mới keng xà beng! -->
-    <!-- Thư viện chuyển đổi Markdown -->
+    <title>12A2 TOOLS - Mã Hóa Siêu Cấp & Nhúng Đa Phương Tiện ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Thư viện mã hóa/giải mã -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <!-- Font Icon -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* === ROOT VARIABLES === */
@@ -30,14 +27,14 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative; }
 
         /* === BACKGROUND EFFECTS === */
-        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; /* Add this */ }
+        .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
         .particle { position: absolute; background: radial-gradient(circle, var(--primary) 0%, transparent 70%); border-radius: 50%; opacity: 0.6; animation: particle-anim linear infinite; } @keyframes particle-anim { 0%{transform:translateY(0) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 100%{transform:translateY(-1500px) rotate(720deg);opacity:0;} }
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(110, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(110, 0, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; pointer-events: none; }
         .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 247, 255, 0.03), rgba(0, 247, 255, 0.03) 1px, transparent 1px, transparent 3px); z-index: -1; pointer-events: none; animation: scanline 8s linear infinite; } @keyframes scanline { 0%{background-position:0 0;} 100%{background-position:0 100%;} }
         .glow-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%); z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate; } @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.7; transform: scale(1.05); } }
 
         /* === MAIN CONTAINER (Generator) === */
-        .container { max-width: 950px; /* Tăng nhẹ width */ margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: float 6s ease-in-out infinite; }
+        .container { max-width: 950px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: float 6s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 15s infinite alternate; }
         h1 { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; } h1::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); } h1 > .material-icons { vertical-align: middle; font-size: 2.2rem; margin-right: 0.5rem;}
@@ -46,34 +43,32 @@
         .generator-form { display: flex; flex-direction: column; gap: 1.8rem; margin-top: 2rem; }
         .input-group { position: relative; }
         .input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; } .input-group .material-icons { font-size: 1.2rem; color: var(--secondary); }
-        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"] { /* Style chung cho URL inputs */
-             width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 1px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"] { width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 1px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         textarea#markdown-input { min-height: 180px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; line-height: 1.5; padding: 1.5rem; border-color: rgba(110, 0, 255, 0.5) }
-        textarea#markdown-input.error, input[type="text"]#output-password-input.error, input[type="url"].error { border-color: var(--error) !important; box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important; /* No animation here, apply shake in JS */ }
+        textarea#markdown-input.error, input[type="text"]#output-password-input.error, input[type="url"].error { border-color: var(--error) !important; box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important; }
         textarea#markdown-input:focus, input[type="text"]#output-password-input:focus, input[type="url"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
-        /* Apply shake via class added in JS */
         .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
-        .container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; } /* For general container shake */
+        .container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         small.input-note { color: var(--text-dim); display: block; margin-top: 0.5rem; line-height: 1.4; font-size: 0.9rem; } small.input-note .material-icons { font-size: 1rem; vertical-align: text-bottom; margin-right: 0.2rem; }
 
         /* === NEW: Dynamic Input List Styles === */
-        .input-list { display: flex; flex-direction: column; gap: 0.8rem; max-height: 250px; /* Giới hạn chiều cao để cuộn */ overflow-y: auto; padding-right: 10px; /* Chỗ cho scrollbar */ margin-bottom: 1rem; border: 1px dashed var(--md-border); padding: 1rem; border-radius: var(--border-radius); background: rgba(0,0,0,0.1); }
+        .input-list { display: flex; flex-direction: column; gap: 0.8rem; max-height: 250px; overflow-y: auto; padding-right: 10px; margin-bottom: 1rem; border: 1px dashed var(--md-border); padding: 1rem; border-radius: var(--border-radius); background: rgba(0,0,0,0.1); }
         .input-list-item { display: flex; align-items: center; gap: 0.8rem; transition: var(--transition); animation: slideIn 0.4s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
-        .input-list-item input[type="url"] { flex-grow: 1; /* Chiếm phần lớn không gian */ margin: 0; }
-        .input-list-item button { padding: 0.6rem; font-size: 0.8rem; line-height: 1; min-width: 40px; background: linear-gradient(135deg, var(--error), #ff6b8b); box-shadow: 0 2px 10px rgba(255, 61, 113, 0.3); color: white; border-radius: 8px; /* Nicer button */ border: none; cursor: pointer; }
+        .input-list-item input[type="url"] { flex-grow: 1; margin: 0; }
+        .input-list-item button { padding: 0.6rem; font-size: 0.8rem; line-height: 1; min-width: 40px; background: linear-gradient(135deg, var(--error), #ff6b8b); box-shadow: 0 2px 10px rgba(255, 61, 113, 0.3); color: white; border-radius: 8px; border: none; cursor: pointer; transition: var(--transition); }
         .input-list-item button:hover { background: linear-gradient(135deg, #ff6b8b, var(--error)); transform: translateY(-1px) scale(1.05); box-shadow: 0 4px 15px rgba(255, 61, 113, 0.5);}
-        .add-button { background: linear-gradient(135deg, var(--success), #45eda0); color: var(--bg-darker); padding: 0.7rem 1rem; font-size: 0.9rem; font-weight: 600; box-shadow: 0 3px 15px rgba(0, 255, 136, 0.3); display: inline-flex; align-items: center; gap: 0.4rem;}
+        .add-button { background: linear-gradient(135deg, var(--success), #45eda0); color: var(--bg-darker); padding: 0.7rem 1rem; font-size: 0.9rem; font-weight: 600; box-shadow: 0 3px 15px rgba(0, 255, 136, 0.3); display: inline-flex; align-items: center; gap: 0.4rem; border: none; cursor: pointer; border-radius: var(--border-radius); transition: var(--transition); }
         .add-button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 255, 136, 0.5);}
         .input-list::-webkit-scrollbar { width: 6px; }
         .input-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
         .input-list::-webkit-scrollbar-thumb { background: linear-gradient(var(--secondary), var(--primary)); border-radius: 3px; }
-        .input-list:empty::after { /* Tin nhắn khi list rỗng */ content: 'Chưa có link nào được thêm...'; display: block; text-align: center; color: var(--text-dim); font-style: italic; padding: 1rem 0; }
+        .input-list:empty::after { content: 'Chưa có link nào được thêm...'; display: block; text-align: center; color: var(--text-dim); font-style: italic; padding: 1rem 0; }
 
         /* === BUTTON STYLES === */
         button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        button:hover:not(:disabled) { transform: translateY(-3px) scale(1.03); /* Added scale */ box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
+        button:hover:not(:disabled) { transform: translateY(-3px) scale(1.03); box-shadow: 0 6px 25px rgba(0, 247, 255, 0.6); }
         button:disabled { filter: grayscale(70%); opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none !important;}
         button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform: rotate(45deg); animation: shine 3s infinite linear; opacity: 0.5; pointer-events: none; }
         @keyframes shine { 0%{transform:translateX(-150%) rotate(45deg);} 100%{transform:translateX(150%) rotate(45deg);} }
@@ -81,7 +76,7 @@
         #copy-button { background: var(--bg-lighter); color: var(--text-dim); cursor: not-allowed; box-shadow: none; border: 1px solid rgba(110, 0, 255, 0.3); }
         #copy-button::before { display: none; }
         #copy-button:not(:disabled) { background: linear-gradient(135deg, #008040, var(--success)); box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4); color: white; cursor: pointer; filter: none; opacity: 1; }
-        #copy-button:not(:disabled):hover { box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6); transform: translateY(-3px) scale(1.03); /* Added scale */ }
+        #copy-button:not(:disabled):hover { box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6); transform: translateY(-3px) scale(1.03); }
         #copy-button:not(:disabled)::before { display: block; }
         #copy-button.copied { background: var(--accent); box-shadow: 0 4px 20px rgba(255, 0, 170, 0.5); }
         #copy-button.copied > .material-icons { animation: spin 0.5s ease-in-out; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -90,23 +85,22 @@
         .status-message { color: var(--success); text-align: center; margin-top: 1rem; font-size: 0.95rem; min-height: 1.5rem; height: auto; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(0, 255, 136, 0.1); padding: 0.8rem 1rem; border-radius: var(--border-radius); border-left: 4px solid var(--success); opacity: 0; visibility: hidden; max-height: 0; overflow: hidden; } .status-message.show { opacity: 1; visibility: visible; max-height: 100px; } .status-message.error { color: var(--error); border-left-color: var(--error); background: rgba(255, 61, 113, 0.1); } .status-message.info { color: var(--warning); border-left-color: var(--warning); background: rgba(255, 204, 0, 0.1); } .status-message .material-icons { font-size: 1.3rem; }
 
         /* === ICONS === */
-        .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px; /* Default size */ line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; vertical-align: middle; user-select: none; /* Prevent text selection on icons */ }
+        .material-icons { font-family: 'Material Icons'; font-weight: normal; font-style: normal; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; vertical-align: middle; user-select: none; }
 
         /* === MODAL STYLE === */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(5, 5, 16, 0.9); backdrop-filter: blur(10px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
         .modal-overlay.hidden { display: none !important; }
         .modal-overlay:not(.hidden) { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-dark); border: 1px solid var(--secondary); /* Changed border color slightly */ border-radius: var(--border-radius); padding: 2.5rem; max-width: 600px; width: 90%; box-shadow: 0 0 50px rgba(110, 0, 255, 0.35); /* Enhanced shadow */ position: relative; animation: scaleInModal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(1); }
+        .modal-content { background: var(--bg-dark); border: 1px solid var(--secondary); border-radius: var(--border-radius); padding: 2.5rem; max-width: 600px; width: 90%; box-shadow: 0 0 50px rgba(110, 0, 255, 0.35); position: relative; animation: scaleInModal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: scale(1); }
         .modal-overlay:not(.hidden).initial-state .modal-content { transform: scale(0.9); opacity: 0;}
         @keyframes scaleInModal { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { color: var(--primary); /* Primary color for title */ text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; } .modal-title .material-icons { font-size: 1.8rem; color: var(--primary); /* Match title color */ }
+        .modal-title { color: var(--primary); text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; } .modal-title .material-icons { font-size: 1.8rem; color: var(--primary); }
         .modal-message { color: var(--text-light); margin-bottom: 2rem; line-height: 1.7; font-size: 1rem; }
         .modal-message p { margin-bottom: 1rem; } .modal-message strong { color: var(--warning); }
         .modal-message code { background: var(--bg-lighter); color: var(--accent); padding: 0.2em 0.5em; border-radius: 4px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85em; word-break: break-all; display: inline-block; max-width: 100%; overflow-wrap: break-word; vertical-align: middle; margin-left: 0.3rem; border: 1px solid var(--md-border); }
         .modal-message i.material-icons { font-size: 1.1rem !important; vertical-align: text-bottom; margin-right: 0.3rem;}
-        .modal-button { /* General modal button style, used by ID specific styles below */ border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0, 0.3); }
+        .modal-button { border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0, 0.3); }
         .modal-button:hover:not(:disabled) { transform: translateY(-3px) scale(1.03); box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5); }
-        /* Specific button styles */
         #gen-warning-confirm { background: linear-gradient(135deg, var(--success), #00ffaa); color: var(--bg-darker); box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4); }
         #gen-warning-confirm:hover { box-shadow: 0 6px 25px rgba(0, 255, 136, 0.6); }
         #final-warning-confirm { background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4); }
@@ -118,6 +112,15 @@
         /* === RESPONSIVE DESIGN === */
         @media (max-width: 768px) { .container { margin: 1rem; padding: 1.5rem; animation: none; } h1 { font-size: 1.5rem; } textarea#markdown-input { min-height: 150px; padding: 1rem; } input[type="text"]#output-password-input, input[type="url"] { padding: 0.8rem 1rem; font-size: 0.95rem; } button { padding: 0.8rem; font-size: 0.9rem; } .modal-content { padding: 1.5rem; max-width: 95%; } .modal-title { font-size: 1.3rem; } .modal-message { font-size: 0.95rem;} .input-list { max-height: 200px;} }
         @media (max-width: 480px) { body { padding: 1rem 0.5rem; } .container { padding: 1.2rem; margin: 0.5rem;} h1 { font-size: 1.3rem; } .input-group label { font-size: 0.85rem; } textarea#markdown-input, input { font-size: 0.9rem;} .modal-message code { font-size: 0.8em;} small.input-note { font-size: 0.85rem; } .add-button { width: 100%; justify-content: center;} .input-list { padding-right: 5px;} .input-list-item input[type="url"] {font-size: 0.9rem; padding: 0.7rem 1rem;} .input-list-item button {padding: 0.5rem; min-width: 35px;} }
+
+        /* Animation cho việc xóa item trong list */
+        @keyframes slideOut {
+             from { opacity: 1; transform: translateX(0); max-height: 50px; margin-bottom: 0.8rem; padding: auto;} /* Adjust max-height */
+             to { opacity: 0; transform: translateX(20px); max-height: 0; margin-bottom: 0; padding: 0; border: 0; }
+         }
+        .input-list-item.removing { /* Class tạm thời khi xóa */
+            animation: slideOut 0.3s ease-out forwards;
+         }
     </style>
 </head>
 <body>
@@ -134,7 +137,7 @@
             <!-- Nội dung và Mật khẩu -->
             <div class="input-group">
                 <label for="markdown-input"><i class="material-icons">description</i> Nội Dung Chính (Markdown):</label>
-                <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây..." required></textarea>
+                <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây (có thể bao gồm ảnh)..." required></textarea>
             </div>
             <div class="input-group">
                 <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Bảo Mật:</label>
@@ -143,22 +146,18 @@
 
             <!-- Khu vực quản lý link ảnh -->
             <div class="input-group">
-                 <label for="image-url-list"><i class="material-icons">collections</i> Danh Sách Link Ảnh:</label>
-                 <div class="input-list" id="image-url-list">
-                     <!-- Các input ảnh sẽ được thêm vào đây bằng JS -->
-                 </div>
+                 <label for="image-url-list"><i class="material-icons">collections</i> Danh Sách Link Ảnh (Nhúng thêm):</label>
+                 <div class="input-list" id="image-url-list"></div>
                  <button type="button" class="add-button" id="add-image-button"><i class="material-icons">add_photo_alternate</i> Thêm Ảnh</button>
-                 <small class="input-note"><i class="material-icons">info_outline</i> Thêm link ảnh trực tiếp (jpg, png, gif,...). Ảnh sẽ hiển thị phía trên nội dung chính.</small>
+                 <small class="input-note"><i class="material-icons">info_outline</i> Thêm link ảnh trực tiếp. Hiển thị trên nội dung chính.</small>
             </div>
 
             <!-- Khu vực quản lý link iframe -->
              <div class="input-group">
                  <label for="iframe-url-list"><i class="material-icons">video_library</i> Danh Sách Link Iframe/Video:</label>
-                 <div class="input-list" id="iframe-url-list">
-                      <!-- Các input iframe/video sẽ được thêm vào đây bằng JS -->
-                 </div>
+                 <div class="input-list" id="iframe-url-list"></div>
                   <button type="button" class="add-button" id="add-iframe-button"><i class="material-icons">add_link</i> Thêm Iframe/Video</button>
-                  <small class="input-note"><i class="material-icons">info_outline</i> Dán link nhúng (Youtube, Drive, Web,...). Sẽ hiển thị dưới cùng trong các iframe riêng biệt.</small>
+                  <small class="input-note"><i class="material-icons">info_outline</i> Dán link nhúng (Youtube, Drive, Web,...). Hiển thị dưới nội dung chính.</small>
              </div>
 
             <!-- Buttons -->
@@ -169,9 +168,7 @@
     </div>
 
     <!-- Security Warning Modal (Cho Generator Page) -->
-    <div class="modal-overlay hidden" id="warning-modal">
-        <!-- Nội dung được load bằng JS -->
-    </div>
+    <div class="modal-overlay hidden" id="warning-modal"></div>
 
     <script>
         // ====== CONFIGURATION & ELEMENTS ======
@@ -202,71 +199,86 @@
              const input = document.createElement('input');
              input.type = 'url';
              input.placeholder = placeholderText;
-             input.addEventListener('input', () => input.classList.remove('error')); // Xóa lỗi khi nhập
+             input.addEventListener('input', () => input.classList.remove('error'));
 
              const removeButton = document.createElement('button');
              removeButton.type = 'button';
-             removeButton.innerHTML = '<i class="material-icons" style="font-size: 1.1rem; line-height: 1;">delete_forever</i>'; // Icon nhỏ hơn
+             removeButton.innerHTML = '<i class="material-icons" style="font-size: 1.1rem; line-height: 1;">delete_forever</i>';
              removeButton.title = 'Xóa link này';
              removeButton.onclick = () => {
-                 listItem.style.animation = 'slideOut 0.3s ease-out forwards'; // Animation xóa
-                 listItem.addEventListener('animationend', () => listItem.remove(), { once: true }); // Remove after animation
+                 // Thêm class để chạy animation, sau đó xóa element
+                 listItem.classList.add('removing');
+                 listItem.addEventListener('animationend', () => listItem.remove(), { once: true });
              };
 
              listItem.appendChild(input);
              listItem.appendChild(removeButton);
              listContainer.appendChild(listItem);
-             input.focus(); // Focus vào input mới thêm
-
-             // Cuộn xuống item cuối cùng
+             input.focus();
              listContainer.scrollTop = listContainer.scrollHeight;
         }
-         // CSS for slideOut animation
-         try {
-             const styleSheet = document.styleSheets[0];
-             styleSheet.insertRule(`
-                 @keyframes slideOut {
-                     from { opacity: 1; transform: translateX(0); max-height: 50px; margin-bottom: 0.8rem; padding: auto;} /* Adjust max-height */
-                     to { opacity: 0; transform: translateX(20px); max-height: 0; margin-bottom: 0; padding: 0; border: 0; }
-                 }
-             `, styleSheet.cssRules.length);
-         } catch (e) {
-             console.warn("Could not insert slideOut animation rule:", e);
-         }
 
+        // Event listeners for add buttons
+        addImageButton.addEventListener('click', () => addListItem(imageUrlList, "Dán link ảnh trực tiếp..."));
+        addIframeButton.addEventListener('click', () => addListItem(iframeUrlList, "Dán link nhúng iframe/video..."));
 
-         // Event listeners for add buttons
-         addImageButton.addEventListener('click', () => addListItem(imageUrlList, "Dán link ảnh trực tiếp..."));
-         addIframeButton.addEventListener('click', () => addListItem(iframeUrlList, "Dán link nhúng iframe/video..."));
+        // ====== SECURITY FUNCTIONS (REVISED SIMPLIFIED) ======
+        /**
+         * Mã hóa nội dung nhiều lớp bằng AES, trả về chuỗi Base64 cuối cùng.
+         * Loại bỏ các bước btoa/atob, escape/encodeURIComponent không cần thiết.
+         */
+        function multiLayerEncrypt(content, password, layers = 10) {
+            if (typeof CryptoJS === 'undefined') throw new Error("Lỗi: CryptoJS chưa tải.");
+            let currentContent = content; // Bắt đầu với nội dung gốc
+            for (let i = 0; i < layers; i++) {
+                // Kết hợp nội dung hiện tại, mật khẩu và chỉ số lớp để tăng tính ngẫu nhiên
+                const combined = `${currentContent}|${password}|${i}`;
+                const layerKey = password + i; // Key đơn giản cho mỗi lớp
+                let layerEncrypted;
+                try {
+                    // Mã hóa AES và lấy chuỗi Base64 trực tiếp
+                    layerEncrypted = CryptoJS.AES.encrypt(combined, layerKey).toString();
+                } catch (e) {
+                    throw new Error(`Lỗi mã hóa AES lớp ${i + 1}: ${e.message || e}`);
+                }
+                // Nội dung đã mã hóa của lớp này trở thành đầu vào cho lớp tiếp theo
+                currentContent = layerEncrypted;
+            }
+            // Trả về chuỗi Base64 sau khi mã hóa qua tất cả các lớp
+            return currentContent;
+        }
 
-        // ====== SECURITY FUNCTIONS ======
-        function multiLayerEncrypt(content, password, layers = 10) { if (typeof CryptoJS === 'undefined') throw new Error("Lỗi: CryptoJS chưa tải."); let encrypted = content; for (let i = 0; i < layers; i++) { const combined = `${encrypted}|${password}|${i}`; const layerKey = password + i; let layerEncrypted; try { layerEncrypted = CryptoJS.AES.encrypt(combined, layerKey).toString(); } catch (e) { throw new Error(`Lỗi AES lớp ${i + 1}: ${e.message || e}`); } try { encrypted = btoa(unescape(encodeURIComponent(layerEncrypted))); } catch (e) { throw new Error(`Lỗi Base64 lớp ${i + 1}: ${e.message || e}`); } } return encrypted; }
-
-        // ====== HTML TEMPLATE GENERATION (CẬP NHẬT) ======
+        // ====== HTML TEMPLATE GENERATION (REVISED FOR SIMPLIFIED ENCRYPTION) ======
         function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, imageUrls = [], iframeUrls = []) {
             let encryptedMarkdownHtml;
             try {
+                // Sử dụng hàm mã hóa đơn giản hóa mới
                 encryptedMarkdownHtml = multiLayerEncrypt(markdownContentHtml, pagePassword, 10);
-            } catch (e) { throw new Error(`Mã hóa thất bại: ${e.message}`); }
+                // console.log("Encrypted Data (Base64):", encryptedMarkdownHtml.substring(0, 100) + "..."); // Log để debug nếu cần
+            } catch (e) {
+                throw new Error(`Mã hóa thất bại: ${e.message}`);
+            }
 
-            const escapedPassword = pagePassword.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$'); // Escaped Password not used in this version, kept for potential future use
+            // Escape dữ liệu Base64 để nhúng an toàn vào template literal JavaScript
+            // Chỉ cần escape backtick (`), backslash (\), và dollar sign ($)
+            const escapedEncryptedData = encryptedMarkdownHtml.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+
             const imageUrlsJs = JSON.stringify(imageUrls);
             const iframeUrlsJs = JSON.stringify(iframeUrls);
 
             const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn vấn đề và tớ sẽ cố gắng giúp! 😉`;
             const huấnQuote = `Sau nay, chỉ có làm chịu khó cần cù thì bù siêng năng,... Cái loại xem chùa mà đòi free thì ăn cám<br><strong style="font-style:normal;font-weight:bold;font-size:1.1em;">| -_- |</strong>`;
 
-            // --- TARGET HTML TEMPLATE ---
-            // Chú ý: Phần CSS của trang target rất dài, nó được giữ nguyên gần giống như trong code gốc của bạn, chỉ bổ sung/chỉnh sửa những phần cần thiết cho việc hiển thị nhiều media.
+            // --- TARGET HTML TEMPLATE (Phần script được cập nhật với hàm giải mã mới) ---
             return `<!DOCTYPE html>
 <html lang="vi">
 <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nội Dung Bảo Mật & Media Đa Năng</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-/* === ROOT VARIABLES === */
+/* === ROOT VARIABLES (Giữ nguyên) === */
 :root{--primary:#00f7ff;--secondary:#6e00ff;--accent:#ff00aa;--error:#ff3d71;--success:#00ff88;--warning:#ffcc00;--bg-dark:#0a0a20;--bg-darker:#050510;--bg-light:rgba(20,20,50,.5);--bg-lighter:rgba(30,30,70,.3);--text-light:#e0e0ff;--text-lighter:#fff;--text-dim:rgba(224,224,255,.6);--border-radius:12px;--box-shadow:0 0 30px rgba(0,247,255,.2);--transition:all .4s cubic-bezier(.175,.885,.32,1.275);--iframe-border:rgba(0,247,255,.3);--iframe-bg:rgba(10,10,32,.7);--md-border:rgba(110,0,255,.25);--code-bg:rgba(0,10,30,.8)}
-/* === BASE STYLES === */
+/* === BASE STYLES (Giữ nguyên) === */
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;line-height:1.6;position:relative;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
-/* === BACKGROUND EFFECTS === */
+/* === BACKGROUND EFFECTS (Giữ nguyên) === */
 .particles-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden; pointer-events: none;}
 .particle{position:absolute;background:radial-gradient(circle,var(--primary) 0%,transparent 70%);border-radius:50%;opacity:.6;animation:particle-anim linear infinite}
 @keyframes particle-anim{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:.6}100%{transform:translateY(-1500px) rotate(720deg);opacity:0}}
@@ -276,11 +288,11 @@
 @keyframes scanline{0%{background-position:0 0}100%{background-position:0 100%}}
 .glow-effect{background:radial-gradient(circle at center,rgba(0,247,255,.05) 0%,transparent 70%);animation:pulse 8s infinite alternate}
 @keyframes pulse{0%{opacity:.3;transform:scale(.95)}100%{opacity:.7;transform:scale(1.05)}}
-/* === TARGET PAGE CONTAINER === */
+/* === TARGET PAGE CONTAINER (Giữ nguyên) === */
 .container{max-width:1000px; width:100%;margin:2rem auto;padding:2rem 2.5rem 3rem 2.5rem;background:rgba(10,10,32,.9);backdrop-filter:blur(12px);border-radius:var(--border-radius);box-shadow:var(--box-shadow);border:1px solid rgba(110,0,255,.3);position:relative;overflow:visible;transition:var(--transition);animation:floatTarget 7s ease-in-out infinite}
 @keyframes floatTarget{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .container::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,247,255,.1) 0%,transparent 60%);z-index:-1;animation:pulse 15s infinite alternate}
-/* === PASSWORD SECTION === */
+/* === PASSWORD SECTION (Giữ nguyên) === */
 .page-title{text-align:center;color:var(--primary);margin-bottom:2rem;font-weight:300;letter-spacing:2px;text-transform:uppercase;font-size:1.6rem;text-shadow:0 0 15px rgba(0,247,255,.5);position:relative;padding-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.7rem}.page-title .material-icons{font-size:2rem}.page-title::after{content:'';position:absolute;bottom:0;left:30%;width:40%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
 .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}
 #final-password-section{transition:opacity .5s ease,transform .5s ease,max-height .6s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s;max-height:500px;overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem}
@@ -289,19 +301,19 @@
 .final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1.1rem;transition:var(--transition);outline:none;letter-spacing:3px;font-family:'Courier New',Courier,monospace}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}
 .final-page-button{background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:var(--transition);box-shadow:0 4px 20px rgba(110,0,255,.4);position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}.final-page-button:hover:not(:disabled){transform:translateY(-3px) scale(1.03);box-shadow:0 6px 25px rgba(0,247,255,.6)}.final-page-button:disabled{filter:grayscale(70%);opacity:.6;cursor:not-allowed;box-shadow:none;transform:none!important}.final-page-button::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,rgba(255,255,255,0) 0%,rgba(255,255,255,.1) 50%,rgba(255,255,255,0) 100%);transform:rotate(45deg);animation:shine 3s infinite linear;opacity:.5; pointer-events: none;}@keyframes shine{0%{transform:translateX(-150%) rotate(45deg)}100%{transform:translateX(150%) rotate(45deg)}}
 .final-page-error-message{color:var(--error);text-align:center;margin-top:.5rem;margin-bottom:-.5rem;font-size:.95rem;min-height:2.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:.4rem;opacity:0;transition:opacity .3s ease, max-height 0.3s ease;padding:.5rem .8rem;background:rgba(255,61,113,.1);border-left:3px solid var(--error);border-radius:4px;line-height:1.4;overflow: hidden; max-height: 0;}
-.final-page-error-message.show{opacity:1; max-height: 100px; /* Allow height expansion */}
+.final-page-error-message.show{opacity:1; max-height: 100px;}
 .final-page-input-group input[type=password].shake{animation:shake-final .5s cubic-bezier(.36,.07,.19,.97) both;border-color:var(--error)}@keyframes shake-final{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
 .final-page-donation-prompt{text-align:center;margin-top:1.5rem;padding:.8rem 1rem;background:rgba(255,204,0,.1);border-left:4px solid var(--warning);border-radius:var(--border-radius);color:var(--warning);font-size:.9rem;line-height:1.5;font-style:italic}.final-page-donation-prompt strong{font-weight:700;color:var(--text-lighter)}
-/* === CONTENT SECTION === */
+/* === CONTENT SECTION (Giữ nguyên) === */
 #final-content-section{opacity:0;visibility:hidden;max-height:0;overflow:hidden;transition:opacity .6s ease-out,max-height .8s ease-out,visibility 0s linear .8s;position:relative}
-#final-content-section.visible{opacity:1;visibility:visible;max-height:5000vh; /* Extra high */ transition:opacity .6s ease-out .2s,max-height .8s ease-out .2s,visibility 0s linear 0s}
+#final-content-section.visible{opacity:1;visibility:visible;max-height:5000vh;transition:opacity .6s ease-out .2s,max-height .8s ease-out .2s,visibility 0s linear 0s}
 #final-content-section.visible>*{animation:fadeInChild .7s ease-out forwards;opacity:0}
 #final-content-section.visible > #embedded-images-container { animation-delay: .1s; }
 #final-content-section.visible > #final-markdown-content { animation-delay: .3s; }
 #final-content-section.visible > #embedded-iframes-container { animation-delay: .5s; }
 #final-content-section.visible > .footer-note { animation-delay: .7s }
 @keyframes fadeInChild{0%{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-/* === STYLES FOR MULTIPLE MEDIA === */
+/* === STYLES FOR MULTIPLE MEDIA (Giữ nguyên) === */
 #embedded-images-container {margin-bottom: 2.5rem; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 .embedded-image-item {border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 247, 255, 0.15); border: 1px solid var(--iframe-border); position: relative; background-color: var(--bg-lighter); transition: var(--transition); }
 .embedded-image-item img {display: block; width: 100%; height: auto; border-radius: calc(var(--border-radius) - 1px); opacity: 0; transition: opacity .5s ease-in .1s, transform .3s ease; cursor: pointer; }
@@ -313,27 +325,26 @@
 .iframe-item-wrapper { border: 1px solid var(--iframe-border); border-radius: var(--border-radius); overflow: hidden; background-color: var(--iframe-bg); box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2); position: relative; width: 100%; padding-top: 56.25%; transition: var(--transition); }
 .iframe-item-wrapper:hover { box-shadow: 0 12px 40px rgba(0, 247, 255, 0.35); transform: translateY(-5px); }
 .iframe-item-wrapper iframe {position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: calc(var(--border-radius) - 1px); }
-/* === MARKDOWN STYLES === */
+/* === MARKDOWN STYLES (Giữ nguyên) === */
 .final-template-styles{line-height:1.75;color:var(--text-light);max-width:100%;margin-bottom:3rem}.final-template-styles>:first-child{margin-top:0!important}.final-template-styles>:last-child{margin-bottom:0!important}.final-template-styles h1,.final-template-styles h2,.final-template-styles h3,.final-template-styles h4,.final-template-styles h5,.final-template-styles h6{color:var(--primary);margin-top:2rem;margin-bottom:1rem;font-weight:400;letter-spacing:1px;padding-bottom:.6rem;border-bottom:1px solid var(--md-border);position:relative;text-shadow:0 0 8px rgba(0,247,255,.2)}.final-template-styles h1::after,.final-template-styles h2::after{content:'';position:absolute;bottom:-1px;left:0;height:3px;width:80px;background:linear-gradient(90deg,var(--accent),var(--secondary));border-radius:3px;transition:width .4s ease-in-out}.final-template-styles h1:hover::after,.final-template-styles h2:hover::after{width:120px}.final-template-styles h1{font-size:2.1rem;letter-spacing:1.5px}.final-template-styles h2{font-size:1.7rem;color:var(--accent)}.final-template-styles h3{font-size:1.4rem;color:var(--success);border-bottom-style:dashed}.final-template-styles h4{font-size:1.2rem;color:var(--warning);border:none;padding-bottom:0;margin-bottom:.5rem;font-weight:500}.final-template-styles h5,.final-template-styles h6{font-size:1.1rem;color:var(--text-dim);font-weight:600;border:none;padding-bottom:0;margin-bottom:.5rem;text-transform:uppercase}.final-template-styles p{margin-bottom:1.1rem;font-size:1.05rem}.final-template-styles a{color:var(--accent);text-decoration:none;position:relative;padding-bottom:2px;transition:color .3s ease,text-shadow .3s ease;font-weight:600;overflow:hidden;display:inline-block}.final-template-styles a::after{content:'';position:absolute;bottom:-2px;left:0;width:100%;height:2px;background:var(--primary);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.19,1,.22,1)}.final-template-styles a:hover{color:var(--primary);text-shadow:0 0 10px var(--primary)}.final-template-styles a:hover::after{transform:scaleX(1)}.final-template-styles ol,.final-template-styles ul{margin-left:1.5rem;margin-bottom:1.1rem;padding-left:1.8rem;list-style:none}.final-template-styles li{margin-bottom:.6rem;position:relative;padding-left:.5rem}.final-template-styles ul li::before{content:'✨';color:var(--primary);font-weight:400;display:inline-block;width:1em;margin-left:-1.5em;font-size:1.2em;line-height:1;position:absolute;top:.25em;left:0;text-shadow:0 0 6px var(--primary);transition:transform .3s ease}.final-template-styles ul li:hover::before{transform:rotate(90deg) scale(1.2)}.final-template-styles ol{counter-reset:list-counter}.final-template-styles ol li{counter-increment:list-counter}.final-template-styles ol li::before{content:counter(list-counter);color:var(--secondary);font-weight:700;font-size:.85em;font-family:'Georgia',serif;display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;margin-left:-1.8em;margin-right:.5em;background-color:rgba(110,0,255,.15);border-radius:50%;border:1px solid var(--secondary);position:absolute;top:.15em;left:0;line-height:1.8em;box-shadow:0 0 5px rgba(110,0,255,.3);transition:background-color .3s ease,transform .3s ease}.final-template-styles ol li:hover::before{background-color:rgba(110,0,255,.4);transform:scale(1.1)}.final-template-styles li p{margin-bottom:.3rem}.final-template-styles blockquote{position:relative;border:none;border-left:6px solid;border-image:linear-gradient(to bottom,var(--secondary),var(--primary)) 1;padding:1.5rem 2rem 1.5rem 3.5rem;margin:2rem 0;background:linear-gradient(135deg,rgba(110,0,255,.08),rgba(110,0,255,.2));border-radius:0 var(--border-radius) var(--border-radius) 0;font-style:italic;font-size:1.1em;color:var(--text-lighter);box-shadow:inset 5px 0 15px -5px rgba(110,0,255,.4);backdrop-filter:blur(2px)}.final-template-styles blockquote::before{content:'format_quote';font-family:'Material Icons';font-size:3rem;color:var(--secondary);opacity:.5;position:absolute;left:.8rem;top:.5rem;transform:translateY(-10%)}.final-template-styles blockquote p{margin-bottom:.6rem;font-size:1em}.final-template-styles blockquote p:last-child{margin-bottom:0}.final-template-styles code:not(pre code){background:rgba(0,247,255,.1);color:var(--primary);padding:.3em .6em;border-radius:5px;font-family:'Fira Code','Consolas',monospace;font-size:.9em;border:1px solid rgba(0,247,255,.3);word-break:break-word;text-shadow:0 0 3px rgba(0,247,255,.5)}.final-template-styles pre{background:var(--code-bg);padding:1.5rem 1.8rem;border-radius:var(--border-radius);overflow-x:auto;margin:2rem 0;border:1px solid var(--secondary);box-shadow:0 0 25px rgba(110,0,255,.25),inset 0 0 15px rgba(0,0,0,.6);position:relative}.final-template-styles pre code{background:0 0;padding:0;font-size:.95em;line-height:1.65;color:var(--text-light);font-family:'Fira Code','Consolas','Monaco',monospace}.final-template-styles pre::-webkit-scrollbar{height:8px;background-color:rgba(0,0,0,.2)}.final-template-styles pre::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--secondary),var(--primary));border-radius:4px}.final-template-styles hr{border:0;height:2px;margin:3rem auto;width:70%;background:linear-gradient(90deg,transparent,var(--secondary) 20%,var(--primary) 80%,transparent);opacity:.6}.final-template-styles table{width:100%;border-collapse:separate;border-spacing:0;margin:2rem 0;background:0 0;border:1px solid var(--md-border);border-radius:var(--border-radius);box-shadow:0 8px 25px rgba(0,0,0,.4);overflow:hidden}.final-template-styles td,.final-template-styles th{border-bottom:1px solid var(--md-border);padding:1rem 1.2rem;text-align:left;transition:background-color .3s ease}.final-template-styles td{background-color:rgba(10,10,32,.5)}.final-template-styles tr:last-child td{border-bottom:none}.final-template-styles th{background:linear-gradient(135deg,rgba(110,0,255,.3),rgba(0,247,255,.3));color:var(--text-lighter);font-weight:700;text-transform:uppercase;font-size:.9em;letter-spacing:1px;border-bottom:2px solid var(--primary)}.final-template-styles td:first-child,.final-template-styles th:first-child{padding-left:1.5rem}.final-template-styles td:last-child,.final-template-styles th:last-child{padding-right:1.5rem}.final-template-styles tr:hover td{background-color:var(--bg-lighter);color:var(--text-lighter)}
 .final-template-styles img{max-width:100%;height:auto;border-radius:8px;margin:1.5rem 0;box-shadow:0 8px 25px rgba(0,0,0,.4);border:1px solid var(--iframe-border);display:block;background:var(--bg-lighter);transition:transform .3s ease,box-shadow .3s ease,filter .3s ease}.final-template-styles img:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(0,247,255,.25);filter:brightness(1.1)}
-/* === MODAL STYLE === */
+/* === MODAL STYLE (Giữ nguyên) === */
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(5,5,16,.9);backdrop-filter:blur(10px);z-index:1000;display:flex;justify-content:center;align-items:center;opacity:0;transition:opacity .5s ease;pointer-events:none}.modal-overlay.hidden{display:none!important}.modal-overlay:not(.hidden){opacity:1;pointer-events:auto}
 .modal-content{background:var(--bg-dark);border:1px solid var(--secondary);border-radius:var(--border-radius);padding:2.5rem;max-width:600px;width:90%;box-shadow:0 0 50px rgba(110,0,255,.35);position:relative;animation:scaleInModal .5s cubic-bezier(.175,.885,.32,1.275);transform:scale(1)}.modal-overlay:not(.hidden).initial-state .modal-content{transform:scale(.9);opacity:0}@keyframes scaleInModal{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 .modal-title{color:var(--primary);text-align:center;margin-bottom:1.5rem;font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:.5rem}.modal-title .material-icons{font-size:1.8rem; color: var(--primary)}
 .modal-message{color:var(--text-light);margin-bottom:2rem;line-height:1.7;font-size:1.1rem;text-align:center}.modal-message p{margin-bottom:1rem}.modal-message strong{color:var(--warning)}
 .modal-button{border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:var(--transition)}
-/* Style các nút modal riêng */
 #final-warning-confirm { background: linear-gradient(135deg, var(--error), #ff6b8b); color: white; box-shadow: 0 4px 15px rgba(255, 61, 113, 0.4); }
 #final-warning-confirm:hover:not(:disabled) { box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); transform: translateY(-3px) scale(1.03); }
 #huan-error-confirm { background: linear-gradient(135deg, var(--warning), #ffd54f); color: var(--bg-darker); box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); }
 #huan-error-confirm:hover:not(:disabled) { box-shadow: 0 6px 25px rgba(255, 204, 0, 0.6); transform: translateY(-3px) scale(1.03); }
-/* === MISC & FOOTER === */
+/* === MISC & FOOTER (Giữ nguyên) === */
 .hidden{display:none!important;visibility:hidden}.text-center{text-align:center}
 .footer-note{text-align:center;margin-top:3rem;font-size:.9rem;color:var(--text-dim);opacity:.8;letter-spacing:.5px}.footer-note .material-icons{font-size:1rem;vertical-align:middle;margin-right:.2rem}
 .spin{animation:spin 1s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
-/* === RESPONSIVE OVERRIDES === */
+/* === RESPONSIVE OVERRIDES (Giữ nguyên) === */
 @media (max-width:768px){body{padding:1rem}.container{padding:1.5rem;margin:1rem auto}.final-page-password-form{max-width:100%}.page-title{font-size:1.4rem}.final-template-styles h1{font-size:1.8rem}.final-template-styles h2{font-size:1.5rem}.final-template-styles blockquote{padding:1rem 1.5rem 1rem 2.5rem}.final-template-styles blockquote::before{left:.5rem;font-size:2.5rem}.final-template-styles pre{padding:1.2rem}.final-template-styles td,.final-template-styles th{padding:.8rem 1rem}.modal-content{padding:1.5rem;max-width:95%}.modal-title{font-size:1.3rem}.modal-message{font-size:1rem} #embedded-images-container { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; } #embedded-iframes-container { margin-top: 2rem; gap: 1.5rem; }}
-@media (max-width:480px){.final-page-password-form{gap:1.2rem}.final-page-input-group input[type=password]{padding:.8rem 1rem;font-size:1rem}.page-title{font-size:1.3rem}.modal-title{font-size:1.2rem}.modal-message{font-size:.95rem;line-height:1.6}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.3rem}.final-template-styles h3{font-size:1.2rem}.final-template-styles code:not(pre code){font-size:.85em}.final-template-styles pre code{font-size:.9em}.final-template-styles table{font-size:.9rem}.final-template-styles td,.final-template-styles th{padding:.6rem .8rem} #embedded-images-container { grid-template-columns: 1fr; } /* 1 ảnh/hàng */ }
+@media (max-width:480px){.final-page-password-form{gap:1.2rem}.final-page-input-group input[type=password]{padding:.8rem 1rem;font-size:1rem}.page-title{font-size:1.3rem}.modal-title{font-size:1.2rem}.modal-message{font-size:.95rem;line-height:1.6}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.3rem}.final-template-styles h3{font-size:1.2rem}.final-template-styles code:not(pre code){font-size:.85em}.final-template-styles pre code{font-size:.9em}.final-template-styles table{font-size:.9rem}.final-template-styles td,.final-template-styles th{padding:.6rem .8rem} #embedded-images-container { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -354,19 +365,15 @@
                 <div class="final-page-error-message" id="final-error-message"></div>
             </form>
         </div>
-        <!-- Content Display Section (Hidden initially) -->
+        <!-- Content Display Section -->
         <div id="final-content-section">
-            <!-- Image Gallery Container -->
             <div id="embedded-images-container"></div>
-            <!-- Markdown Content Container -->
             <div class="final-template-styles" id="final-markdown-content"></div>
-            <!-- Iframe Gallery Container -->
             <div id="embedded-iframes-container"></div>
-            <!-- Footer Note -->
             <div class="footer-note"><i class="material-icons">verified_user</i> An toàn với 10 lớp mã hóa AES.</div>
         </div>
     </div>
-    <!-- Initial Warning Modal (For Target Page) -->
+    <!-- Modals (Giữ nguyên) -->
     <div class="modal-overlay hidden initial-state" id="final-warning-modal">
          <div class="modal-content">
              <h2 class="modal-title"><i class="material-icons">gpp_bad</i> CẢNH BÁO</h2>
@@ -374,22 +381,22 @@
              <button class="modal-button" id="final-warning-confirm"> <i class="material-icons">check_circle_outline</i> TÔI ĐÃ HIỂU </button>
         </div>
     </div>
-    <!-- Huấn Error Modal (For Target Page) -->
     <div class="modal-overlay hidden initial-state" id="huan-error-modal">
          <div class="modal-content">
             <h2 class="modal-title" style="color: var(--warning);"><i class="material-icons">sentiment_very_dissatisfied</i> Sai Rồi Fen!</h2>
-            <div class="modal-message" style="font-style: italic;"> <p>\`${huấnQuote}\`</p> </div>
+            <div class="modal-message" style="font-style: italic;"> <p>${huấnQuote}</p> </div>
             <button class="modal-button" id="huan-error-confirm"> <i class="material-icons">refresh</i> THỬ LẠI ĐI </button>
         </div>
     </div>
 
     <script>
-        // === TARGET PAGE SCRIPT ===
-        const encryptedMarkdownContent = \`${encryptedMarkdownHtml}\`;
+        // === TARGET PAGE SCRIPT (REVISED) ===
+        // Nhận dữ liệu Base64 đã được escape từ template
+        const encryptedMarkdownContent = \`${escapedEncryptedData}\`; // <<< SỬ DỤNG DỮ LIỆU ĐÃ ESCAPE
         const embeddedImageUrls = ${imageUrlsJs};
         const embeddedIframeUrls = ${iframeUrlsJs};
 
-        // Elements
+        // Elements (Giữ nguyên)
         const finalPasswordSection=document.getElementById('final-password-section');
         const finalContentSection=document.getElementById('final-content-section');
         const finalPasswordInput=document.getElementById('final-password-input');
@@ -403,109 +410,131 @@
         const huanErrorConfirmBtn=document.getElementById('huan-error-confirm');
         const finalParticlesContainer=document.getElementById('final-particles');
         const submitButton=document.getElementById('final-submit-btn');
-        let errorTimeout = null; // For auto-hiding error message
+        let errorTimeout = null;
 
-        // Particles Function
+        // Particles Function (Giữ nguyên)
         function createFinalParticles(){if(!finalParticlesContainer||finalParticlesContainer.children.length>40&&Math.random()<.9)return;finalParticlesContainer.innerHTML='';const n=window.innerWidth>768?120:60;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+1;const x=Math.random()*window.innerWidth;const d=Math.random()*12;const u=Math.random()*18+12;const o=Math.random()*.4+.1;Object.assign(p.style,{width:\`\${s}px\`,height:\`\${s}px\`,left:\`\${x}px\`,bottom:\`-\${s}px\`,animationDuration:\`\${u}s\`,animationDelay:\`\${d}s\`,opacity:o});const c=['#00f7ff','#6e00ff','#ff00aa'][Math.floor(Math.random()*3)];p.style.background=\`radial-gradient(circle, \${c} 0%, transparent 70%)\`;finalParticlesContainer.appendChild(p)}}
 
-        // Decryption Function
-        function multiLayerDecrypt(encryptedData,password,layers=10){if(typeof CryptoJS==='undefined')throw new Error("Lỗi: Không tìm thấy CryptoJS.");let d=encryptedData;try{for(let i=layers-1;i>=0;i--){let b=decodeURIComponent(escape(atob(d)));let k=password+i;let y=CryptoJS.AES.decrypt(b,k);let u=y.toString(CryptoJS.enc.Utf8);if(!u){/* console.log('Decrypt fail empty UTF8, layer', i); */ throw new Error('decrypt-fail');}const p=u.split("|");if(p.length<3||p[1]!==password){/* console.log('Validation fail layer', i, 'Expected', password, 'Got', p[1]); */ throw new Error('decrypt-fail');}d=p[0]}return d}catch(e){/* console.error("Decryption exception:", e); */ throw new Error('decrypt-fail')}}
+        /**
+         * Decryption Function (REVISED SIMPLIFIED)
+         * Giải mã dữ liệu Base64 nhiều lớp bằng AES.
+         */
+        function multiLayerDecrypt(encryptedBase64Data, password, layers = 10) {
+            if (typeof CryptoJS === 'undefined') throw new Error("Lỗi: Không tìm thấy CryptoJS.");
+            let currentData = encryptedBase64Data; // Bắt đầu với dữ liệu Base64 đầu vào
+            try {
+                for (let i = layers - 1; i >= 0; i--) {
+                    const layerKey = password + i;
+                    let decryptedBytes;
+                    try {
+                        // Giải mã trực tiếp từ chuỗi Base64 của lớp hiện tại
+                        decryptedBytes = CryptoJS.AES.decrypt(currentData, layerKey);
+                    } catch (decryptError) {
+                        // console.error(\`AES Decryption Error (Layer \${i}):\`, decryptError);
+                        throw new Error('decrypt-fail'); // Ném lỗi chung
+                    }
 
-        // Error Display Functions
-        function showInlineError(message){
-            clearTimeout(errorTimeout); // Clear previous timeout if any
-            finalErrorMessage.innerHTML = \`<i class="material-icons">error</i> \${message||'Lỗi không xác định'}\`;
-            finalErrorMessage.classList.add('show');
-            finalPasswordInput.classList.add('shake');
-            setTimeout(()=> finalPasswordInput.classList.remove('shake'), 500);
-            // Auto-hide after 3 seconds
-            errorTimeout = setTimeout(() => {
-                 finalErrorMessage.classList.remove('show');
-            }, 3500);
+                    let decryptedUtf8;
+                    try {
+                        // Chuyển đổi byte đã giải mã thành chuỗi UTF8
+                        decryptedUtf8 = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                     } catch (utf8Error) {
+                        // console.error(\`UTF8 Conversion Error (Layer \${i}):\`, utf8Error);
+                        throw new Error('decrypt-fail'); // Ném lỗi chung nếu không phải UTF8 hợp lệ
+                     }
+
+                    // Nếu kết quả rỗng sau khi chuyển đổi UTF8, coi như lỗi
+                    if (!decryptedUtf8) {
+                        // console.log('Giải mã thất bại: Kết quả UTF8 rỗng, lớp', i);
+                        throw new Error('decrypt-fail');
+                    }
+
+                    // Kiểm tra cấu trúc "|password|layerIndex" ở cuối chuỗi giải mã được
+                    const parts = decryptedUtf8.split("|");
+                    // Phải có ít nhất 3 phần: [Nội dung], [Mật khẩu], [Chỉ số]
+                    // Và mật khẩu + chỉ số phải khớp
+                    if (parts.length < 3 || parts[parts.length - 2] !== password || parseInt(parts[parts.length - 1], 10) !== i) {
+                        // console.log(\`Validation fail layer \${i}: Structure mismatch or incorrect password/index.\`);
+                        // console.log("Expected password:", password, "Got:", parts[parts.length - 2]);
+                        // console.log("Expected index:", i, "Got:", parts[parts.length - 1]);
+                        throw new Error('decrypt-fail');
+                    }
+
+                     // Lấy lại nội dung gốc của lớp này (là đầu vào cho vòng lặp tiếp theo hoặc kết quả cuối cùng)
+                     // Nối lại các phần trước mật khẩu, phòng trường hợp nội dung gốc có dấu "|"
+                     currentData = parts.slice(0, parts.length - 2).join('|');
+                }
+                // Trả về nội dung gốc cuối cùng sau khi giải mã hết các lớp
+                return currentData;
+            } catch (e) {
+                // Bắt lỗi 'decrypt-fail' hoặc các lỗi không mong muốn khác
+                 if (e.message !== 'decrypt-fail') { // Ghi log lỗi lạ
+                     // console.error("Ngoại lệ giải mã không mong muốn:", e);
+                 }
+                throw new Error('decrypt-fail'); // Đảm bảo trả về lỗi nhất quán
+            }
         }
-        function showHuanModal() { if(!huanErrorModal) return; huanErrorModal.classList.add('initial-state'); huanErrorModal.classList.remove('hidden'); requestAnimationFrame(()=>{huanErrorModal.classList.remove('initial-state')}); }
 
-        // Password Check & Content Display
+        // Error Display Functions (Giữ nguyên)
+        function showInlineError(message){ clearTimeout(errorTimeout); finalErrorMessage.innerHTML = \`<i class="material-icons">error</i> \${message||'Lỗi không xác định'}\`; finalErrorMessage.classList.add('show'); finalPasswordInput.classList.add('shake'); setTimeout(()=> finalPasswordInput.classList.remove('shake'), 500); errorTimeout = setTimeout(() => { finalErrorMessage.classList.remove('show'); }, 3500); }
+        function showHuanModal() { if(!huanErrorModal) return; huanErrorModal.classList.add('initial-state'); huanErrorModal.classList.remove('hidden'); requestAnimationFrame(()=>{huanErrorModal.classList.remove('initial-state')}); }
+        function isValidUrl(string) { if (!string) return false; try { new URL(string); return string.startsWith('http:') || string.startsWith('https:') || string.startsWith('data:'); } catch (_) { return false; } } // Thêm hàm này vào target page để check url media
+
+        // Password Check & Content Display (Giữ nguyên logic chính, sử dụng hàm giải mã mới)
         function checkFinalPagePassword(event){
             if(event)event.preventDefault();const enteredPassword=finalPasswordInput.value.trim();
-            finalErrorMessage.classList.remove('show'); // Hide error initially
+            finalErrorMessage.classList.remove('show');
             finalPasswordInput.classList.remove('shake');
-            clearTimeout(errorTimeout); // Clear hide timeout on new attempt
+            clearTimeout(errorTimeout);
 
             if(!enteredPassword){showInlineError('Chưa nhập mã mà fen!');finalPasswordInput.focus();return}
             submitButton.disabled=true;submitButton.innerHTML='<i class="material-icons spin">hourglass_top</i> Check pass...';
 
-            setTimeout(()=>{ // Simulate processing
+            setTimeout(()=>{
                 try{
-                    // 1. Decrypt Markdown
+                    // <<< SỬ DỤNG HÀM GIẢI MÃ ĐÃ SỬA >>>
                     const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, enteredPassword, 10);
+                    // console.log("Decrypted HTML:", decryptedHtml.substring(0, 200) + "..."); // Log để debug nếu cần
 
-                    // 2. Render Images
-                    finalImagesContainer.innerHTML = ''; // Clear previous
+                    // --- Phần render ảnh/iframe và nội dung Markdown giữ nguyên ---
+                    finalImagesContainer.innerHTML = '';
                     if (Array.isArray(embeddedImageUrls) && embeddedImageUrls.length > 0) {
                          embeddedImageUrls.forEach(imageUrl => {
-                            if(isValidUrl(imageUrl)) {
-                                const imgItem = document.createElement('div');
-                                imgItem.className = 'embedded-image-item';
-                                const img = document.createElement('img');
-                                img.alt = "Ảnh nhúng";
-                                img.loading = "lazy";
+                            if(isValidUrl(imageUrl)) { // Check URL trước khi tạo img
+                                const imgItem = document.createElement('div'); imgItem.className = 'embedded-image-item';
+                                const img = document.createElement('img'); img.alt = "Ảnh nhúng"; img.loading = "lazy";
                                 img.onerror = () => { imgItem.innerHTML = '<div class="media-error-message"><i class="material-icons">broken_image</i> Ảnh lỗi</div>'; img.classList.add('loaded'); };
                                 img.onload = () => { img.classList.add('loaded'); };
-                                img.src = imageUrl;
-                                img.onclick = () => window.open(imageUrl, '_blank');
-                                imgItem.appendChild(img);
-                                finalImagesContainer.appendChild(imgItem);
-                             } else {
-                                console.warn("Invalid image URL skipped:", imageUrl);
-                                const errorItem = document.createElement('div'); errorItem.className = 'embedded-image-item'; errorItem.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link ảnh sai</div>'; finalImagesContainer.appendChild(errorItem);
-                             }
+                                img.src = imageUrl; img.onclick = () => window.open(imageUrl, '_blank');
+                                imgItem.appendChild(img); finalImagesContainer.appendChild(imgItem);
+                             } else { console.warn("Invalid image URL skipped:", imageUrl); const errorItem = document.createElement('div'); errorItem.className = 'embedded-image-item'; errorItem.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link ảnh sai</div>'; finalImagesContainer.appendChild(errorItem); }
                         });
                     }
 
-                    // 3. Render Markdown Content
+                    // Render Markdown Content (chứa ảnh từ Markdown gốc nếu có)
                     finalMarkdownContentDiv.innerHTML = decryptedHtml;
 
-                    // 4. Render Iframes
-                    finalIframesContainer.innerHTML = ''; // Clear previous
+                    finalIframesContainer.innerHTML = '';
                     if (Array.isArray(embeddedIframeUrls) && embeddedIframeUrls.length > 0) {
                          embeddedIframeUrls.forEach(iframeUrl => {
-                             if(isValidUrl(iframeUrl)) {
+                             if(isValidUrl(iframeUrl)) { // Check URL iframe
                                 const iframeWrapper = document.createElement('div'); iframeWrapper.className = 'iframe-item-wrapper';
-                                const iframe = document.createElement('iframe');
-                                iframe.title = "Nội dung nhúng"; iframe.frameborder = "0"; iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"; iframe.allowfullscreen = true; iframe.loading = "lazy";
+                                const iframe = document.createElement('iframe'); iframe.title = "Nội dung nhúng"; iframe.frameborder = "0"; iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"; iframe.allowfullscreen = true; iframe.loading = "lazy";
                                 iframe.onerror = () => { iframeWrapper.innerHTML = '<div class="media-error-message"><i class="material-icons">video_stable</i>Lỗi iframe</div>'; };
                                 iframeWrapper.appendChild(iframe); finalIframesContainer.appendChild(iframeWrapper);
-                                setTimeout(() => { iframe.src = iframeUrl; }, 50); // Set src after appending
-                            } else {
-                                console.warn("Invalid iframe URL skipped:", iframeUrl);
-                                const errorWrapper = document.createElement('div'); errorWrapper.className = 'iframe-item-wrapper'; errorWrapper.style.cssText = 'padding-top: 0; min-height: 100px;'; errorWrapper.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link iframe sai</div>'; finalIframesContainer.appendChild(errorWrapper);
-                            }
+                                setTimeout(() => { iframe.src = iframeUrl; }, 50);
+                            } else { console.warn("Invalid iframe URL skipped:", iframeUrl); const errorWrapper = document.createElement('div'); errorWrapper.className = 'iframe-item-wrapper'; errorWrapper.style.cssText = 'padding-top: 0; min-height: 100px;'; errorWrapper.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link iframe sai</div>'; finalIframesContainer.appendChild(errorWrapper); }
                         });
-                    } else {
-                         finalMarkdownContentDiv.style.marginBottom='0'; // Adjust margin if no iframes
-                    }
+                    } else { finalMarkdownContentDiv.style.marginBottom='0'; }
 
-                    // 5. Show Content / Hide Password Form
                     finalPasswordSection.classList.add('hiding');
                     finalContentSection.classList.add('visible');
-                    setTimeout(()=>{
-                        const focusTarget = finalMarkdownContentDiv.querySelector('h1, h2, h3, h4, h5, h6') || finalContentSection;
-                        if(focusTarget && typeof focusTarget.focus === 'function') {
-                             focusTarget.setAttribute('tabindex', '-1');
-                             focusTarget.focus({preventScroll:true});
-                             window.scrollTo({ top: finalContentSection.offsetTop - 20, behavior: 'smooth' }); // Scroll to top of content
-                         }
-                    }, 700);
+                    setTimeout(()=>{ const focusTarget = finalMarkdownContentDiv.querySelector('h1, h2, h3, h4, h5, h6') || finalContentSection; if(focusTarget && typeof focusTarget.focus === 'function') { focusTarget.setAttribute('tabindex', '-1'); focusTarget.focus({preventScroll:true}); window.scrollTo({ top: finalContentSection.offsetTop - 20, behavior: 'smooth' }); } }, 700);
 
                 } catch(e) { // Handle Decryption Errors
-                     if (e.message === 'decrypt-fail') {
-                          showHuanModal(); // Wrong password -> Huấn Modal
-                     } else {
-                          showInlineError(e.message || "Lỗi xử lý không xác định."); // Other errors -> Inline
-                     }
-                     finalPasswordInput.value = ''; // Clear wrong password
-                     // Reset view
+                     if (e.message === 'decrypt-fail') { showHuanModal(); }
+                     else { showInlineError(e.message || "Lỗi xử lý không xác định."); }
+                     finalPasswordInput.value = '';
                      finalPasswordSection.classList.remove('hiding');
                      finalContentSection.classList.remove('visible');
                      finalImagesContainer.innerHTML = '';
@@ -517,39 +546,8 @@
             }, 150);
         }
 
-        // Initialization
-        document.addEventListener('DOMContentLoaded',()=>{
-            createFinalParticles();
-            finalContentSection.setAttribute('tabindex','-1'); // Make content focusable for scrolling
-
-            // Initial Warning Modal Logic
-            if(finalWarningModal && finalWarningConfirmBtn){
-                finalWarningModal.classList.remove('hidden','initial-state');
-                const warningConfirmHandler = () => {
-                    finalWarningModal.classList.add('hidden');
-                    setTimeout(()=>finalPasswordInput.focus(), 100);
-                };
-                finalWarningConfirmBtn.onclick = warningConfirmHandler; // Use onclick for simplicity here
-                finalWarningModal.onclick=(e)=>{if(e.target===finalWarningModal) warningConfirmHandler(); }; // Click outside closes too
-            } else {
-                setTimeout(() => finalPasswordInput.focus(), 100); // Focus input if no modal
-            }
-
-            // Huấn Error Modal Logic
-            if(huanErrorModal && huanErrorConfirmBtn) {
-                const huanConfirmHandler = () => {
-                    huanErrorModal.classList.add('hidden');
-                    setTimeout(()=> finalPasswordInput.focus(), 100); // Focus after closing
-                };
-                huanErrorConfirmBtn.onclick = huanConfirmHandler;
-                huanErrorModal.onclick=(e)=>{ if(e.target===huanErrorModal) huanConfirmHandler(); };
-             }
-
-             // Password submit on Enter key
-            finalPasswordInput.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') { checkFinalPagePassword(e); } });
-        });
-
-        // Particle refresh on resize
+        // Initialization (Giữ nguyên)
+        document.addEventListener('DOMContentLoaded',()=>{ createFinalParticles(); finalContentSection.setAttribute('tabindex','-1'); if(finalWarningModal&&finalWarningConfirmBtn){ finalWarningModal.classList.remove('hidden','initial-state'); const wCH = ()=>{ finalWarningModal.classList.add('hidden'); setTimeout(()=>finalPasswordInput.focus(), 100); }; finalWarningConfirmBtn.onclick=wCH; finalWarningModal.onclick=(e)=>{if(e.target===finalWarningModal) wCH(); }; }else{ setTimeout(() => finalPasswordInput.focus(), 100); } if(huanErrorModal&&huanErrorConfirmBtn){ const hCH=()=>{ huanErrorModal.classList.add('hidden'); setTimeout(()=> finalPasswordInput.focus(), 100); }; huanErrorConfirmBtn.onclick=hCH; huanErrorModal.onclick=(e)=>{ if(e.target===huanErrorModal) hCH(); }; } finalPasswordInput.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') { checkFinalPagePassword(e); } }); });
         let finalResizeTimeout; window.addEventListener('resize',()=>{clearTimeout(finalResizeTimeout);finalResizeTimeout=setTimeout(createFinalParticles,300)});
 
     <\/script>
@@ -557,115 +555,75 @@
 </html>`;
         }
 
-        // ====== GENERATOR PAGE FUNCTIONS (CẬP NHẬT) ======
+        // ====== GENERATOR PAGE FUNCTIONS (CẬP NHẬT LOGIC GỌI HÀM) ======
         function handleGenerate() {
              const markdownText = markdownInput.value.trim();
              const outputPassword = outputPasswordInput.value;
 
-             // Thu thập và Validate URLs từ lists
-             const getImageUrls = () => {
-                 const urls = [];
-                 const inputs = imageUrlList.querySelectorAll('.input-list-item input[type="url"]'); // More specific selector
-                 inputs.forEach(input => {
-                     const url = input.value.trim();
-                     input.classList.remove('error', 'shake'); // Reset errors
-                     if (url) {
-                         if (isValidUrl(url)) { urls.push(url); }
-                         else { input.classList.add('error'); } // Mark error here
-                     }
-                 });
-                 return urls;
-             };
-             const getIframeUrls = () => {
-                  const urls = [];
-                  const inputs = iframeUrlList.querySelectorAll('.input-list-item input[type="url"]');
-                  inputs.forEach(input => {
-                      const url = input.value.trim();
-                      input.classList.remove('error', 'shake'); // Reset errors
-                      if (url) {
-                          if (isValidUrl(url)) { urls.push(url); }
-                          else { input.classList.add('error'); }
-                      }
-                  });
-                  return urls;
-             };
-
-             // Gọi hàm lấy URL -> URL hợp lệ được push vào mảng, ô lỗi bị đánh dấu 'error'
+             // Lấy URL từ list (logic giữ nguyên)
+             const getImageUrls = () => { const urls = []; imageUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
+             const getIframeUrls = () => { const urls = []; iframeUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
              const imageUrls = getImageUrls();
              const iframeUrls = getIframeUrls();
 
-             // --- VALIDATION ---
+             // --- VALIDATION (Giữ nguyên) ---
              markdownInput.classList.remove('error', 'shake');
              outputPasswordInput.classList.remove('error', 'shake');
-             statusMessage.classList.remove('show'); // Hide previous status
+             statusMessage.classList.remove('show');
 
              let isValid = true;
              let firstErrorField = null;
-
              if (!markdownText) { markdownInput.classList.add('error'); if (!firstErrorField) firstErrorField = markdownInput; isValid = false; }
              if (!outputPassword || outputPassword.length < 8) { outputPasswordInput.classList.add('error'); if (!firstErrorField) firstErrorField = outputPasswordInput; isValid = false; }
-
-             // Tìm ô URL lỗi đầu tiên
              const invalidUrlInputs = document.querySelectorAll('.input-list-item input[type="url"].error');
-             if (invalidUrlInputs.length > 0) {
-                 if (!firstErrorField) firstErrorField = invalidUrlInputs[0];
-                 isValid = false;
-             }
-
-             // Xử lý nếu validation thất bại
+             if (invalidUrlInputs.length > 0) { if (!firstErrorField) firstErrorField = invalidUrlInputs[0]; isValid = false; }
              if (!isValid) {
                  let errorMsg = "";
                  if (markdownInput.classList.contains('error')) errorMsg += "Nội dung Markdown không được trống. ";
                  if (outputPasswordInput.classList.contains('error')) errorMsg += "Mật khẩu cần ít nhất 8 ký tự. ";
-                 if (invalidUrlInputs.length > 0) errorMsg += `Có ${invalidUrlInputs.length} link không hợp lệ (ô màu đỏ). `;
-
+                 if (invalidUrlInputs.length > 0) errorMsg += `Có ${invalidUrlInputs.length} link không hợp lệ. `;
                  showStatus(errorMsg.trim(), "error", "error_outline", 7000);
-
                  if (firstErrorField) {
-                     // Lắc nhẹ field lỗi
-                     firstErrorField.classList.add('shake');
-                     // Cuộn tới field lỗi
-                     firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                     firstErrorField.focus({ preventScroll: true });
-                     // Remove shake after animation
-                     setTimeout(() => firstErrorField.classList.remove('shake'), 500);
-                 } else {
-                     document.getElementById('generator-container').classList.add('shake'); // Shake container if no specific field
-                     setTimeout(() => document.getElementById('generator-container').classList.remove('shake'), 500);
-                 }
-                 return; // Dừng thực thi
+                     firstErrorField.classList.add('shake'); firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstErrorField.focus({ preventScroll: true }); setTimeout(() => firstErrorField.classList.remove('shake'), 500);
+                 } else { document.getElementById('generator-container').classList.add('shake'); setTimeout(() => document.getElementById('generator-container').classList.remove('shake'), 500); }
+                 return;
              }
              // --- END VALIDATION ---
 
-             // --- GENERATION PROCESS ---
+             // --- GENERATION PROCESS (Gọi hàm mới) ---
              try {
-                 if (typeof marked === 'undefined' || typeof CryptoJS === 'undefined') {
-                     throw new Error("Thư viện chưa tải xong, F5 lại?");
-                 }
+                 if (typeof marked === 'undefined' || typeof CryptoJS === 'undefined') { throw new Error("Thư viện chưa tải xong, F5 lại?"); }
+
+                 // 1. Convert Markdown to HTML (Bước này có thể tạo thẻ <img>)
                  marked.setOptions({ gfm: true, breaks: true, mangle: false, headerIds: false });
                  const convertedHtml = marked.parse(markdownText);
+                 // console.log("Converted HTML:", convertedHtml.substring(0, 200) + "..."); // Log để debug
 
-                 loadAndShowWarningModal(() => { // Callback function for confirmation
+                 // 2. Show Confirmation Modal (Giữ nguyên)
+                 loadAndShowWarningModal(() => { // Callback khi user xác nhận
                      showStatus("Đang xử lý mã hóa đa tầng...", "info", "hourglass_empty", 0);
-                     generateButton.disabled = true; generateButton.innerHTML = '<i class="material-icons spin">sync</i> ĐANG TẠO...'; // Update button text/icon
+                     generateButton.disabled = true; generateButton.innerHTML = '<i class="material-icons spin">sync</i> ĐANG TẠO...';
                      copyButton.disabled = true; copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép';
 
-                     setTimeout(() => { // Simulate processing time
+                     // 3. Generate Target HTML using the converted HTML
+                     setTimeout(() => {
                          try {
+                             // <<< Gọi hàm tạo template với HTML đã chuyển đổi và hàm mã hóa mới >>>
                              fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, imageUrls, iframeUrls);
+
                              if (!fullHtmlToCopy || typeof fullHtmlToCopy !== 'string' || fullHtmlToCopy.length < 500) { throw new Error("Kết quả tạo HTML lỗi hoặc quá ngắn."); }
                              showStatus("Xong! Sẵn sàng copy mã nguồn siêu phẩm.", "success", "done_all", 5000);
                              copyButton.disabled = false;
                              copyButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                          } catch (genError) {
-                             console.error("HTML generation error:", genError);
-                             showStatus(`Lỗi tạo HTML: ${genError.message}`, "error", "error_outline", 10000);
+                             console.error("HTML generation/encryption error:", genError);
+                             showStatus(`Lỗi tạo mã: ${genError.message}`, "error", "error_outline", 10000);
                              fullHtmlToCopy = ''; copyButton.disabled = true;
                          } finally {
-                             generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn'; // Reset button
+                             generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn';
                          }
-                     }, 100); // Short delay for user feedback
-                 }, imageUrls, iframeUrls); // Pass URLs to modal
+                     }, 100); // Delay nhỏ để user thấy status "Đang xử lý"
+                 }, imageUrls, iframeUrls);
 
              } catch (processingError) {
                  console.error("Processing Error:", processingError);
@@ -674,67 +632,32 @@
              }
         }
 
-        // Copy Function
-        function handleCopy() { if (!fullHtmlToCopy) { showStatus("Chưa có gì để copy.", "warning", "info", 3000); return; } if (!navigator.clipboard) { showStatus("Trình duyệt không hỗ trợ copy tự động.", "error", "report_problem", 7000); try { console.log("--- BEGIN CODE TO COPY ---"); console.log(fullHtmlToCopy); console.log("--- END CODE TO COPY ---"); alert("Lỗi copy tự động. Mã nguồn đã được in ra Console (F12), bạn có thể copy thủ công."); } catch (e) { alert("Lỗi copy và cả lỗi in ra console!"); } return; } navigator.clipboard.writeText(fullHtmlToCopy).then(() => { showStatus("Đã copy! ✨", "success", "done_all", 3000); copyButton.classList.add('copied'); copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Copy!'; setTimeout(() => { if (copyButton.classList.contains('copied')) { copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép'; } }, 3000); }).catch(err => { console.error('Copy error: ', err); showStatus("Lỗi copy!", "error", "report_problem", 5000); }); }
+        // Copy Function (Giữ nguyên)
+        function handleCopy() { if (!fullHtmlToCopy) { showStatus("Chưa có gì để copy.", "warning", "info", 3000); return; } if (!navigator.clipboard) { showStatus("Trình duyệt không hỗ trợ copy tự động.", "error", "report_problem", 7000); try { console.log("--- BEGIN CODE TO COPY ---"); console.log(fullHtmlToCopy); console.log("--- END CODE TO COPY ---"); alert("Lỗi copy tự động. Mã nguồn đã được in ra Console (F12)."); } catch (e) { alert("Lỗi copy và cả lỗi in ra console!"); } return; } navigator.clipboard.writeText(fullHtmlToCopy).then(() => { showStatus("Đã copy! ✨", "success", "done_all", 3000); copyButton.classList.add('copied'); copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Copy!'; setTimeout(() => { if (copyButton.classList.contains('copied')) { copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép'; } }, 3000); }).catch(err => { console.error('Copy error: ', err); showStatus("Lỗi copy!", "error", "report_problem", 5000); }); }
 
-        // Show Confirmation Modal
+        // Show Confirmation Modal (Giữ nguyên)
         function loadAndShowWarningModal(onConfirmCallback, currentImageUrls = [], currentIframeUrls = []) {
-             const hasImages = currentImageUrls.length > 0;
-             const hasIframes = currentIframeUrls.length > 0;
-             let mediaInfo = '';
-
-             if (hasImages || hasIframes) {
-                mediaInfo += `<p style="color:var(--primary); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-bottom: 0.5rem;"><i class="material-icons">perm_media</i><strong>Nội dung nhúng thêm:</strong></p>`;
-                const listStyle = 'style="list-style: none; padding: 0; margin: 0 auto; max-width: 80%; text-align: left;"';
-                mediaInfo += `<ul ${listStyle}>`;
-                 if (hasImages) mediaInfo += `<li style="margin-bottom: 0.3rem;"><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--success);">image</i>${currentImageUrls.length} Ảnh</li>`;
-                 if (hasIframes) mediaInfo += `<li><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--accent);">integration_instructions</i>${currentIframeUrls.length} Iframe/Video</li>`;
-                mediaInfo += `</ul>`;
-             } else {
-                 mediaInfo = '<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">web_asset_off</i>Không nhúng thêm ảnh/iframe.</p>';
-             }
-
+             const hasImages = currentImageUrls.length > 0; const hasIframes = currentIframeUrls.length > 0; let mediaInfo = '';
+             if (hasImages || hasIframes) { mediaInfo += `<p style="color:var(--primary); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-bottom: 0.5rem;"><i class="material-icons">perm_media</i><strong>Nội dung nhúng thêm:</strong></p>`; const listStyle = 'style="list-style: none; padding: 0; margin: 0 auto; max-width: 80%; text-align: left;"'; mediaInfo += `<ul ${listStyle}>`; if (hasImages) mediaInfo += `<li style="margin-bottom: 0.3rem;"><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--success);">image</i>${currentImageUrls.length} Ảnh</li>`; if (hasIframes) mediaInfo += `<li><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--accent);">integration_instructions</i>${currentIframeUrls.length} Iframe/Video</li>`; mediaInfo += `</ul>`; } else { mediaInfo = '<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">web_asset_off</i>Không nhúng thêm ảnh/iframe.</p>'; }
              const modalHtml = `
                  <div class="modal-content">
                     <h2 class="modal-title"><i class="material-icons">security</i> Xác nhận tạo mã</h2>
-                    <div class="modal-message" style="text-align: center;"> <!-- Centered message content -->
+                    <div class="modal-message" style="text-align: center;">
                         <p>Nội dung sẽ được mã hóa <strong>10 lớp AES</strong>.<br>Hãy chắc chắn bạn nhớ mật khẩu nhé!</p>
                         <hr style="border:0; height:1px; background:var(--md-border); margin: 1.2rem auto; width: 60%;">
                         ${mediaInfo}
                         <hr style="border:0; height:1px; background:var(--md-border); margin: 1.2rem auto; width: 60%;">
                         <p style="color:var(--warning);font-weight:bold; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">warning_amber</i> Nhấn OK để xác nhận tạo mã nguồn.</p>
                     </div>
-                     <button class="modal-button" id="gen-warning-confirm"> <!-- Style via ID -->
+                     <button class="modal-button" id="gen-warning-confirm">
                          <i class="material-icons">check_circle</i> OK, Tạo Ngay!
                     </button>
                  </div>`;
-
-             warningModal.innerHTML = modalHtml;
-             const confirmBtn = warningModal.querySelector('#gen-warning-confirm');
-             const warningContent = warningModal.querySelector('.modal-content'); // Get content div
-
-            // Event handlers need to be managed carefully to avoid duplicates
-             const confirmHandler = () => {
-                warningModal.classList.add('hidden');
-                if (typeof onConfirmCallback === 'function') setTimeout(onConfirmCallback, 50); // Callback after hide
-                warningModal.removeEventListener('click', outsideClickHandler); // Clean up listener
-             };
-
-            const outsideClickHandler = (event) => {
-                 if (event.target === warningModal) { // Clicked on the overlay itself
-                    warningModal.classList.add('hidden');
-                    warningModal.removeEventListener('click', outsideClickHandler); // Clean up listener
-                 }
-             };
-
-             // Use .onclick for simplicity OR ensure addEventListener has { once: true } or is removed
-             confirmBtn.onclick = confirmHandler;
-             warningModal.addEventListener('click', outsideClickHandler); // Add click outside listener
-
-             // Show modal animation
-             warningModal.classList.add('initial-state');
-             warningModal.classList.remove('hidden');
-             requestAnimationFrame(() => { warningModal.classList.remove('initial-state'); });
+             warningModal.innerHTML = modalHtml; const confirmBtn = warningModal.querySelector('#gen-warning-confirm');
+             const confirmHandler = () => { warningModal.classList.add('hidden'); if (typeof onConfirmCallback === 'function') setTimeout(onConfirmCallback, 50); warningModal.removeEventListener('click', outsideClickHandler); };
+             const outsideClickHandler = (event) => { if (event.target === warningModal) { warningModal.classList.add('hidden'); warningModal.removeEventListener('click', outsideClickHandler); } };
+             confirmBtn.onclick = confirmHandler; warningModal.addEventListener('click', outsideClickHandler);
+             warningModal.classList.add('initial-state'); warningModal.classList.remove('hidden'); requestAnimationFrame(() => { warningModal.classList.remove('initial-state'); });
          }
 
 
@@ -744,22 +667,10 @@
                  createParticles(particlesContainer);
                  generateButton.addEventListener('click', handleGenerate);
                  copyButton.addEventListener('click', handleCopy);
-                 [markdownInput, outputPasswordInput].forEach(input => {
-                    if(input) { input.addEventListener('input', () => { input.classList.remove('error', 'shake'); }); } // Remove error/shake on input
-                 });
-
+                 [markdownInput, outputPasswordInput].forEach(input => { if(input) { input.addEventListener('input', () => { input.classList.remove('error', 'shake'); }); } });
                  showStatus("✨ Sẵn sàng mã hóa & nhúng đa phương tiện! ✨", "info", "auto_awesome", 7000);
-
-                 let resizeTimeout;
-                 window.addEventListener('resize', () => {
-                     clearTimeout(resizeTimeout);
-                     resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300);
-                 });
-            } catch (e) {
-                console.error("Initialization Error:", e);
-                 alert("Lỗi khởi tạo trang Generator. Kiểm tra Console (F12).");
-                 showStatus("Lỗi khởi tạo nghiêm trọng!", "error", "report_problem", 0);
-            }
+                 let resizeTimeout; window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300); });
+            } catch (e) { console.error("Initialization Error:", e); alert("Lỗi khởi tạo trang Generator. Kiểm tra Console (F12)."); showStatus("Lỗi khởi tạo nghiêm trọng!", "error", "report_problem", 0); }
         });
     </script>
 </body>
