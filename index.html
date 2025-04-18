@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12A2 TOOLS - Mã Hóa Siêu Cấp & Nhúng Đa Phương Tiện ✨</title>
+    <title>12A2 TOOLS - Mã Hóa Siêu Cấp & Nhúng Đa Phương Tiện v2.1 ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -20,11 +20,13 @@
             --iframe-border: rgba(110, 0, 255, 0.4);
             --md-border: rgba(110, 0, 255, 0.25);
             --code-bg: rgba(0, 10, 30, 0.8);
+            --expired-color: var(--error);
+            --expired-bg: rgba(255, 61, 113, 0.1);
         }
         /* === BASE STYLES === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; overflow-x: hidden; line-height: 1.6; position: relative; display: flex; align-items: center; /* Center vertically */ justify-content: center; padding: 2rem 1rem; }
 
         /* === BACKGROUND EFFECTS === */
         .particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
@@ -34,7 +36,7 @@
         .glow-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.05) 0%, transparent 70%); z-index: -1; pointer-events: none; animation: pulse 8s infinite alternate; } @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.95); } 100% { opacity: 0.7; transform: scale(1.05); } }
 
         /* === MAIN CONTAINER (Generator) === */
-        .container { max-width: 950px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: float 6s ease-in-out infinite; }
+        .container { max-width: 950px; margin: 2rem auto; padding: 2.5rem; background: rgba(10, 10, 32, 0.85); backdrop-filter: blur(12px); border-radius: var(--border-radius); box-shadow: var(--box-shadow); border: 1px solid rgba(110, 0, 255, 0.3); position: relative; overflow: hidden; transition: var(--transition); animation: float 6s ease-in-out infinite; width: 100%; /* Ensure it takes width */ }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 60%); z-index: -1; animation: pulse 15s infinite alternate; }
         h1 { text-align: center; color: var(--primary); margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 247, 255, 0.5); position: relative; padding-bottom: 1rem; } h1::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); } h1 > .material-icons { vertical-align: middle; font-size: 2.2rem; margin-right: 0.5rem;}
@@ -43,14 +45,16 @@
         .generator-form { display: flex; flex-direction: column; gap: 1.8rem; margin-top: 2rem; }
         .input-group { position: relative; }
         .input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; } .input-group .material-icons { font-size: 1.2rem; color: var(--secondary); }
-        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"], select#image-layout-select {
+        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"], select#image-layout-select, input[type="number"] {
             width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 1px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         textarea#markdown-input { min-height: 180px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; line-height: 1.5; padding: 1.5rem; border-color: rgba(110, 0, 255, 0.5) }
-        /* Style riêng cho Select */
-        select#image-layout-select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300f7ff' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-right: 3rem; /* Để tránh chữ đè lên icon */ cursor: pointer; }
+        select#image-layout-select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300f7ff' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; padding-right: 3rem; cursor: pointer; }
         select#image-layout-select option { background-color: var(--bg-darker); color: var(--text-light); padding: 0.5rem 1rem; }
-        textarea#markdown-input.error, input[type="text"]#output-password-input.error, input[type="url"].error, select#image-layout-select.error { border-color: var(--error) !important; box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important; }
-        textarea#markdown-input:focus, input[type="text"]#output-password-input:focus, input[type="url"]:focus, select#image-layout-select:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
+        input[type="number"] { letter-spacing: 2px; text-align: center; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        textarea#markdown-input.error, input[type="text"]#output-password-input.error, input[type="url"].error, select#image-layout-select.error, input[type="number"].error { border-color: var(--error) !important; box-shadow: 0 0 15px rgba(255, 61, 113, 0.5) !important; }
+        textarea#markdown-input:focus, input[type="text"]#output-password-input:focus, input[type="url"]:focus, select#image-layout-select:focus, input[type="number"]:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
         .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
         .container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
@@ -63,12 +67,19 @@
         .input-list-item input[type="url"] { flex-grow: 1; margin: 0; }
         .input-list-item button { padding: 0.6rem; font-size: 0.8rem; line-height: 1; min-width: 40px; background: linear-gradient(135deg, var(--error), #ff6b8b); box-shadow: 0 2px 10px rgba(255, 61, 113, 0.3); color: white; border-radius: 8px; border: none; cursor: pointer; transition: var(--transition); }
         .input-list-item button:hover { background: linear-gradient(135deg, #ff6b8b, var(--error)); transform: translateY(-1px) scale(1.05); box-shadow: 0 4px 15px rgba(255, 61, 113, 0.5);}
-        .add-button { background: linear-gradient(135deg, var(--success), #45eda0); color: var(--bg-darker); padding: 0.7rem 1rem; font-size: 0.9rem; font-weight: 600; box-shadow: 0 3px 15px rgba(0, 255, 136, 0.3); display: inline-flex; align-items: center; gap: 0.4rem; border: none; cursor: pointer; border-radius: var(--border-radius); transition: var(--transition); margin-top: 0.5rem; /* Thêm khoảng cách trên */}
+        .add-button { background: linear-gradient(135deg, var(--success), #45eda0); color: var(--bg-darker); padding: 0.7rem 1rem; font-size: 0.9rem; font-weight: 600; box-shadow: 0 3px 15px rgba(0, 255, 136, 0.3); display: inline-flex; align-items: center; gap: 0.4rem; border: none; cursor: pointer; border-radius: var(--border-radius); transition: var(--transition); margin-top: 0.5rem; }
         .add-button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 255, 136, 0.5);}
         .input-list::-webkit-scrollbar { width: 6px; }
         .input-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
         .input-list::-webkit-scrollbar-thumb { background: linear-gradient(var(--secondary), var(--primary)); border-radius: 3px; }
         .input-list:empty::after { content: 'Chưa có link nào được thêm...'; display: block; text-align: center; color: var(--text-dim); font-style: italic; padding: 1rem 0; }
+
+        /* Styles for Expiry Date Inputs */
+        .expiry-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 0.8rem; align-items: end; }
+        .expiry-inputs .input-group { margin-bottom: 0; }
+        .expiry-inputs label { font-size: 0.8rem; margin-bottom: 0.3rem; gap: 0.3rem; }
+        .expiry-inputs label .material-icons { font-size: 1rem; }
+        .expiry-inputs input[type="number"] { padding: 0.7rem 0.5rem; font-size: 0.95rem; }
 
         /* === BUTTON STYLES === */
         button { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; padding: 1rem; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition); box-shadow: 0 4px 20px rgba(110, 0, 255, 0.4); position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
@@ -114,17 +125,63 @@
         .modal-button .material-icons { font-size: 1.4rem; }
 
         /* === RESPONSIVE DESIGN === */
-        @media (max-width: 768px) { .container { margin: 1rem; padding: 1.5rem; animation: none; } h1 { font-size: 1.5rem; } textarea#markdown-input { min-height: 150px; padding: 1rem; } input[type="text"]#output-password-input, input[type="url"], select#image-layout-select { padding: 0.8rem 1rem; font-size: 0.95rem; } button { padding: 0.8rem; font-size: 0.9rem; } .modal-content { padding: 1.5rem; max-width: 95%; } .modal-title { font-size: 1.3rem; } .modal-message { font-size: 0.95rem;} .input-list { max-height: 200px;} }
-        @media (max-width: 480px) { body { padding: 1rem 0.5rem; } .container { padding: 1.2rem; margin: 0.5rem;} h1 { font-size: 1.3rem; } .input-group label { font-size: 0.85rem; } textarea#markdown-input, input, select#image-layout-select { font-size: 0.9rem;} .modal-message code { font-size: 0.8em;} small.input-note { font-size: 0.85rem; } .add-button { width: 100%; justify-content: center;} .input-list { padding-right: 5px;} .input-list-item input[type="url"] {font-size: 0.9rem; padding: 0.7rem 1rem;} .input-list-item button {padding: 0.5rem; min-width: 35px;} }
+        @media (max-width: 768px) { .container { margin: 1rem; padding: 1.5rem; animation: none; } h1 { font-size: 1.5rem; } textarea#markdown-input { min-height: 150px; padding: 1rem; } input[type="text"]#output-password-input, input[type="url"], select#image-layout-select, input[type="number"] { padding: 0.8rem 1rem; font-size: 0.95rem; } button { padding: 0.8rem; font-size: 0.9rem; } .modal-content { padding: 1.5rem; max-width: 95%; } .modal-title { font-size: 1.3rem; } .modal-message { font-size: 0.95rem;} .input-list { max-height: 200px;} .expiry-inputs { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 0.6rem;} }
+        @media (max-width: 480px) { body { padding: 1rem 0.5rem; } .container { padding: 1.2rem; margin: 0.5rem;} h1 { font-size: 1.3rem; } .input-group label { font-size: 0.85rem; } textarea#markdown-input, input, select#image-layout-select, input[type="number"] { font-size: 0.9rem;} .modal-message code { font-size: 0.8em;} small.input-note { font-size: 0.85rem; } .add-button { width: 100%; justify-content: center;} .input-list { padding-right: 5px;} .input-list-item input[type="url"] {font-size: 0.9rem; padding: 0.7rem 1rem;} .input-list-item button {padding: 0.5rem; min-width: 35px;} .expiry-inputs { grid-template-columns: repeat(3, 1fr); } .expiry-inputs .input-group:nth-child(4), .expiry-inputs .input-group:nth-child(5) { grid-column: span 1; } }
 
         /* Animation cho việc xóa item trong list */
         @keyframes slideOut {
-             from { opacity: 1; transform: translateX(0); max-height: 50px; margin-bottom: 0.8rem; padding: auto;} /* Adjust max-height */
+             from { opacity: 1; transform: translateX(0); max-height: 50px; margin-bottom: 0.8rem; padding: auto;}
              to { opacity: 0; transform: translateX(20px); max-height: 0; margin-bottom: 0; padding: 0; border: 0; }
          }
-        .input-list-item.removing { /* Class tạm thời khi xóa */
+        .input-list-item.removing {
             animation: slideOut 0.3s ease-out forwards;
          }
+
+         /* Styles for Expiration Message on Target Page */
+         #expiration-message {
+            display: none; /* Hidden by default */
+            padding: 2rem 1.5rem;
+            margin: 1rem; /* Add some margin */
+            border-radius: var(--border-radius);
+            background-color: var(--expired-bg);
+            border: 1px solid var(--expired-color);
+            box-shadow: 0 0 20px rgba(255, 61, 113, 0.3);
+            text-align: center;
+            color: var(--expired-color);
+            font-size: 1.3rem;
+            font-weight: bold;
+            line-height: 1.6;
+            max-width: 600px;
+            width: calc(100% - 2rem); /* Take full width minus margin */
+            animation: fadeInExpired 0.8s ease-out;
+            /* NEW: Center using flex on body */
+            position: relative; /* Needed for z-index if overlapping */
+         }
+         #expiration-message .material-icons {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+            color: var(--expired-color);
+         }
+         @keyframes fadeInExpired {
+             from { opacity: 0; transform: translateY(20px) scale(0.95); }
+             to { opacity: 1; transform: translateY(0) scale(1); }
+         }
+         /* Hide container when expired message is shown */
+         body.expired .container {
+             display: none !important;
+         }
+         /* Ensure expiration message is shown correctly */
+         body.expired #expiration-message {
+             display: block; /* Or flex if needed for internal centering */
+         }
+         /* Ensure body alignment works for expiration message */
+         body.expired {
+             align-items: center; /* Re-center vertically when expired */
+             justify-content: center; /* Re-center horizontally when expired */
+         }
+
+
     </style>
 </head>
 <body>
@@ -136,7 +193,7 @@
 
     <!-- Generator Container -->
     <div class="container" id="generator-container">
-        <h1><i class="material-icons">security</i> Mã Hóa & Nhúng Media Đa Năng</h1>
+        <h1><i class="material-icons">security</i> Mã Hóa & Nhúng Media Đa Năng v2.1</h1>
         <form class="generator-form" id="main-form" onsubmit="return false;">
             <!-- Nội dung và Mật khẩu -->
             <div class="input-group">
@@ -146,6 +203,34 @@
             <div class="input-group">
                 <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Bảo Mật (Bắt buộc):</label>
                 <input type="text" id="output-password-input" placeholder="Ít nhất 8 ký tự, bảo mật mạnh!" required minlength="8">
+            </div>
+
+            <!-- Expiry Date Input Section -->
+            <div class="input-group">
+                 <label><i class="material-icons">timer_off</i> Đặt Thời Gian Hết Hạn (Tùy chọn):</label>
+                 <div class="expiry-inputs">
+                     <div class="input-group">
+                         <label for="expiry-day"><i class="material-icons">calendar_today</i> Ngày:</label>
+                         <input type="number" id="expiry-day" placeholder="DD" min="1" max="31">
+                     </div>
+                     <div class="input-group">
+                         <label for="expiry-month"><i class="material-icons">calendar_month</i> Tháng:</label>
+                         <input type="number" id="expiry-month" placeholder="MM" min="1" max="12">
+                     </div>
+                     <div class="input-group">
+                         <label for="expiry-year"><i class="material-icons">event</i> Năm:</label>
+                         <input type="number" id="expiry-year" placeholder="YYYY" min="2024">
+                     </div>
+                     <div class="input-group">
+                         <label for="expiry-hour"><i class="material-icons">schedule</i> Giờ:</label>
+                         <input type="number" id="expiry-hour" placeholder="HH" min="0" max="23">
+                     </div>
+                     <div class="input-group">
+                         <label for="expiry-minute"><i class="material-icons">timer</i> Phút:</label>
+                         <input type="number" id="expiry-minute" placeholder="MM" min="0" max="59">
+                     </div>
+                 </div>
+                 <small class="input-note"><i class="material-icons">info_outline</i> Để trống nếu không muốn đặt hạn. Phải là thời điểm trong tương lai.</small>
             </div>
 
             <!-- Khu vực quản lý link ảnh -->
@@ -184,6 +269,12 @@
         // ====== CONFIGURATION & ELEMENTS ======
         const markdownInput = document.getElementById('markdown-input');
         const outputPasswordInput = document.getElementById('output-password-input');
+        const expiryDayInput = document.getElementById('expiry-day');
+        const expiryMonthInput = document.getElementById('expiry-month');
+        const expiryYearInput = document.getElementById('expiry-year');
+        const expiryHourInput = document.getElementById('expiry-hour');
+        const expiryMinuteInput = document.getElementById('expiry-minute');
+        const expiryInputs = [expiryDayInput, expiryMonthInput, expiryYearInput, expiryHourInput, expiryMinuteInput];
         const imageUrlList = document.getElementById('image-url-list');
         const iframeUrlList = document.getElementById('iframe-url-list');
         const addImageButton = document.getElementById('add-image-button');
@@ -206,96 +297,76 @@
         function addListItem(listContainer, placeholderText = "Dán URL...") {
              const listItem = document.createElement('div');
              listItem.className = 'input-list-item';
-
              const input = document.createElement('input');
-             input.type = 'url';
-             input.placeholder = placeholderText;
-             input.addEventListener('input', () => input.classList.remove('error'));
-
-             const removeButton = document.createElement('button');
-             removeButton.type = 'button';
-             removeButton.innerHTML = '<i class="material-icons" style="font-size: 1.1rem; line-height: 1;">delete_forever</i>';
-             removeButton.title = 'Xóa link này';
-             removeButton.onclick = () => {
-                 listItem.classList.add('removing');
-                 listItem.addEventListener('animationend', () => listItem.remove(), { once: true });
-             };
-
-             listItem.appendChild(input);
-             listItem.appendChild(removeButton);
-             listContainer.appendChild(listItem);
-             input.focus();
-             listContainer.scrollTop = listContainer.scrollHeight;
+             input.type = 'url'; input.placeholder = placeholderText; input.addEventListener('input', () => input.classList.remove('error'));
+             const removeButton = document.createElement('button'); removeButton.type = 'button'; removeButton.innerHTML = '<i class="material-icons" style="font-size: 1.1rem; line-height: 1;">delete_forever</i>'; removeButton.title = 'Xóa link này';
+             removeButton.onclick = () => { listItem.classList.add('removing'); listItem.addEventListener('animationend', () => listItem.remove(), { once: true }); };
+             listItem.appendChild(input); listItem.appendChild(removeButton); listContainer.appendChild(listItem); input.focus(); listContainer.scrollTop = listContainer.scrollHeight;
         }
-
-        // Event listeners for add buttons
         addImageButton.addEventListener('click', () => addListItem(imageUrlList, "Dán link ảnh trực tiếp..."));
         addIframeButton.addEventListener('click', () => addListItem(iframeUrlList, "Dán link nhúng iframe/video..."));
 
-        // ====== SECURITY FUNCTIONS (REVISED SIMPLIFIED) ======
+        // ====== SECURITY FUNCTIONS ======
         function multiLayerEncrypt(content, password, layers = 10) {
             if (typeof CryptoJS === 'undefined') throw new Error("Lỗi: CryptoJS chưa tải.");
             let currentContent = content;
             for (let i = 0; i < layers; i++) {
-                const combined = `${currentContent}|${password}|${i}`;
-                const layerKey = password + i;
-                let layerEncrypted;
-                try {
-                    layerEncrypted = CryptoJS.AES.encrypt(combined, layerKey).toString();
-                } catch (e) {
-                    throw new Error(`Lỗi mã hóa AES lớp ${i + 1}: ${e.message || e}`);
-                }
-                currentContent = layerEncrypted;
-            }
-            return currentContent;
+                const combined = `${currentContent}|${password}|${i}`; const layerKey = password + i;
+                try { currentContent = CryptoJS.AES.encrypt(combined, layerKey).toString(); }
+                catch (e) { throw new Error(`Lỗi mã hóa AES lớp ${i + 1}: ${e.message || e}`); }
+            } return currentContent;
         }
 
-        // ====== HTML TEMPLATE GENERATION (REVISED CSS FOR #final-content-section) ======
-        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, imageLayout = 'grid', imageUrls = [], iframeUrls = []) {
+        // ====== HTML TEMPLATE GENERATION (REVISED) ======
+        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, imageLayout = 'grid', imageUrls = [], iframeUrls = [], expiryDetails = null) {
             let encryptedMarkdownHtml;
             try {
                 const contentToEncrypt = markdownContentHtml || "";
                 encryptedMarkdownHtml = multiLayerEncrypt(contentToEncrypt, pagePassword, 10);
-            } catch (e) {
-                throw new Error(`Mã hóa thất bại: ${e.message}`);
-            }
+            } catch (e) { throw new Error(`Mã hóa thất bại: ${e.message}`); }
 
             const escapedEncryptedData = encryptedMarkdownHtml.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
             const escapedImageLayout = imageLayout.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
             const imageUrlsJs = JSON.stringify(imageUrls);
             const iframeUrlsJs = JSON.stringify(iframeUrls);
+            const expiryDetailsJs = expiryDetails ? JSON.stringify(expiryDetails) : 'null';
 
+            // NEW: Encode password with Base64 for admin view retrieval
+            const adminEncodedPassJs = `'${btoa(pagePassword)}'`; // Simple Base64 encoding
+
+            const adminKeyTripleEncoded = btoa(btoa(btoa('admin')));
+            const adminAccessInfo = `🔑 Để bỏ qua hết hạn & mật khẩu, thêm tham số <code>?view=${adminKeyTripleEncoded}</code> vào cuối URL.`;
             const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn vấn đề và tớ sẽ cố gắng giúp! 😉`;
             const huấnQuote = `Sau nay, chỉ có làm chịu khó cần cù thì bù siêng năng,... Cái loại xem chùa mà đòi free thì ăn cám<br><strong style="font-style:normal;font-weight:bold;font-size:1.1em;">| -_- |</strong>`;
+            const expiredMessage = `Ôi không, vận may của bạn đã hết. File đã hết hạn rùi!!!`;
 
-            // --- TARGET HTML TEMPLATE (CSS đã được sửa đổi) ---
+            // --- TARGET HTML TEMPLATE (REVISED STRUCTURE & CSS) ---
             return `<!DOCTYPE html>
 <html lang="vi">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nội Dung Bảo Mật & Media Đa Năng</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nội Dung Bảo Mật & Media Đa Năng v2.1</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-/* === ROOT VARIABLES (Giữ nguyên) === */
-:root{--primary:#00f7ff;--secondary:#6e00ff;--accent:#ff00aa;--error:#ff3d71;--success:#00ff88;--warning:#ffcc00;--bg-dark:#0a0a20;--bg-darker:#050510;--bg-light:rgba(20,20,50,.5);--bg-lighter:rgba(30,30,70,.3);--text-light:#e0e0ff;--text-lighter:#fff;--text-dim:rgba(224,224,255,.6);--border-radius:12px;--box-shadow:0 0 30px rgba(0,247,255,.2);--transition:all .4s cubic-bezier(.175,.885,.32,1.275);--iframe-border:rgba(0,247,255,.3);--iframe-bg:rgba(10,10,32,.7);--md-border:rgba(110,0,255,.25);--code-bg:rgba(0,10,30,.8)}
-/* === BASE STYLES (Giữ nguyên) === */
-*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;line-height:1.6;position:relative;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
-/* === BACKGROUND EFFECTS (Giữ nguyên) === */
+/* === ROOT VARIABLES === */
+:root{--primary:#00f7ff;--secondary:#6e00ff;--accent:#ff00aa;--error:#ff3d71;--success:#00ff88;--warning:#ffcc00;--bg-dark:#0a0a20;--bg-darker:#050510;--bg-light:rgba(20,20,50,.5);--bg-lighter:rgba(30,30,70,.3);--text-light:#e0e0ff;--text-lighter:#fff;--text-dim:rgba(224,224,255,.6);--border-radius:12px;--box-shadow:0 0 30px rgba(0,247,255,.2);--transition:all .4s cubic-bezier(.175,.885,.32,1.275);--iframe-border:rgba(0,247,255,.3);--iframe-bg:rgba(10,10,32,.7);--md-border:rgba(110,0,255,.25);--code-bg:rgba(0,10,30,.8);--expired-color:var(--error);--expired-bg:rgba(255,61,113,.1)}
+/* === BASE STYLES === */
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-dark);color:var(--text-light);min-height:100vh;overflow-x:hidden;line-height:1.6;position:relative;display:flex;align-items:center; /* Default center alignment */ justify-content:center;padding:2rem 1rem}
+/* === BACKGROUND EFFECTS === */
 .particles-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden; pointer-events: none;}
-.particle{position:absolute;background:radial-gradient(circle,var(--primary) 0%,transparent 70%);border-radius:50%;opacity:.6;animation:particle-anim linear infinite}
-@keyframes particle-anim{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:.6}100%{transform:translateY(-1500px) rotate(720deg);opacity:0}}
+.particle{position:absolute;background:radial-gradient(circle,var(--primary) 0%,transparent 70%);border-radius:50%;opacity:.6;animation:particle-anim linear infinite} @keyframes particle-anim{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:.6}100%{transform:translateY(-1500px) rotate(720deg);opacity:0}}
 .grid-overlay,.scanlines,.glow-effect{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 .grid-overlay{background-image:linear-gradient(rgba(110,0,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(110,0,255,.05) 1px,transparent 1px);background-size:40px 40px}
-.scanlines{background:repeating-linear-gradient(0deg,rgba(0,247,255,.03),rgba(0,247,255,.03) 1px,transparent 1px,transparent 3px);animation:scanline 8s linear infinite}
-@keyframes scanline{0%{background-position:0 0}100%{background-position:0 100%}}
-.glow-effect{background:radial-gradient(circle at center,rgba(0,247,255,.05) 0%,transparent 70%);animation:pulse 8s infinite alternate}
-@keyframes pulse{0%{opacity:.3;transform:scale(.95)}100%{opacity:.7;transform:scale(1.05)}}
-/* === TARGET PAGE CONTAINER (Giữ nguyên) === */
-.container{max-width:1000px; width:100%;margin:2rem auto;padding:2rem 2.5rem 3rem 2.5rem;background:rgba(10,10,32,.9);backdrop-filter:blur(12px);border-radius:var(--border-radius);box-shadow:var(--box-shadow);border:1px solid rgba(110,0,255,.3);position:relative;overflow:visible;transition:var(--transition);animation:floatTarget 7s ease-in-out infinite}
+.scanlines{background:repeating-linear-gradient(0deg,rgba(0,247,255,.03),rgba(0,247,255,.03) 1px,transparent 1px,transparent 3px);animation:scanline 8s linear infinite} @keyframes scanline{0%{background-position:0 0}100%{background-position:0 100%}}
+.glow-effect{background:radial-gradient(circle at center,rgba(0,247,255,.05) 0%,transparent 70%);animation:pulse 8s infinite alternate} @keyframes pulse{0%{opacity:.3;transform:scale(.95)}100%{opacity:.7;transform:scale(1.05)}}
+/* === TARGET PAGE CONTAINER === */
+.container{max-width:1000px; width:100%;margin:auto; /* Changed margin for centering */ padding:2rem 2.5rem 3rem 2.5rem;background:rgba(10,10,32,.9);backdrop-filter:blur(12px);border-radius:var(--border-radius);box-shadow:var(--box-shadow);border:1px solid rgba(110,0,255,.3);position:relative;overflow:visible;transition:var(--transition);animation:floatTarget 7s ease-in-out infinite}
 @keyframes floatTarget{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .container::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,247,255,.1) 0%,transparent 60%);z-index:-1;animation:pulse 15s infinite alternate}
-/* === PASSWORD SECTION (Giữ nguyên) === */
+/* === PASSWORD SECTION === */
 .page-title{text-align:center;color:var(--primary);margin-bottom:2rem;font-weight:300;letter-spacing:2px;text-transform:uppercase;font-size:1.6rem;text-shadow:0 0 15px rgba(0,247,255,.5);position:relative;padding-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.7rem}.page-title .material-icons{font-size:2rem}.page-title::after{content:'';position:absolute;bottom:0;left:30%;width:40%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
 .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}
-#final-password-section{transition:opacity .5s ease,transform .5s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s; /* Loại bỏ max-height khỏi transition */ overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem; /* max-height:500px; */ /* Bỏ max-height */}
-#final-password-section.hiding{opacity:0;transform:scale(.9);pointer-events:none; /* max-height:0; */ /* Bỏ max-height */ padding-top:0;padding-bottom:0;margin-bottom:0;visibility:hidden; transition-delay: 0s !important; /* Đảm bảo ẩn nhanh */}
+#final-password-section{transition:opacity .5s ease,transform .5s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s; overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem;}
+#final-password-section.hidden{display: none !important;} /* Simple hide for admin */
+#final-password-section.hiding{opacity:0;transform:scale(.9);pointer-events:none; padding-top:0;padding-bottom:0;margin-bottom:0;visibility:hidden; transition-delay: 0s !important;}
 .final-page-input-group label{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;color:var(--text-light);font-size:.9rem;letter-spacing:1px;text-transform:uppercase}.final-page-input-group label .material-icons{color:var(--secondary);font-size:1.2rem}
 .final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1.1rem;transition:var(--transition);outline:none;letter-spacing:3px;font-family:'Courier New',Courier,monospace}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}
 .final-page-button{background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:var(--transition);box-shadow:0 4px 20px rgba(110,0,255,.4);position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}.final-page-button:hover:not(:disabled){transform:translateY(-3px) scale(1.03);box-shadow:0 6px 25px rgba(0,247,255,.6)}.final-page-button:disabled{filter:grayscale(70%);opacity:.6;cursor:not-allowed;box-shadow:none;transform:none!important}.final-page-button::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,rgba(255,255,255,0) 0%,rgba(255,255,255,.1) 50%,rgba(255,255,255,0) 100%);transform:rotate(45deg);animation:shine 3s infinite linear;opacity:.5; pointer-events: none;}@keyframes shine{0%{transform:translateX(-150%) rotate(45deg)}100%{transform:translateX(150%) rotate(45deg)}}
@@ -303,23 +374,11 @@
 .final-page-error-message.show{opacity:1; max-height: 100px;}
 .final-page-input-group input[type=password].shake{animation:shake-final .5s cubic-bezier(.36,.07,.19,.97) both;border-color:var(--error)}@keyframes shake-final{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
 .final-page-donation-prompt{text-align:center;margin-top:1.5rem;padding:.8rem 1rem;background:rgba(255,204,0,.1);border-left:4px solid var(--warning);border-radius:var(--border-radius);color:var(--warning);font-size:.9rem;line-height:1.5;font-style:italic}.final-page-donation-prompt strong{font-weight:700;color:var(--text-lighter)}
+.final-page-donation-prompt code { background: rgba(0,0,0,0.2); color: var(--primary); padding: 0.1em 0.4em; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.9em; margin: 0 0.1em; }
 
-/* === CONTENT SECTION (*** SỬA ĐỔI CSS ĐỂ KHÔNG GIỚI HẠN HIỂN THỊ ***) === */
-#final-content-section{
-    opacity:0; /* Bắt đầu ẩn */
-    visibility:hidden; /* Ẩn khỏi accessibility tree */
-    overflow: hidden; /* Ẩn nội dung tràn ra khi đang ẩn */
-    transition: opacity .6s ease-out, visibility 0s linear .6s; /* Chỉ transition opacity và visibility */
-    position: relative; /* Giữ position context cho children */
-}
-#final-content-section.visible{
-    opacity:1; /* Hiện */
-    visibility:visible; /* Hiện trong accessibility tree */
-    overflow: visible; /* Cho phép nội dung tràn ra và tự động giãn nở */
-    /* KHÔNG CẦN max-height nữa */
-    transition: opacity .6s ease-out .2s, visibility 0s linear 0s; /* Transition khi hiện */
-}
-/* Animation cho nội dung con bên trong (giữ nguyên) */
+/* === CONTENT SECTION === */
+#final-content-section{opacity:0;visibility:hidden;overflow: hidden;transition: opacity .6s ease-out, visibility 0s linear .6s;position: relative;}
+#final-content-section.visible{opacity:1;visibility:visible;overflow: visible;transition: opacity .6s ease-out .2s, visibility 0s linear 0s;}
 #final-content-section.visible>*{animation:fadeInChild .7s ease-out forwards;opacity:0}
 #final-content-section.visible > #embedded-images-container { animation-delay: .1s; }
 #final-content-section.visible > #final-markdown-content { animation-delay: .3s; }
@@ -327,79 +386,21 @@
 #final-content-section.visible > .footer-note { animation-delay: .7s }
 @keyframes fadeInChild{0%{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* === STYLES FOR MULTIPLE MEDIA (CẬP NHẬT CHO LAYOUT ẢNH - Giữ nguyên) === */
-#embedded-images-container {
-    margin-bottom: 2.5rem;
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-#embedded-images-container.layout-grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
+/* === STYLES FOR MULTIPLE MEDIA === */
+#embedded-images-container {margin-bottom: 2.5rem;display: grid;gap: 1.5rem;grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));}
+#embedded-images-container.layout-grid {display: grid;gap: 1.5rem;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));}
 @media (min-width: 600px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } }
 @media (min-width: 900px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(3, 1fr); } }
-#embedded-images-container.layout-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-}
-#embedded-images-container.layout-column .embedded-image-item {
-    width: 100%;
-    max-width: 600px;
-}
-#embedded-images-container.layout-comic {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-    margin-bottom: 2.5rem;
-}
-#embedded-images-container.layout-comic .embedded-image-item {
-    flex: 1 1 auto;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    margin: 0;
-    overflow: hidden;
-    min-width: 50px;
-}
-#embedded-images-container.layout-comic .embedded-image-item img {
-    border-radius: 0;
-    cursor: default !important;
-    transition: none;
-}
-#embedded-images-container.layout-comic .embedded-image-item img:hover {
-    transform: none;
-    filter: none;
-    box-shadow: none;
-}
-.embedded-image-item {
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 247, 255, 0.15);
-    border: 1px solid var(--iframe-border);
-    position: relative;
-    background-color: var(--bg-lighter);
-    transition: var(--transition);
-}
-.embedded-image-item img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: calc(var(--border-radius) - 1px);
-    opacity: 0;
-    transition: opacity .5s ease-in .1s, transform .3s ease;
-    cursor: pointer;
-}
+#embedded-images-container.layout-column {display: flex;flex-direction: column;gap: 1.5rem;align-items: center;}
+#embedded-images-container.layout-column .embedded-image-item {width: 100%;max-width: 600px;}
+#embedded-images-container.layout-comic {display: flex;flex-wrap: wrap;gap: 0;margin-bottom: 2.5rem;}
+#embedded-images-container.layout-comic .embedded-image-item {flex: 1 1 auto;border: none;border-radius: 0;box-shadow: none;margin: 0;overflow: hidden;min-width: 50px;}
+#embedded-images-container.layout-comic .embedded-image-item img {border-radius: 0;cursor: default !important;transition: none;}
+#embedded-images-container.layout-comic .embedded-image-item img:hover {transform: none;filter: none;box-shadow: none;}
+.embedded-image-item {border-radius: var(--border-radius);overflow: hidden;box-shadow: 0 10px 30px rgba(0, 247, 255, 0.15);border: 1px solid var(--iframe-border);position: relative;background-color: var(--bg-lighter);transition: var(--transition);}
+.embedded-image-item img {display: block;width: 100%;height: auto;border-radius: calc(var(--border-radius) - 1px);opacity: 0;transition: opacity .5s ease-in .1s, transform .3s ease;cursor: pointer;}
 .embedded-image-item img.loaded { opacity: 1; }
-.embedded-image-item img:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1);
-    box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);
-}
+.embedded-image-item img:hover {transform: scale(1.05);filter: brightness(1.1);box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);}
 .media-error-message { padding: 1.5rem; text-align: center; color: var(--error); font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 100px; background-color: rgba(255, 61, 113, 0.1); } .media-error-message .material-icons { font-size: 1.5rem; }
 #embedded-iframes-container {margin-top: 3rem; display: grid; gap: 2rem; grid-template-columns: 1fr; }
 @media (min-width: 900px) {#embedded-iframes-container { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }}
@@ -407,11 +408,11 @@
 .iframe-item-wrapper:hover { box-shadow: 0 12px 40px rgba(0, 247, 255, 0.35); transform: translateY(-5px); }
 .iframe-item-wrapper iframe {position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: calc(var(--border-radius) - 1px); }
 
-/* === MARKDOWN STYLES (Giữ nguyên) === */
+/* === MARKDOWN STYLES === */
 .final-template-styles{line-height:1.75;color:var(--text-light);max-width:100%;margin-bottom:3rem}.final-template-styles>:first-child{margin-top:0!important}.final-template-styles>:last-child{margin-bottom:0!important}.final-template-styles h1,.final-template-styles h2,.final-template-styles h3,.final-template-styles h4,.final-template-styles h5,.final-template-styles h6{color:var(--primary);margin-top:2rem;margin-bottom:1rem;font-weight:400;letter-spacing:1px;padding-bottom:.6rem;border-bottom:1px solid var(--md-border);position:relative;text-shadow:0 0 8px rgba(0,247,255,.2)}.final-template-styles h1::after,.final-template-styles h2::after{content:'';position:absolute;bottom:-1px;left:0;height:3px;width:80px;background:linear-gradient(90deg,var(--accent),var(--secondary));border-radius:3px;transition:width .4s ease-in-out}.final-template-styles h1:hover::after,.final-template-styles h2:hover::after{width:120px}.final-template-styles h1{font-size:2.1rem;letter-spacing:1.5px}.final-template-styles h2{font-size:1.7rem;color:var(--accent)}.final-template-styles h3{font-size:1.4rem;color:var(--success);border-bottom-style:dashed}.final-template-styles h4{font-size:1.2rem;color:var(--warning);border:none;padding-bottom:0;margin-bottom:.5rem;font-weight:500}.final-template-styles h5,.final-template-styles h6{font-size:1.1rem;color:var(--text-dim);font-weight:600;border:none;padding-bottom:0;margin-bottom:.5rem;text-transform:uppercase}.final-template-styles p{margin-bottom:1.1rem;font-size:1.05rem}.final-template-styles a{color:var(--accent);text-decoration:none;position:relative;padding-bottom:2px;transition:color .3s ease,text-shadow .3s ease;font-weight:600;overflow:hidden;display:inline-block}.final-template-styles a::after{content:'';position:absolute;bottom:-2px;left:0;width:100%;height:2px;background:var(--primary);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.19,1,.22,1)}.final-template-styles a:hover{color:var(--primary);text-shadow:0 0 10px var(--primary)}.final-template-styles a:hover::after{transform:scaleX(1)}.final-template-styles ol,.final-template-styles ul{margin-left:1.5rem;margin-bottom:1.1rem;padding-left:1.8rem;list-style:none}.final-template-styles li{margin-bottom:.6rem;position:relative;padding-left:.5rem}.final-template-styles ul li::before{content:'✨';color:var(--primary);font-weight:400;display:inline-block;width:1em;margin-left:-1.5em;font-size:1.2em;line-height:1;position:absolute;top:.25em;left:0;text-shadow:0 0 6px var(--primary);transition:transform .3s ease}.final-template-styles ul li:hover::before{transform:rotate(90deg) scale(1.2)}.final-template-styles ol{counter-reset:list-counter}.final-template-styles ol li{counter-increment:list-counter}.final-template-styles ol li::before{content:counter(list-counter);color:var(--secondary);font-weight:700;font-size:.85em;font-family:'Georgia',serif;display:inline-flex;align-items:center;justify-content:center;width:1.8em;height:1.8em;margin-left:-1.8em;margin-right:.5em;background-color:rgba(110,0,255,.15);border-radius:50%;border:1px solid var(--secondary);position:absolute;top:.15em;left:0;line-height:1.8em;box-shadow:0 0 5px rgba(110,0,255,.3);transition:background-color .3s ease,transform .3s ease}.final-template-styles ol li:hover::before{background-color:rgba(110,0,255,.4);transform:scale(1.1)}.final-template-styles li p{margin-bottom:.3rem}.final-template-styles blockquote{position:relative;border:none;border-left:6px solid;border-image:linear-gradient(to bottom,var(--secondary),var(--primary)) 1;padding:1.5rem 2rem 1.5rem 3.5rem;margin:2rem 0;background:linear-gradient(135deg,rgba(110,0,255,.08),rgba(110,0,255,.2));border-radius:0 var(--border-radius) var(--border-radius) 0;font-style:italic;font-size:1.1em;color:var(--text-lighter);box-shadow:inset 5px 0 15px -5px rgba(110,0,255,.4);backdrop-filter:blur(2px)}.final-template-styles blockquote::before{content:'format_quote';font-family:'Material Icons';font-size:3rem;color:var(--secondary);opacity:.5;position:absolute;left:.8rem;top:.5rem;transform:translateY(-10%)}.final-template-styles blockquote p{margin-bottom:.6rem;font-size:1em}.final-template-styles blockquote p:last-child{margin-bottom:0}.final-template-styles code:not(pre code){background:rgba(0,247,255,.1);color:var(--primary);padding:.3em .6em;border-radius:5px;font-family:'Fira Code','Consolas',monospace;font-size:.9em;border:1px solid rgba(0,247,255,.3);word-break:break-word;text-shadow:0 0 3px rgba(0,247,255,.5)}.final-template-styles pre{background:var(--code-bg);padding:1.5rem 1.8rem;border-radius:var(--border-radius);overflow-x:auto;margin:2rem 0;border:1px solid var(--secondary);box-shadow:0 0 25px rgba(110,0,255,.25),inset 0 0 15px rgba(0,0,0,.6);position:relative}.final-template-styles pre code{background:0 0;padding:0;font-size:.95em;line-height:1.65;color:var(--text-light);font-family:'Fira Code','Consolas','Monaco',monospace}.final-template-styles pre::-webkit-scrollbar{height:8px;background-color:rgba(0,0,0,.2)}.final-template-styles pre::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--secondary),var(--primary));border-radius:4px}.final-template-styles hr{border:0;height:2px;margin:3rem auto;width:70%;background:linear-gradient(90deg,transparent,var(--secondary) 20%,var(--primary) 80%,transparent);opacity:.6}.final-template-styles table{width:100%;border-collapse:separate;border-spacing:0;margin:2rem 0;background:0 0;border:1px solid var(--md-border);border-radius:var(--border-radius);box-shadow:0 8px 25px rgba(0,0,0,.4);overflow:hidden}.final-template-styles td,.final-template-styles th{border-bottom:1px solid var(--md-border);padding:1rem 1.2rem;text-align:left;transition:background-color .3s ease}.final-template-styles td{background-color:rgba(10,10,32,.5)}.final-template-styles tr:last-child td{border-bottom:none}.final-template-styles th{background:linear-gradient(135deg,rgba(110,0,255,.3),rgba(0,247,255,.3));color:var(--text-lighter);font-weight:700;text-transform:uppercase;font-size:.9em;letter-spacing:1px;border-bottom:2px solid var(--primary)}.final-template-styles td:first-child,.final-template-styles th:first-child{padding-left:1.5rem}.final-template-styles td:last-child,.final-template-styles th:last-child{padding-right:1.5rem}.final-template-styles tr:hover td{background-color:var(--bg-lighter);color:var(--text-lighter)}
 .final-template-styles img{max-width:100%;height:auto;border-radius:8px;margin:1.5rem 0;box-shadow:0 8px 25px rgba(0,0,0,.4);border:1px solid var(--iframe-border);display:block;background:var(--bg-lighter);transition:transform .3s ease,box-shadow .3s ease,filter .3s ease}.final-template-styles img:hover{transform:scale(1.03);box-shadow:0 12px 40px rgba(0,247,255,.25);filter:brightness(1.1)}
 
-/* === MODAL STYLE (Giữ nguyên) === */
+/* === MODAL STYLE === */
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(5,5,16,.9);backdrop-filter:blur(10px);z-index:1000;display:flex;justify-content:center;align-items:center;opacity:0;transition:opacity .5s ease;pointer-events:none}.modal-overlay.hidden{display:none!important}.modal-overlay:not(.hidden){opacity:1;pointer-events:auto}
 .modal-content{background:var(--bg-dark);border:1px solid var(--secondary);border-radius:var(--border-radius);padding:2.5rem;max-width:600px;width:90%;box-shadow:0 0 50px rgba(110,0,255,.35);position:relative;animation:scaleInModal .5s cubic-bezier(.175,.885,.32,1.275);transform:scale(1)}.modal-overlay:not(.hidden).initial-state .modal-content{transform:scale(.9);opacity:0}@keyframes scaleInModal{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 .modal-title{color:var(--primary);text-align:center;margin-bottom:1.5rem;font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:.5rem}.modal-title .material-icons{font-size:1.8rem; color: var(--primary)}
@@ -421,23 +422,53 @@
 #final-warning-confirm:hover:not(:disabled) { box-shadow: 0 6px 25px rgba(255, 61, 113, 0.6); transform: translateY(-3px) scale(1.03); }
 #huan-error-confirm { background: linear-gradient(135deg, var(--warning), #ffd54f); color: var(--bg-darker); box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); }
 #huan-error-confirm:hover:not(:disabled) { box-shadow: 0 6px 25px rgba(255, 204, 0, 0.6); transform: translateY(-3px) scale(1.03); }
-/* === MISC & FOOTER (Giữ nguyên) === */
+/* === MISC & FOOTER === */
 .hidden{display:none!important;visibility:hidden}.text-center{text-align:center}
 .footer-note{text-align:center;margin-top:3rem;font-size:.9rem;color:var(--text-dim);opacity:.8;letter-spacing:.5px}.footer-note .material-icons{font-size:1rem;vertical-align:middle;margin-right:.2rem}
 .spin{animation:spin 1s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
-/* === RESPONSIVE OVERRIDES (Giữ nguyên) === */
-@media (max-width:768px){body{padding:1rem}.container{padding:1.5rem;margin:1rem auto}.final-page-password-form{max-width:100%}.page-title{font-size:1.4rem}.final-template-styles h1{font-size:1.8rem}.final-template-styles h2{font-size:1.5rem}.final-template-styles blockquote{padding:1rem 1.5rem 1rem 2.5rem}.final-template-styles blockquote::before{left:.5rem;font-size:2.5rem}.final-template-styles pre{padding:1.2rem}.final-template-styles td,.final-template-styles th{padding:.8rem 1rem}.modal-content{padding:1.5rem;max-width:95%}.modal-title{font-size:1.3rem}.modal-message{font-size:1rem}
+
+/* === Expiration Message Style (Moved Outside Container) === */
+ #expiration-message{
+    display:none; /* Hidden by default */
+    padding:2rem 1.5rem; margin: 1rem; border-radius:var(--border-radius);
+    background-color:var(--expired-bg); border:1px solid var(--expired-color);
+    box-shadow:0 0 20px rgba(255,61,113,.3); text-align:center; color:var(--expired-color);
+    font-size:1.3rem; font-weight:700; line-height:1.6; max-width:600px;
+    width: calc(100% - 2rem); animation:fadeInExpired .8s ease-out;
+    position:relative; /* Ensure it's above background effects */ z-index: 1;
+ }
+ #expiration-message .material-icons{font-size:3rem;display:block;margin-bottom:1rem;color:var(--expired-color)}
+ @keyframes fadeInExpired{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+ /* Hide container when expired message is shown */
+ body.expired .container { display: none !important; }
+ /* Ensure expiration message is shown correctly */
+ body.expired #expiration-message { display: block; /* Or flex if needed */ }
+ /* Ensure body alignment works for expiration message */
+ body.expired { align-items: center; justify-content: center; }
+
+/* === RESPONSIVE OVERRIDES === */
+@media (max-width:768px){body{padding:1rem}.container{padding:1.5rem;margin:auto}.final-page-password-form{max-width:100%}.page-title{font-size:1.4rem}.final-template-styles h1{font-size:1.8rem}.final-template-styles h2{font-size:1.5rem}.final-template-styles blockquote{padding:1rem 1.5rem 1rem 2.5rem}.final-template-styles blockquote::before{left:.5rem;font-size:2.5rem}.final-template-styles pre{padding:1.2rem}.final-template-styles td,.final-template-styles th{padding:.8rem 1rem}.modal-content{padding:1.5rem;max-width:95%}.modal-title{font-size:1.3rem}.modal-message{font-size:1rem}
     #embedded-images-container { gap: 1rem; margin-bottom: 1.5rem; }
     #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
     #embedded-images-container.layout-column { gap: 1rem; }
-    #embedded-iframes-container { margin-top: 2rem; gap: 1.5rem; }}
+    #embedded-iframes-container { margin-top: 2rem; gap: 1.5rem; }
+    #expiration-message { font-size: 1.1rem; padding: 1.5rem 1rem;} #expiration-message .material-icons { font-size: 2.5rem; }}
 @media (max-width:480px){.final-page-password-form{gap:1.2rem}.final-page-input-group input[type=password]{padding:.8rem 1rem;font-size:1rem}.page-title{font-size:1.3rem}.modal-title{font-size:1.2rem}.modal-message{font-size:.95rem;line-height:1.6}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.3rem}.final-template-styles h3{font-size:1.2rem}.final-template-styles code:not(pre code){font-size:.85em}.final-template-styles pre code{font-size:.9em}.final-template-styles table{font-size:.9rem}.final-template-styles td,.final-template-styles th{padding:.6rem .8rem}
     #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+    #expiration-message { font-size: 1rem; }
 }
 </style>
 </head>
-<body>
+<body id="target-body">
     <div class="particles-container" id="final-particles"></div> <div class="grid-overlay"></div> <div class="scanlines"></div> <div class="glow-effect"></div>
+
+    <!-- Expiration Message (Moved Outside Container) -->
+    <div id="expiration-message">
+        <i class="material-icons">sentiment_very_dissatisfied</i>
+        ${expiredMessage}
+    </div>
+
     <div class="container">
         <!-- Password Input Section -->
         <div id="final-password-section">
@@ -447,7 +478,7 @@
                     <label for="final-password-input"><i class="material-icons">password</i> Mã Truy Cập:</label>
                     <input type="password" id="final-password-input" placeholder="••••••••••••" autocomplete="current-password" required>
                 </div>
-                <div class="final-page-donation-prompt">${donateMessage}</div>
+                <div class="final-page-donation-prompt">${donateMessage}<br></div>
                 <button type="submit" class="final-page-button" id="final-submit-btn">
                     <i class="material-icons">sensors</i> Giải Mã & Hiển Thị
                 </button>
@@ -462,7 +493,7 @@
             <div class="footer-note"><i class="material-icons">verified_user</i> An toàn với 10 lớp mã hóa AES.</div>
         </div>
     </div>
-    <!-- Modals (Giữ nguyên) -->
+    <!-- Modals -->
     <div class="modal-overlay hidden initial-state" id="final-warning-modal">
          <div class="modal-content">
              <h2 class="modal-title"><i class="material-icons">gpp_bad</i> CẢNH BÁO</h2>
@@ -479,13 +510,18 @@
     </div>
 
     <script>
-        // === TARGET PAGE SCRIPT (Giữ nguyên logic, CSS đã được sửa) ===
+        // === TARGET PAGE SCRIPT (REVISED with Admin Unlock & Expiry Fix) ===
         const encryptedMarkdownContent = \`${escapedEncryptedData}\`;
         const imageLayout = \`${escapedImageLayout}\`;
         const embeddedImageUrls = ${imageUrlsJs};
         const embeddedIframeUrls = ${iframeUrlsJs};
+        const expiryDetails = ${expiryDetailsJs};
+        const adminEncodedPass = ${adminEncodedPassJs}; // Encoded password for admin use
 
-        // Elements (Giữ nguyên)
+        // Elements
+        const targetBody = document.getElementById('target-body');
+        const expirationMessageDiv = document.getElementById('expiration-message');
+        const pageContainer = document.querySelector('.container'); // Get container
         const finalPasswordSection=document.getElementById('final-password-section');
         const finalContentSection=document.getElementById('final-content-section');
         const finalPasswordInput=document.getElementById('final-password-input');
@@ -497,65 +533,141 @@
         const finalWarningConfirmBtn=document.getElementById('final-warning-confirm');
         const huanErrorModal=document.getElementById('huan-error-modal');
         const huanErrorConfirmBtn=document.getElementById('huan-error-confirm');
-        const finalParticlesContainer=document.getElementById('final-particles');
+        const finalParticlesContainer=document.getElementById('final-particles'); // Keep using the generator ID
         const submitButton=document.getElementById('final-submit-btn');
         let errorTimeout = null;
 
-        // Particles Function (Giữ nguyên)
-        function createFinalParticles(){if(!finalParticlesContainer||finalParticlesContainer.children.length>40&&Math.random()<.9)return;finalParticlesContainer.innerHTML='';const n=window.innerWidth>768?120:60;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+1;const x=Math.random()*window.innerWidth;const d=Math.random()*12;const u=Math.random()*18+12;const o=Math.random()*.4+.1;Object.assign(p.style,{width:\`\${s}px\`,height:\`\${s}px\`,left:\`\${x}px\`,bottom:\`-\${s}px\`,animationDuration:\`\${u}s\`,animationDelay:\`\${d}s\`,opacity:o});const c=['#00f7ff','#6e00ff','#ff00aa'][Math.floor(Math.random()*3)];p.style.background=\`radial-gradient(circle, \${c} 0%, transparent 70%)\`;finalParticlesContainer.appendChild(p)}}
+        // Particles Function
+        function createFinalParticles(){ const cont = document.getElementById('final-particles'); if(!cont||cont.children.length>40&&Math.random()<.9)return;cont.innerHTML='';const n=window.innerWidth>768?120:60;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+1;const x=Math.random()*window.innerWidth;const d=Math.random()*12;const u=Math.random()*18+12;const o=Math.random()*.4+.1;Object.assign(p.style,{width:\`\${s}px\`,height:\`\${s}px\`,left:\`\${x}px\`,bottom:\`-\${s}px\`,animationDuration:\`\${u}s\`,animationDelay:\`\${d}s\`,opacity:o});const c=['#00f7ff','#6e00ff','#ff00aa'][Math.floor(Math.random()*3)];p.style.background=\`radial-gradient(circle, \${c} 0%, transparent 70%)\`;cont.appendChild(p)}}
 
-        /**
-         * Decryption Function (REVISED SIMPLIFIED - Giữ nguyên)
-         */
+        // Decryption Function
         function multiLayerDecrypt(encryptedBase64Data, password, layers = 10) {
             if (typeof CryptoJS === 'undefined') throw new Error("Lỗi: Không tìm thấy CryptoJS.");
             let currentData = encryptedBase64Data;
             try {
                 for (let i = layers - 1; i >= 0; i--) {
-                    const layerKey = password + i;
-                    let decryptedBytes;
-                    try { decryptedBytes = CryptoJS.AES.decrypt(currentData, layerKey); }
-                    catch (decryptError) { throw new Error('decrypt-fail'); }
-
+                    const layerKey = password + i; let decryptedBytes;
+                    try { decryptedBytes = CryptoJS.AES.decrypt(currentData, layerKey); } catch (e){ throw new Error('decrypt-fail');}
                     let decryptedUtf8;
-                    try { decryptedUtf8 = decryptedBytes.toString(CryptoJS.enc.Utf8); }
-                    catch (utf8Error) { throw new Error('decrypt-fail'); }
-
-                    if (!decryptedUtf8 && i > 0) {
-                         throw new Error('decrypt-fail');
-                     }
-                     if (!decryptedUtf8 && i === 0 && encryptedBase64Data !== "") {
-                         // Tạm chấp nhận kết quả rỗng nếu lớp cuối
-                     }
-
+                    try { decryptedUtf8 = decryptedBytes.toString(CryptoJS.enc.Utf8); } catch (e){ throw new Error('decrypt-fail');}
+                    if (!decryptedUtf8 && i > 0) { throw new Error('decrypt-fail'); }
+                    if (!decryptedUtf8 && i === 0 && encryptedBase64Data !== "") { /* Allow empty */ }
                     if (decryptedUtf8) {
                         const parts = decryptedUtf8.split("|");
-                        if (parts.length < 3 || parts[parts.length - 2] !== password || parseInt(parts[parts.length - 1], 10) !== i) {
-                            throw new Error('decrypt-fail');
-                        }
+                        if (parts.length < 3 || parts[parts.length - 2] !== password || parseInt(parts[parts.length - 1], 10) !== i) { throw new Error('decrypt-fail'); }
                         currentData = parts.slice(0, parts.length - 2).join('|');
-                    } else {
-                        currentData = "";
-                    }
-                }
-                return currentData;
-            } catch (e) {
-                 if (e.message !== 'decrypt-fail') { console.error("Lỗi giải mã không mong muốn:", e); }
-                throw new Error('decrypt-fail');
-            }
+                    } else { currentData = ""; }
+                } return currentData;
+            } catch (e) { if (e.message !== 'decrypt-fail') { console.error("Lỗi giải mã:", e); } throw new Error('decrypt-fail'); }
         }
 
-        // Error Display Functions (Giữ nguyên)
-        function showInlineError(message){ clearTimeout(errorTimeout); finalErrorMessage.innerHTML = \`<i class="material-icons">error</i> \${message||'Lỗi không xác định'}\`; finalErrorMessage.classList.add('show'); finalPasswordInput.classList.add('shake'); setTimeout(()=> finalPasswordInput.classList.remove('shake'), 500); errorTimeout = setTimeout(() => { finalErrorMessage.classList.remove('show'); }, 3500); }
+        // Error Display Functions
+        function showInlineError(message){ clearTimeout(errorTimeout); finalErrorMessage.innerHTML = \`<i class="material-icons">error</i> \${message||'Lỗi không xác định'}\`; finalErrorMessage.classList.add('show'); if(finalPasswordInput){finalPasswordInput.classList.add('shake'); setTimeout(()=> finalPasswordInput.classList.remove('shake'), 500);} errorTimeout = setTimeout(() => { finalErrorMessage.classList.remove('show'); }, 3500); }
         function showHuanModal() { if(!huanErrorModal) return; huanErrorModal.classList.add('initial-state'); huanErrorModal.classList.remove('hidden'); requestAnimationFrame(()=>{huanErrorModal.classList.remove('initial-state')}); }
         function isValidUrl(string) { if (!string) return false; try { new URL(string); return string.startsWith('http:') || string.startsWith('https:') || string.startsWith('data:'); } catch (_) { return false; } }
 
-        // Password Check & Content Display (Giữ nguyên logic)
+        // Base64 Decode Helper
+        function decodeBase64Multi(encodedString, layers = 1) {
+            let currentData = encodedString;
+            try { for (let i = 0; i < layers; i++) { currentData = atob(currentData); } return currentData; }
+            catch (e) { console.warn('Base64 decoding failed:', e); return null; }
+        }
+        // Check if Admin View is active
+        function isAdminViewActive() {
+            const urlParams = new URLSearchParams(window.location.search); const viewParam = urlParams.get('view');
+            if (!viewParam) { return false; }
+            const decodedAdmin = decodeBase64Multi(viewParam, 3); return decodedAdmin === 'admin';
+        }
+        // Check Expiration Status
+        function isExpired() {
+            if (!expiryDetails) { return false; }
+            try { const expiryDate = new Date(expiryDetails.year, expiryDetails.month - 1, expiryDetails.day, expiryDetails.hour, expiryDetails.minute, 0); const now = new Date(); return now > expiryDate; }
+            catch (e) { console.error("Lỗi parse ngày hết hạn:", e); return false; }
+        }
+
+        // NEW: Function to render content (extracted logic)
+        function renderContent(decryptedHtml) {
+            // Render Images
+            finalImagesContainer.innerHTML = ''; finalImagesContainer.className = 'layout-' + imageLayout;
+            if (Array.isArray(embeddedImageUrls) && embeddedImageUrls.length > 0) {
+                 embeddedImageUrls.forEach(url => {
+                    if(isValidUrl(url)) {
+                        const item = document.createElement('div'); item.className = 'embedded-image-item';
+                        const img = document.createElement('img'); img.alt="Ảnh"; img.loading="lazy";
+                        img.onerror = () => { item.innerHTML = '<div class="media-error-message"><i class="material-icons">broken_image</i>Lỗi</div>'; img.classList.add('loaded'); };
+                        img.onload = () => img.classList.add('loaded'); img.src = url;
+                        if (imageLayout !== 'comic') img.onclick = () => window.open(url, '_blank');
+                        item.appendChild(img); finalImagesContainer.appendChild(item);
+                     } else { console.warn("Link ảnh sai:", url); const eItem=document.createElement('div'); eItem.className='embedded-image-item'; eItem.innerHTML='<div class="media-error-message"><i class="material-icons">link_off</i>Link sai</div>'; finalImagesContainer.appendChild(eItem); }
+                });
+            }
+            // Render Markdown
+            finalMarkdownContentDiv.innerHTML = decryptedHtml;
+            // Render Iframes
+            finalIframesContainer.innerHTML = '';
+            if (Array.isArray(embeddedIframeUrls) && embeddedIframeUrls.length > 0) {
+                 embeddedIframeUrls.forEach(url => {
+                     if(isValidUrl(url)) {
+                        const wrap = document.createElement('div'); wrap.className = 'iframe-item-wrapper';
+                        const frame = document.createElement('iframe'); frame.title="Nhúng"; frame.frameborder="0"; frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"; frame.allowfullscreen=true; frame.loading="lazy";
+                        frame.onerror = () => { wrap.innerHTML = '<div class="media-error-message"><i class="material-icons">video_stable</i>Lỗi iframe</div>'; };
+                        wrap.appendChild(frame); finalIframesContainer.appendChild(wrap);
+                        setTimeout(() => { frame.src = url; }, 50);
+                    } else { console.warn("Link iframe sai:", url); const eWrap = document.createElement('div'); eWrap.className = 'iframe-item-wrapper'; eWrap.style.cssText = 'padding-top:0;min-height:100px;'; eWrap.innerHTML='<div class="media-error-message"><i class="material-icons">link_off</i>Link sai</div>'; finalIframesContainer.appendChild(eWrap); }
+                });
+            } else { finalMarkdownContentDiv.style.marginBottom='0'; }
+        }
+
+        // NEW: Function to display content directly as admin
+        function displayContentAsAdmin() {
+            console.log("Chế độ Admin kích hoạt. Bỏ qua mật khẩu & hết hạn.");
+            if (!adminEncodedPass) {
+                console.error("Lỗi: Không tìm thấy mật khẩu admin đã mã hóa.");
+                showInlineError("Lỗi cấu hình Admin: Thiếu khóa.");
+                return;
+            }
+            let adminPassword;
+            try {
+                adminPassword = atob(adminEncodedPass); // Decode Base64 password
+            } catch (e) {
+                console.error("Lỗi giải mã mật khẩu admin:", e);
+                showInlineError("Lỗi cấu hình Admin: Giải mã khóa thất bại.");
+                return;
+            }
+
+            try {
+                const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, adminPassword, 10);
+                renderContent(decryptedHtml); // Render using the extracted function
+                finalContentSection.classList.add('visible'); // Show content section
+                // Optional: Scroll into view smoothly
+                setTimeout(() => {
+                    const focusTarget = finalContentSection.querySelector('h1, h2, h3, h4, h5, h6') || finalImagesContainer || finalIframesContainer || finalContentSection;
+                    if (focusTarget && typeof focusTarget.focus === 'function') {
+                        focusTarget.setAttribute('tabindex', '-1');
+                        try { focusTarget.focus({ preventScroll: true }); } catch (e) { /* ignore focus error */ }
+                        window.scrollTo({ top: pageContainer.offsetTop - 20, behavior: 'smooth' });
+                    } else {
+                        window.scrollTo({ top: pageContainer.offsetTop - 20, behavior: 'smooth' });
+                    }
+                }, 200); // Short delay for rendering
+            } catch (e) {
+                console.error("Lỗi giải mã Admin:", e);
+                if (e.message === 'decrypt-fail') {
+                    showInlineError("Lỗi giải mã Admin: Dữ liệu hoặc khóa không khớp.");
+                } else {
+                    showInlineError("Lỗi giải mã Admin không xác định.");
+                }
+                // Ensure content section is hidden on error
+                finalContentSection.classList.remove('visible');
+                finalImagesContainer.innerHTML = ''; finalIframesContainer.innerHTML = ''; finalMarkdownContentDiv.innerHTML = '';
+            }
+        }
+
+        // Password Check (Normal User)
         function checkFinalPagePassword(event){
             if(event)event.preventDefault();const enteredPassword=finalPasswordInput.value.trim();
             finalErrorMessage.classList.remove('show');
-            finalPasswordInput.classList.remove('shake');
-            clearTimeout(errorTimeout);
+            finalPasswordInput.classList.remove('shake'); clearTimeout(errorTimeout);
 
             if(!enteredPassword){showInlineError('Chưa nhập mã mà fen!');finalPasswordInput.focus();return}
             submitButton.disabled=true;submitButton.innerHTML='<i class="material-icons spin">hourglass_top</i> Check pass...';
@@ -563,58 +675,16 @@
             setTimeout(()=>{
                 try{
                     const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, enteredPassword, 10);
-
-                    // --- Render Ảnh ---
-                    finalImagesContainer.innerHTML = '';
-                    finalImagesContainer.className = 'layout-' + imageLayout;
-
-                    if (Array.isArray(embeddedImageUrls) && embeddedImageUrls.length > 0) {
-                         embeddedImageUrls.forEach(imageUrl => {
-                            if(isValidUrl(imageUrl)) {
-                                const imgItem = document.createElement('div'); imgItem.className = 'embedded-image-item';
-                                const img = document.createElement('img'); img.alt = "Ảnh nhúng"; img.loading = "lazy";
-                                img.onerror = () => { imgItem.innerHTML = '<div class="media-error-message"><i class="material-icons">broken_image</i> Ảnh lỗi</div>'; img.classList.add('loaded'); };
-                                img.onload = () => { img.classList.add('loaded'); };
-                                img.src = imageUrl;
-                                if (imageLayout !== 'comic') {
-                                    img.onclick = () => window.open(imageUrl, '_blank');
-                                }
-                                imgItem.appendChild(img); finalImagesContainer.appendChild(imgItem);
-                             } else { console.warn("Invalid image URL skipped:", imageUrl); const errorItem = document.createElement('div'); errorItem.className = 'embedded-image-item'; errorItem.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link ảnh sai</div>'; finalImagesContainer.appendChild(errorItem); }
-                        });
-                    }
-
-                    // Render Markdown Content
-                    finalMarkdownContentDiv.innerHTML = decryptedHtml;
-
-                    // --- Render Iframes ---
-                    finalIframesContainer.innerHTML = '';
-                    if (Array.isArray(embeddedIframeUrls) && embeddedIframeUrls.length > 0) {
-                         embeddedIframeUrls.forEach(iframeUrl => {
-                             if(isValidUrl(iframeUrl)) {
-                                const iframeWrapper = document.createElement('div'); iframeWrapper.className = 'iframe-item-wrapper';
-                                const iframe = document.createElement('iframe'); iframe.title = "Nội dung nhúng"; iframe.frameborder = "0"; iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"; iframe.allowfullscreen = true; iframe.loading = "lazy";
-                                iframe.onerror = () => { iframeWrapper.innerHTML = '<div class="media-error-message"><i class="material-icons">video_stable</i>Lỗi iframe</div>'; };
-                                iframeWrapper.appendChild(iframe); finalIframesContainer.appendChild(iframeWrapper);
-                                setTimeout(() => { iframe.src = iframeUrl; }, 50);
-                            } else { console.warn("Invalid iframe URL skipped:", iframeUrl); const errorWrapper = document.createElement('div'); errorWrapper.className = 'iframe-item-wrapper'; errorWrapper.style.cssText = 'padding-top: 0; min-height: 100px;'; errorWrapper.innerHTML = '<div class="media-error-message"><i class="material-icons">link_off</i>Link iframe sai</div>'; finalIframesContainer.appendChild(errorWrapper); }
-                        });
-                    } else { finalMarkdownContentDiv.style.marginBottom='0'; }
-
-                    // --- Show Content ---
+                    renderContent(decryptedHtml); // Use extracted render function
                     finalPasswordSection.classList.add('hiding');
-                    finalContentSection.classList.add('visible'); // Trigger transition (chỉ opacity/visibility)
-                    setTimeout(()=>{ const focusTarget = finalMarkdownContentDiv.querySelector('h1, h2, h3, h4, h5, h6') || finalImagesContainer || finalIframesContainer || finalContentSection; if(focusTarget && typeof focusTarget.focus === 'function') { focusTarget.setAttribute('tabindex', '-1'); focusTarget.focus({preventScroll:true}); window.scrollTo({ top: finalContentSection.offsetTop - 20, behavior: 'smooth' }); } }, 700);
-
-                } catch(e) { // Handle Decryption Errors
+                    finalContentSection.classList.add('visible');
+                    setTimeout(()=>{ const focusTarget = finalContentSection.querySelector('h1, h2, h3, h4, h5, h6') || finalImagesContainer || finalIframesContainer || finalContentSection; if(focusTarget && typeof focusTarget.focus === 'function') { focusTarget.setAttribute('tabindex', '-1'); try{focusTarget.focus({preventScroll:true});}catch(e){} window.scrollTo({ top: finalContentSection.offsetTop - 20, behavior: 'smooth' }); } }, 700);
+                } catch(e) {
                      if (e.message === 'decrypt-fail') { showHuanModal(); }
                      else { showInlineError(e.message || "Lỗi xử lý không xác định."); }
                      finalPasswordInput.value = '';
-                     finalPasswordSection.classList.remove('hiding');
-                     finalContentSection.classList.remove('visible'); // Hide content again
-                     finalImagesContainer.innerHTML = ''; finalImagesContainer.className = '';
-                     finalIframesContainer.innerHTML = '';
-                     finalMarkdownContentDiv.innerHTML = '';
+                     finalContentSection.classList.remove('visible');
+                     finalImagesContainer.innerHTML = ''; finalIframesContainer.innerHTML = ''; finalMarkdownContentDiv.innerHTML = '';
                  } finally {
                      submitButton.disabled = false;
                      submitButton.innerHTML='<i class="material-icons">sensors</i> Giải Mã & Hiển Thị';
@@ -622,8 +692,50 @@
             }, 150);
         }
 
-        // Initialization (Giữ nguyên)
-        document.addEventListener('DOMContentLoaded',()=>{ createFinalParticles(); finalContentSection.setAttribute('tabindex','-1'); if(finalWarningModal&&finalWarningConfirmBtn){ finalWarningModal.classList.remove('hidden','initial-state'); const wCH = ()=>{ finalWarningModal.classList.add('hidden'); setTimeout(()=>finalPasswordInput.focus(), 100); }; finalWarningConfirmBtn.onclick=wCH; finalWarningModal.onclick=(e)=>{if(e.target===finalWarningModal) wCH(); }; }else{ setTimeout(() => finalPasswordInput.focus(), 100); } if(huanErrorModal&&huanErrorConfirmBtn){ const hCH=()=>{ huanErrorModal.classList.add('hidden'); setTimeout(()=> finalPasswordInput.focus(), 100); }; huanErrorConfirmBtn.onclick=hCH; huanErrorModal.onclick=(e)=>{ if(e.target===huanErrorModal) hCH(); }; } finalPasswordInput.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') { checkFinalPagePassword(e); } }); });
+        // Initialization (REVISED LOGIC)
+        document.addEventListener('DOMContentLoaded',()=>{
+            createFinalParticles();
+            finalContentSection.setAttribute('tabindex','-1');
+
+            const isAdmin = isAdminViewActive();
+            const hasExpired = isExpired();
+
+            if (isAdmin) {
+                // --- Admin View Active ---
+                targetBody.classList.remove('expired'); // Ensure not marked expired
+                expirationMessageDiv.style.display = 'none'; // Hide expiration message
+                finalPasswordSection.classList.add('hidden'); // Hide password form immediately
+                displayContentAsAdmin(); // Attempt to display content directly
+            } else if (hasExpired) {
+                // --- Normal View & EXPIRED ---
+                targetBody.classList.add('expired'); // Add class to hide normal content
+                expirationMessageDiv.style.display = 'block'; // Show expiration message
+                pageContainer.style.display = 'none'; // Hide the main container
+                console.warn("Trang đã hết hạn.");
+            } else {
+                // --- Normal View & NOT Expired ---
+                targetBody.classList.remove('expired');
+                expirationMessageDiv.style.display = 'none'; // Ensure expiration message hidden
+                pageContainer.style.display = 'block'; // Ensure main container visible
+                finalPasswordSection.classList.remove('hidden', 'hiding'); // Ensure password form visible
+
+                // Show warning modal or focus password input
+                if(finalWarningModal && finalWarningConfirmBtn){
+                    finalWarningModal.classList.remove('hidden','initial-state');
+                    const wCH = ()=>{ finalWarningModal.classList.add('hidden'); setTimeout(()=>finalPasswordInput.focus(), 100); };
+                    finalWarningConfirmBtn.onclick=wCH;
+                    finalWarningModal.onclick=(e)=>{if(e.target===finalWarningModal) wCH(); };
+                }else{
+                    setTimeout(() => finalPasswordInput.focus(), 100);
+                }
+            }
+
+            // Setup other modals and event listeners (always needed)
+            if(huanErrorModal && huanErrorConfirmBtn){ const hCH=()=>{ huanErrorModal.classList.add('hidden'); setTimeout(()=> finalPasswordInput.focus(), 100); }; huanErrorConfirmBtn.onclick=hCH; huanErrorModal.onclick=(e)=>{ if(e.target===huanErrorModal) hCH(); }; }
+            if (finalPasswordInput) { // Add check if element exists
+                finalPasswordInput.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') { checkFinalPagePassword(e); } });
+            }
+        });
         let finalResizeTimeout; window.addEventListener('resize',()=>{clearTimeout(finalResizeTimeout);finalResizeTimeout=setTimeout(createFinalParticles,300)});
 
     <\/script>
@@ -631,36 +743,58 @@
 </html>`;
         }
 
-        // ====== GENERATOR PAGE FUNCTIONS (Giữ nguyên) ======
+        // ====== GENERATOR PAGE FUNCTIONS (REVISED VALIDATION) ======
         function handleGenerate() {
              const markdownText = markdownInput.value.trim();
              const outputPassword = outputPasswordInput.value;
              const selectedImageLayout = imageLayoutSelect.value;
+             const expiryDay = parseInt(expiryDayInput.value, 10); const expiryMonth = parseInt(expiryMonthInput.value, 10); const expiryYear = parseInt(expiryYearInput.value, 10); const expiryHour = parseInt(expiryHourInput.value, 10); const expiryMinute = parseInt(expiryMinuteInput.value, 10);
+             let expiryDetails = null; let expiryIsValid = true;
+             const expiryFieldsEntered = expiryInputs.some(input => input.value.trim() !== ''); // Check if any expiry field has value
+
+             expiryInputs.forEach(input => input.classList.remove('error', 'shake')); // Reset expiry errors
+
+             if (expiryFieldsEntered) {
+                 const allExpiryFieldsFilled = expiryInputs.every(input => input.value.trim() !== ''); // Check if ALL are filled
+                 if (!allExpiryFieldsFilled) {
+                      expiryIsValid = false;
+                      expiryInputs.forEach(input => { if (input.value.trim() === '') input.classList.add('error'); });
+                      showStatus("Nhập đầy đủ Ngày/Tháng/Năm/Giờ/Phút hết hạn hoặc để trống tất cả.", "error", "error_outline", 7000);
+                 } else {
+                     try {
+                         const expiryDateObj = new Date(expiryYear, expiryMonth - 1, expiryDay, expiryHour, expiryMinute, 0); const now = new Date();
+                         if (isNaN(expiryDateObj.getTime()) || expiryDateObj.getFullYear() !== expiryYear || expiryDateObj.getMonth() !== expiryMonth - 1 || expiryDateObj.getDate() !== expiryDay || expiryDateObj <= now) {
+                             expiryIsValid = false; expiryInputs.forEach(input => input.classList.add('error'));
+                             showStatus("Thời gian hết hạn không hợp lệ hoặc đã ở quá khứ.", "error", "error_outline", 7000);
+                         } else {
+                             expiryDetails = { year: expiryYear, month: expiryMonth, day: expiryDay, hour: expiryHour, minute: expiryMinute };
+                         }
+                     } catch (e) { expiryIsValid = false; expiryInputs.forEach(input => input.classList.add('error')); showStatus("Lỗi xử lý ngày giờ hết hạn.", "error", "error_outline", 7000); console.error("Expiry error:", e); }
+                 }
+             }
 
              const getImageUrls = () => { const urls = []; imageUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
              const getIframeUrls = () => { const urls = []; iframeUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
-             const imageUrls = getImageUrls();
-             const iframeUrls = getIframeUrls();
+             const imageUrls = getImageUrls(); const iframeUrls = getIframeUrls();
 
              // --- VALIDATION ---
-             outputPasswordInput.classList.remove('error', 'shake');
-             imageLayoutSelect.classList.remove('error');
-             statusMessage.classList.remove('show');
-
-             let isValid = true;
-             let firstErrorField = null;
+             outputPasswordInput.classList.remove('error', 'shake'); imageLayoutSelect.classList.remove('error'); statusMessage.classList.remove('show');
+             let isValid = true; let firstErrorField = null;
              if (!outputPassword || outputPassword.length < 8) { outputPasswordInput.classList.add('error'); if (!firstErrorField) firstErrorField = outputPasswordInput; isValid = false; }
              if (!selectedImageLayout) { imageLayoutSelect.classList.add('error'); if (!firstErrorField) firstErrorField = imageLayoutSelect; isValid = false; }
              const invalidUrlInputs = document.querySelectorAll('.input-list-item input[type="url"].error');
              if (invalidUrlInputs.length > 0) { if (!firstErrorField) firstErrorField = invalidUrlInputs[0]; isValid = false; }
+             if (!expiryIsValid) { if (!firstErrorField) firstErrorField = expiryInputs.find(input => input.classList.contains('error')); isValid = false; }
+
              if (!isValid) {
                  let errorMsg = "";
                  if (outputPasswordInput.classList.contains('error')) errorMsg += "Mật khẩu cần ít nhất 8 ký tự. ";
                  if (imageLayoutSelect.classList.contains('error')) errorMsg += "Chưa chọn định dạng ảnh. ";
+                 if (!expiryIsValid) errorMsg += "Ngày giờ hết hạn không hợp lệ hoặc thiếu. ";
                  if (invalidUrlInputs.length > 0) errorMsg += `Có ${invalidUrlInputs.length} link không hợp lệ. `;
-                 showStatus(errorMsg.trim(), "error", "error_outline", 7000);
+                 showStatus(errorMsg.trim() || "Vui lòng kiểm tra lại các trường nhập liệu.", "error", "error_outline", 7000); // Added default message
                  if (firstErrorField) {
-                     firstErrorField.classList.add('shake'); firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstErrorField.focus({ preventScroll: true }); setTimeout(() => firstErrorField.classList.remove('shake'), 500);
+                     firstErrorField.classList.add('shake'); firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' }); try {firstErrorField.focus({ preventScroll: true });} catch(e){} setTimeout(() => firstErrorField.classList.remove('shake'), 500);
                  } else { document.getElementById('generator-container').classList.add('shake'); setTimeout(() => document.getElementById('generator-container').classList.remove('shake'), 500); }
                  return;
              }
@@ -668,65 +802,50 @@
 
              // --- GENERATION PROCESS ---
              try {
-                 if (typeof marked === 'undefined' || typeof CryptoJS === 'undefined') { throw new Error("Thư viện chưa tải xong, F5 lại?"); }
-
-                 let convertedHtml = "";
-                 if (markdownText) {
-                     marked.setOptions({ gfm: true, breaks: true, mangle: false, headerIds: false });
-                     convertedHtml = marked.parse(markdownText);
-                 }
+                 if (typeof marked === 'undefined' || typeof CryptoJS === 'undefined' || typeof btoa === 'undefined' || typeof atob === 'undefined') { throw new Error("Thư viện (marked, CryptoJS, Base64) chưa tải xong, F5 lại?"); }
+                 let convertedHtml = ""; if (markdownText) { marked.setOptions({ gfm: true, breaks: true, mangle: false, headerIds: false }); convertedHtml = marked.parse(markdownText); }
 
                  loadAndShowWarningModal(() => {
-                     showStatus("Đang xử lý mã hóa đa tầng...", "info", "hourglass_empty", 0);
+                     showStatus("Đang xử lý mã hóa đa tầng & cấu hình...", "info", "hourglass_empty", 0);
                      generateButton.disabled = true; generateButton.innerHTML = '<i class="material-icons spin">sync</i> ĐANG TẠO...';
                      copyButton.disabled = true; copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép';
 
                      setTimeout(() => {
                          try {
-                             fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, selectedImageLayout, imageUrls, iframeUrls);
-
+                             fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, selectedImageLayout, imageUrls, iframeUrls, expiryDetails);
                              if (!fullHtmlToCopy || typeof fullHtmlToCopy !== 'string' || fullHtmlToCopy.length < 500) { throw new Error("Kết quả tạo HTML lỗi hoặc quá ngắn."); }
-                             showStatus("Xong! Sẵn sàng copy mã nguồn siêu phẩm.", "success", "done_all", 5000);
-                             copyButton.disabled = false;
-                             copyButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                         } catch (genError) {
-                             console.error("HTML generation/encryption error:", genError);
-                             showStatus(`Lỗi tạo mã: ${genError.message}`, "error", "error_outline", 10000);
-                             fullHtmlToCopy = ''; copyButton.disabled = true;
-                         } finally {
-                             generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn';
-                         }
+                             showStatus("Xong! Sẵn sàng copy mã nguồn siêu phẩm v2.1.", "success", "done_all", 5000);
+                             copyButton.disabled = false; copyButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                         } catch (genError) { console.error("Lỗi tạo HTML/mã hóa:", genError); showStatus(`Lỗi tạo mã: ${genError.message}`, "error", "error_outline", 10000); fullHtmlToCopy = ''; copyButton.disabled = true;
+                         } finally { generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn'; }
                      }, 100);
-                 }, imageUrls, iframeUrls);
+                 }, imageUrls, iframeUrls, expiryDetails);
 
-             } catch (processingError) {
-                 console.error("Processing Error:", processingError);
-                 showStatus(`Lỗi xử lý: ${processingError.message}`, "error", "error", 8000);
-                 fullHtmlToCopy = ''; copyButton.disabled = true; generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn';
-             }
+             } catch (processingError) { console.error("Lỗi xử lý:", processingError); showStatus(`Lỗi xử lý: ${processingError.message}`, "error", "error", 8000); fullHtmlToCopy = ''; copyButton.disabled = true; generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn'; }
         }
 
         // Copy Function (Giữ nguyên)
-        function handleCopy() { if (!fullHtmlToCopy) { showStatus("Chưa có gì để copy.", "warning", "info", 3000); return; } if (!navigator.clipboard) { showStatus("Trình duyệt không hỗ trợ copy tự động.", "error", "report_problem", 7000); try { console.log("--- BEGIN CODE TO COPY ---"); console.log(fullHtmlToCopy); console.log("--- END CODE TO COPY ---"); alert("Lỗi copy tự động. Mã nguồn đã được in ra Console (F12)."); } catch (e) { alert("Lỗi copy và cả lỗi in ra console!"); } return; } navigator.clipboard.writeText(fullHtmlToCopy).then(() => { showStatus("Đã copy! ✨", "success", "done_all", 3000); copyButton.classList.add('copied'); copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Copy!'; setTimeout(() => { if (copyButton.classList.contains('copied')) { copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép'; } }, 3000); }).catch(err => { console.error('Copy error: ', err); showStatus("Lỗi copy!", "error", "report_problem", 5000); }); }
+        function handleCopy() { if (!fullHtmlToCopy) { showStatus("Chưa có gì để copy.", "warning", "info", 3000); return; } if (!navigator.clipboard) { showStatus("Trình duyệt không hỗ trợ copy tự động.", "error", "report_problem", 7000); try { console.log("--- BEGIN CODE TO COPY ---"); console.log(fullHtmlToCopy); console.log("--- END CODE TO COPY ---"); alert("Lỗi copy tự động. Mã nguồn đã được in ra Console (F12)."); } catch (e) { alert("Lỗi copy và cả lỗi in ra console!"); } return; } navigator.clipboard.writeText(fullHtmlToCopy).then(() => { showStatus("Đã copy! ✨", "success", "done_all", 3000); copyButton.classList.add('copied'); copyButton.innerHTML = '<i class="material-icons">check_circle</i> Đã Copy!'; setTimeout(() => { if (copyButton.classList.contains('copied')) { copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép'; } }, 3000); }).catch(err => { console.error('Lỗi copy: ', err); showStatus("Lỗi copy!", "error", "report_problem", 5000); }); }
 
-        // Show Confirmation Modal (Giữ nguyên)
-        function loadAndShowWarningModal(onConfirmCallback, currentImageUrls = [], currentIframeUrls = []) {
+        // Show Confirmation Modal (REVISED)
+        function loadAndShowWarningModal(onConfirmCallback, currentImageUrls = [], currentIframeUrls = [], currentExpiryDetails = null) {
              const hasImages = currentImageUrls.length > 0; const hasIframes = currentIframeUrls.length > 0; let mediaInfo = '';
              const selectedLayoutText = imageLayoutSelect.options[imageLayoutSelect.selectedIndex].text;
              if (hasImages || hasIframes) { mediaInfo += `<p style="color:var(--primary); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-bottom: 0.5rem;"><i class="material-icons">perm_media</i><strong>Nội dung nhúng thêm:</strong></p>`; const listStyle = 'style="list-style: none; padding: 0; margin: 0 auto; max-width: 80%; text-align: left;"'; mediaInfo += `<ul ${listStyle}>`; if (hasImages) mediaInfo += `<li style="margin-bottom: 0.3rem;"><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--success);">image</i>${currentImageUrls.length} Ảnh (Layout: ${selectedLayoutText})</li>`; if (hasIframes) mediaInfo += `<li><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--accent);">integration_instructions</i>${currentIframeUrls.length} Iframe/Video</li>`; mediaInfo += `</ul>`; } else { mediaInfo = '<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">web_asset_off</i>Không nhúng thêm ảnh/iframe.</p>'; }
+             let expiryInfo = '';
+             if (currentExpiryDetails) { const { day, month, year, hour, minute } = currentExpiryDetails; const pD = String(day).padStart(2, '0'); const pM = String(month).padStart(2, '0'); const pH = String(hour).padStart(2, '0'); const pMin = String(minute).padStart(2, '0'); expiryInfo = `<p style="color:var(--accent); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-top: 1rem;"><i class="material-icons">timer_off</i><strong>Hết hạn vào:</strong> ${pD}/${pM}/${year} lúc ${pH}:${pMin}</p>`;
+             } else { expiryInfo = `<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-top: 1rem;"><i class="material-icons">timer</i>Không đặt thời gian hết hạn.</p>`; }
              const modalHtml = `
                  <div class="modal-content">
-                    <h2 class="modal-title"><i class="material-icons">security</i> Xác nhận tạo mã</h2>
+                    <h2 class="modal-title"><i class="material-icons">security</i> Xác nhận tạo mã v2.1</h2>
                     <div class="modal-message" style="text-align: center;">
                         <p>Nội dung (nếu có) và media sẽ được bảo vệ bằng <strong>10 lớp AES</strong>.<br>Hãy chắc chắn bạn nhớ mật khẩu nhé!</p>
                         <hr style="border:0; height:1px; background:var(--md-border); margin: 1.2rem auto; width: 60%;">
-                        ${mediaInfo}
+                        ${mediaInfo} ${expiryInfo}
                         <hr style="border:0; height:1px; background:var(--md-border); margin: 1.2rem auto; width: 60%;">
                         <p style="color:var(--warning);font-weight:bold; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">warning_amber</i> Nhấn OK để xác nhận tạo mã nguồn.</p>
                     </div>
-                     <button class="modal-button" id="gen-warning-confirm">
-                         <i class="material-icons">check_circle</i> OK, Tạo Ngay!
-                    </button>
+                     <button class="modal-button" id="gen-warning-confirm"><i class="material-icons">check_circle</i> OK, Tạo Ngay!</button>
                  </div>`;
              warningModal.innerHTML = modalHtml; const confirmBtn = warningModal.querySelector('#gen-warning-confirm');
              const confirmHandler = () => { warningModal.classList.add('hidden'); if (typeof onConfirmCallback === 'function') setTimeout(onConfirmCallback, 50); warningModal.removeEventListener('click', outsideClickHandler); };
@@ -735,18 +854,19 @@
              warningModal.classList.add('initial-state'); warningModal.classList.remove('hidden'); requestAnimationFrame(() => { warningModal.classList.remove('initial-state'); });
          }
 
-
         // ====== INITIALIZATION (Generator Page) ======
         document.addEventListener('DOMContentLoaded', function() {
             try {
                  createParticles(particlesContainer);
                  generateButton.addEventListener('click', handleGenerate);
                  copyButton.addEventListener('click', handleCopy);
-                 [outputPasswordInput].forEach(input => { if(input) { input.addEventListener('input', () => { input.classList.remove('error', 'shake'); }); } });
+                 [outputPasswordInput, ...expiryInputs].forEach(input => {
+                    if(input) { input.addEventListener('input', () => { input.classList.remove('error', 'shake'); }); input.addEventListener('change', () => { input.classList.remove('error', 'shake'); }); }
+                 });
                  imageLayoutSelect.addEventListener('change', () => imageLayoutSelect.classList.remove('error'));
-                 showStatus("✨ Sẵn sàng mã hóa & nhúng đa phương tiện! ✨", "info", "auto_awesome", 7000);
+                 showStatus("✨ Sẵn sàng mã hóa & nhúng đa phương tiện v2.1! ✨", "info", "auto_awesome", 7000);
                  let resizeTimeout; window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300); });
-            } catch (e) { console.error("Initialization Error:", e); alert("Lỗi khởi tạo trang Generator. Kiểm tra Console (F12)."); showStatus("Lỗi khởi tạo nghiêm trọng!", "error", "report_problem", 0); }
+            } catch (e) { console.error("Lỗi khởi tạo:", e); alert("Lỗi khởi tạo trang Generator. Kiểm tra Console (F12)."); showStatus("Lỗi khởi tạo nghiêm trọng!", "error", "report_problem", 0); }
         });
     </script>
 </body>
