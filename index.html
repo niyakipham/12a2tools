@@ -43,7 +43,7 @@
         .generator-form { display: flex; flex-direction: column; gap: 1.8rem; margin-top: 2rem; }
         .input-group { position: relative; }
         .input-group label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; } .input-group .material-icons { font-size: 1.2rem; color: var(--secondary); }
-        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"], select#image-layout-select { /* <-- THÊM SELECT VÀO ĐÂY */
+        textarea#markdown-input, input[type="text"]#output-password-input, input[type="url"], select#image-layout-select {
             width: 100%; padding: 1rem 1.5rem; background: var(--bg-light); border: 1px solid rgba(110, 0, 255, 0.5); border-radius: var(--border-radius); color: var(--text-light); font-size: 1rem; transition: var(--transition); outline: none; letter-spacing: 1px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         textarea#markdown-input { min-height: 180px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; line-height: 1.5; padding: 1.5rem; border-color: rgba(110, 0, 255, 0.5) }
         /* Style riêng cho Select */
@@ -141,12 +141,10 @@
             <!-- Nội dung và Mật khẩu -->
             <div class="input-group">
                 <label for="markdown-input"><i class="material-icons">description</i> Nội Dung Chính (Markdown - Tùy chọn):</label>
-                <!-- *** BỎ required ở đây *** -->
                 <textarea id="markdown-input" placeholder="Nhập nội dung Markdown vào đây (có thể bao gồm ảnh)..."></textarea>
             </div>
             <div class="input-group">
                 <label for="output-password-input"><i class="material-icons">key</i> Đặt Mật Khẩu Bảo Mật (Bắt buộc):</label>
-                <!-- *** GIỮ required và minlength ở đây *** -->
                 <input type="text" id="output-password-input" placeholder="Ít nhất 8 ký tự, bảo mật mạnh!" required minlength="8">
             </div>
 
@@ -154,14 +152,12 @@
             <div class="input-group">
                  <label for="image-url-list"><i class="material-icons">collections</i> Danh Sách Link Ảnh (Nhúng thêm):</label>
                  <div class="input-list" id="image-url-list"></div>
-                 <!-- *** THÊM SELECT ĐỊNH DẠNG ẢNH *** -->
                  <label for="image-layout-select" style="margin-top: 1rem;"><i class="material-icons">view_quilt</i> Định Dạng Hiển Thị Ảnh:</label>
                  <select id="image-layout-select">
                      <option value="grid">Rời rạc ngang (3 ảnh/hàng)</option>
                      <option value="column">Rời rạc dọc (1 ảnh/hàng)</option>
                      <option value="comic">Comic (Dính liền, không click)</option>
                  </select>
-                 <!-- *********************************** -->
                  <button type="button" class="add-button" id="add-image-button"><i class="material-icons">add_photo_alternate</i> Thêm Ảnh</button>
                  <small class="input-note"><i class="material-icons">info_outline</i> Thêm link ảnh trực tiếp. Hiển thị trên nội dung chính.</small>
             </div>
@@ -192,7 +188,7 @@
         const iframeUrlList = document.getElementById('iframe-url-list');
         const addImageButton = document.getElementById('add-image-button');
         const addIframeButton = document.getElementById('add-iframe-button');
-        const imageLayoutSelect = document.getElementById('image-layout-select'); // *** LẤY ELEMENT SELECT ***
+        const imageLayoutSelect = document.getElementById('image-layout-select');
         const generateButton = document.getElementById('generate-button');
         const copyButton = document.getElementById('copy-button');
         const statusMessage = document.getElementById('status-message');
@@ -254,27 +250,25 @@
             return currentContent;
         }
 
-        // ====== HTML TEMPLATE GENERATION (REVISED FOR SIMPLIFIED ENCRYPTION & IMAGE LAYOUT) ======
-        // *** THÊM imageLayout vào tham số ***
+        // ====== HTML TEMPLATE GENERATION (REVISED CSS FOR #final-content-section) ======
         function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, imageLayout = 'grid', imageUrls = [], iframeUrls = []) {
             let encryptedMarkdownHtml;
             try {
-                // Mã hóa nội dung markdown (nếu có) hoặc chuỗi rỗng
-                const contentToEncrypt = markdownContentHtml || ""; // Mã hóa chuỗi rỗng nếu markdown trống
+                const contentToEncrypt = markdownContentHtml || "";
                 encryptedMarkdownHtml = multiLayerEncrypt(contentToEncrypt, pagePassword, 10);
             } catch (e) {
                 throw new Error(`Mã hóa thất bại: ${e.message}`);
             }
 
             const escapedEncryptedData = encryptedMarkdownHtml.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-            const escapedImageLayout = imageLayout.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$'); // *** ESCAPE IMAGE LAYOUT ***
+            const escapedImageLayout = imageLayout.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
             const imageUrlsJs = JSON.stringify(imageUrls);
             const iframeUrlsJs = JSON.stringify(iframeUrls);
 
             const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn vấn đề và tớ sẽ cố gắng giúp! 😉`;
             const huấnQuote = `Sau nay, chỉ có làm chịu khó cần cù thì bù siêng năng,... Cái loại xem chùa mà đòi free thì ăn cám<br><strong style="font-style:normal;font-weight:bold;font-size:1.1em;">| -_- |</strong>`;
 
-            // --- TARGET HTML TEMPLATE (Cập nhật CSS và JS cho layout ảnh) ---
+            // --- TARGET HTML TEMPLATE (CSS đã được sửa đổi) ---
             return `<!DOCTYPE html>
 <html lang="vi">
 <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nội Dung Bảo Mật & Media Đa Năng</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -300,8 +294,8 @@
 /* === PASSWORD SECTION (Giữ nguyên) === */
 .page-title{text-align:center;color:var(--primary);margin-bottom:2rem;font-weight:300;letter-spacing:2px;text-transform:uppercase;font-size:1.6rem;text-shadow:0 0 15px rgba(0,247,255,.5);position:relative;padding-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.7rem}.page-title .material-icons{font-size:2rem}.page-title::after{content:'';position:absolute;bottom:0;left:30%;width:40%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
 .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}
-#final-password-section{transition:opacity .5s ease,transform .5s ease,max-height .6s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s;max-height:500px;overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem}
-#final-password-section.hiding{opacity:0;transform:scale(.9);pointer-events:none;max-height:0;padding-top:0;padding-bottom:0;margin-bottom:0;visibility:hidden}
+#final-password-section{transition:opacity .5s ease,transform .5s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s; /* Loại bỏ max-height khỏi transition */ overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem; /* max-height:500px; */ /* Bỏ max-height */}
+#final-password-section.hiding{opacity:0;transform:scale(.9);pointer-events:none; /* max-height:0; */ /* Bỏ max-height */ padding-top:0;padding-bottom:0;margin-bottom:0;visibility:hidden; transition-delay: 0s !important; /* Đảm bảo ẩn nhanh */}
 .final-page-input-group label{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;color:var(--text-light);font-size:.9rem;letter-spacing:1px;text-transform:uppercase}.final-page-input-group label .material-icons{color:var(--secondary);font-size:1.2rem}
 .final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1.1rem;transition:var(--transition);outline:none;letter-spacing:3px;font-family:'Courier New',Courier,monospace}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}
 .final-page-button{background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border:none;padding:1rem;border-radius:var(--border-radius);cursor:pointer;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:var(--transition);box-shadow:0 4px 20px rgba(110,0,255,.4);position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.5rem}.final-page-button:hover:not(:disabled){transform:translateY(-3px) scale(1.03);box-shadow:0 6px 25px rgba(0,247,255,.6)}.final-page-button:disabled{filter:grayscale(70%);opacity:.6;cursor:not-allowed;box-shadow:none;transform:none!important}.final-page-button::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,rgba(255,255,255,0) 0%,rgba(255,255,255,.1) 50%,rgba(255,255,255,0) 100%);transform:rotate(45deg);animation:shine 3s infinite linear;opacity:.5; pointer-events: none;}@keyframes shine{0%{transform:translateX(-150%) rotate(45deg)}100%{transform:translateX(150%) rotate(45deg)}}
@@ -309,9 +303,23 @@
 .final-page-error-message.show{opacity:1; max-height: 100px;}
 .final-page-input-group input[type=password].shake{animation:shake-final .5s cubic-bezier(.36,.07,.19,.97) both;border-color:var(--error)}@keyframes shake-final{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
 .final-page-donation-prompt{text-align:center;margin-top:1.5rem;padding:.8rem 1rem;background:rgba(255,204,0,.1);border-left:4px solid var(--warning);border-radius:var(--border-radius);color:var(--warning);font-size:.9rem;line-height:1.5;font-style:italic}.final-page-donation-prompt strong{font-weight:700;color:var(--text-lighter)}
-/* === CONTENT SECTION (Giữ nguyên) === */
-#final-content-section{opacity:0;visibility:hidden;max-height:0;overflow:hidden;transition:opacity .6s ease-out,max-height .8s ease-out,visibility 0s linear .8s;position:relative}
-#final-content-section.visible{opacity:1;visibility:visible;max-height:5000vh;transition:opacity .6s ease-out .2s,max-height .8s ease-out .2s,visibility 0s linear 0s}
+
+/* === CONTENT SECTION (*** SỬA ĐỔI CSS ĐỂ KHÔNG GIỚI HẠN HIỂN THỊ ***) === */
+#final-content-section{
+    opacity:0; /* Bắt đầu ẩn */
+    visibility:hidden; /* Ẩn khỏi accessibility tree */
+    overflow: hidden; /* Ẩn nội dung tràn ra khi đang ẩn */
+    transition: opacity .6s ease-out, visibility 0s linear .6s; /* Chỉ transition opacity và visibility */
+    position: relative; /* Giữ position context cho children */
+}
+#final-content-section.visible{
+    opacity:1; /* Hiện */
+    visibility:visible; /* Hiện trong accessibility tree */
+    overflow: visible; /* Cho phép nội dung tràn ra và tự động giãn nở */
+    /* KHÔNG CẦN max-height nữa */
+    transition: opacity .6s ease-out .2s, visibility 0s linear 0s; /* Transition khi hiện */
+}
+/* Animation cho nội dung con bên trong (giữ nguyên) */
 #final-content-section.visible>*{animation:fadeInChild .7s ease-out forwards;opacity:0}
 #final-content-section.visible > #embedded-images-container { animation-delay: .1s; }
 #final-content-section.visible > #final-markdown-content { animation-delay: .3s; }
@@ -319,63 +327,55 @@
 #final-content-section.visible > .footer-note { animation-delay: .7s }
 @keyframes fadeInChild{0%{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* === *** STYLES FOR MULTIPLE MEDIA (CẬP NHẬT CHO LAYOUT ẢNH) *** === */
+/* === STYLES FOR MULTIPLE MEDIA (CẬP NHẬT CHO LAYOUT ẢNH - Giữ nguyên) === */
 #embedded-images-container {
     margin-bottom: 2.5rem;
-    /* Style mặc định (sẽ bị ghi đè bởi class layout) */
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
-/* Layout Rời Rạc Ngang (Grid - mặc định hoặc .layout-grid) */
 #embedded-images-container.layout-grid {
     display: grid;
-    gap: 1.5rem; /* Khoảng cách giữa các ảnh */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive: Tự động điều chỉnh số cột, tối thiểu 200px */
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
-@media (min-width: 600px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } } /* Rộng hơn trên màn hình lớn */
-@media (min-width: 900px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(3, 1fr); } } /* Cố định 3 cột trên màn hình rất lớn */
-
-/* Layout Rời Rạc Dọc (Column) */
+@media (min-width: 600px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } }
+@media (min-width: 900px) { #embedded-images-container.layout-grid { grid-template-columns: repeat(3, 1fr); } }
 #embedded-images-container.layout-column {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Khoảng cách giữa các ảnh */
-    align-items: center; /* Căn giữa ảnh nếu muốn */
+    gap: 1.5rem;
+    align-items: center;
 }
 #embedded-images-container.layout-column .embedded-image-item {
-    width: 100%; /* Chiếm toàn bộ chiều rộng */
-    max-width: 600px; /* Giới hạn chiều rộng tối đa */
+    width: 100%;
+    max-width: 600px;
 }
-
-/* Layout Comic */
 #embedded-images-container.layout-comic {
     display: flex;
-    flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
-    gap: 0; /* Không có khoảng cách */
-    margin-bottom: 2.5rem; /* Giữ khoảng cách dưới */
+    flex-wrap: wrap;
+    gap: 0;
+    margin-bottom: 2.5rem;
 }
 #embedded-images-container.layout-comic .embedded-image-item {
-    flex: 1 1 auto; /* Linh hoạt co giãn */
-    border: none; /* Bỏ viền */
-    border-radius: 0; /* Bỏ bo góc */
-    box-shadow: none; /* Bỏ đổ bóng */
-    margin: 0; /* Bỏ margin */
-    overflow: hidden; /* Đảm bảo ảnh không tràn */
-    min-width: 50px; /* Chiều rộng tối thiểu để tránh quá nhỏ */
+    flex: 1 1 auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    overflow: hidden;
+    min-width: 50px;
 }
 #embedded-images-container.layout-comic .embedded-image-item img {
-    border-radius: 0; /* Bỏ bo góc ảnh */
-    cursor: default !important; /* Bỏ con trỏ pointer */
-    transition: none; /* Bỏ transition */
+    border-radius: 0;
+    cursor: default !important;
+    transition: none;
 }
 #embedded-images-container.layout-comic .embedded-image-item img:hover {
-    transform: none; /* Bỏ hiệu ứng hover */
+    transform: none;
     filter: none;
     box-shadow: none;
 }
-
-/* Style chung cho Image Item (áp dụng cho grid & column) */
 .embedded-image-item {
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -392,7 +392,7 @@
     border-radius: calc(var(--border-radius) - 1px);
     opacity: 0;
     transition: opacity .5s ease-in .1s, transform .3s ease;
-    cursor: pointer; /* Mặc định có thể click */
+    cursor: pointer;
 }
 .embedded-image-item img.loaded { opacity: 1; }
 .embedded-image-item img:hover {
@@ -400,11 +400,7 @@
     filter: brightness(1.1);
     box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);
 }
-
-/* Media Error Message (Giữ nguyên) */
 .media-error-message { padding: 1.5rem; text-align: center; color: var(--error); font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 100px; background-color: rgba(255, 61, 113, 0.1); } .media-error-message .material-icons { font-size: 1.5rem; }
-
-/* Iframe Container (Giữ nguyên) */
 #embedded-iframes-container {margin-top: 3rem; display: grid; gap: 2rem; grid-template-columns: 1fr; }
 @media (min-width: 900px) {#embedded-iframes-container { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }}
 .iframe-item-wrapper { border: 1px solid var(--iframe-border); border-radius: var(--border-radius); overflow: hidden; background-color: var(--iframe-bg); box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2); position: relative; width: 100%; padding-top: 56.25%; transition: var(--transition); }
@@ -429,16 +425,14 @@
 .hidden{display:none!important;visibility:hidden}.text-center{text-align:center}
 .footer-note{text-align:center;margin-top:3rem;font-size:.9rem;color:var(--text-dim);opacity:.8;letter-spacing:.5px}.footer-note .material-icons{font-size:1rem;vertical-align:middle;margin-right:.2rem}
 .spin{animation:spin 1s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
-/* === RESPONSIVE OVERRIDES (Cập nhật cho ảnh) === */
+/* === RESPONSIVE OVERRIDES (Giữ nguyên) === */
 @media (max-width:768px){body{padding:1rem}.container{padding:1.5rem;margin:1rem auto}.final-page-password-form{max-width:100%}.page-title{font-size:1.4rem}.final-template-styles h1{font-size:1.8rem}.final-template-styles h2{font-size:1.5rem}.final-template-styles blockquote{padding:1rem 1.5rem 1rem 2.5rem}.final-template-styles blockquote::before{left:.5rem;font-size:2.5rem}.final-template-styles pre{padding:1.2rem}.final-template-styles td,.final-template-styles th{padding:.8rem 1rem}.modal-content{padding:1.5rem;max-width:95%}.modal-title{font-size:1.3rem}.modal-message{font-size:1rem}
-    /* Responsive cho ảnh */
     #embedded-images-container { gap: 1rem; margin-bottom: 1.5rem; }
-    #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } /* Nhỏ hơn trên mobile */
+    #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
     #embedded-images-container.layout-column { gap: 1rem; }
     #embedded-iframes-container { margin-top: 2rem; gap: 1.5rem; }}
 @media (max-width:480px){.final-page-password-form{gap:1.2rem}.final-page-input-group input[type=password]{padding:.8rem 1rem;font-size:1rem}.page-title{font-size:1.3rem}.modal-title{font-size:1.2rem}.modal-message{font-size:.95rem;line-height:1.6}.final-template-styles h1{font-size:1.6rem}.final-template-styles h2{font-size:1.3rem}.final-template-styles h3{font-size:1.2rem}.final-template-styles code:not(pre code){font-size:.85em}.final-template-styles pre code{font-size:.9em}.final-template-styles table{font-size:.9rem}.final-template-styles td,.final-template-styles th{padding:.6rem .8rem}
-    /* Responsive cho ảnh */
-    #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); } /* Còn nhỏ hơn */
+    #embedded-images-container.layout-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 }
 </style>
 </head>
@@ -462,7 +456,6 @@
         </div>
         <!-- Content Display Section -->
         <div id="final-content-section">
-            <!-- Container ảnh sẽ được thêm class layout ở đây -->
             <div id="embedded-images-container"></div>
             <div class="final-template-styles" id="final-markdown-content"></div>
             <div id="embedded-iframes-container"></div>
@@ -486,9 +479,9 @@
     </div>
 
     <script>
-        // === TARGET PAGE SCRIPT (REVISED) ===
+        // === TARGET PAGE SCRIPT (Giữ nguyên logic, CSS đã được sửa) ===
         const encryptedMarkdownContent = \`${escapedEncryptedData}\`;
-        const imageLayout = \`${escapedImageLayout}\`; // *** NHẬN IMAGE LAYOUT ***
+        const imageLayout = \`${escapedImageLayout}\`;
         const embeddedImageUrls = ${imageUrlsJs};
         const embeddedIframeUrls = ${iframeUrlsJs};
 
@@ -528,17 +521,13 @@
                     try { decryptedUtf8 = decryptedBytes.toString(CryptoJS.enc.Utf8); }
                     catch (utf8Error) { throw new Error('decrypt-fail'); }
 
-                    if (!decryptedUtf8 && i > 0) { // Nếu giải mã lớp trung gian ra rỗng -> lỗi
+                    if (!decryptedUtf8 && i > 0) {
                          throw new Error('decrypt-fail');
                      }
-                     // Cho phép kết quả cuối cùng (lớp 0) là rỗng nếu markdown gốc rỗng
                      if (!decryptedUtf8 && i === 0 && encryptedBase64Data !== "") {
-                         // Nếu kq cuối rỗng nhưng dữ liệu mã hóa ban đầu ko rỗng -> có thể lỗi
-                         // Trừ khi chuỗi gốc thực sự là "" được mã hóa (trường hợp này hiếm và phức tạp để check)
                          // Tạm chấp nhận kết quả rỗng nếu lớp cuối
                      }
 
-                    // Chỉ kiểm tra cấu trúc nếu giải mã không rỗng
                     if (decryptedUtf8) {
                         const parts = decryptedUtf8.split("|");
                         if (parts.length < 3 || parts[parts.length - 2] !== password || parseInt(parts[parts.length - 1], 10) !== i) {
@@ -546,11 +535,10 @@
                         }
                         currentData = parts.slice(0, parts.length - 2).join('|');
                     } else {
-                        // Nếu lớp cuối giải mã ra rỗng (do markdown gốc rỗng)
-                        currentData = ""; // Đặt currentData thành rỗng để trả về
+                        currentData = "";
                     }
                 }
-                return currentData; // Trả về nội dung gốc (có thể là chuỗi rỗng)
+                return currentData;
             } catch (e) {
                  if (e.message !== 'decrypt-fail') { console.error("Lỗi giải mã không mong muốn:", e); }
                 throw new Error('decrypt-fail');
@@ -562,7 +550,7 @@
         function showHuanModal() { if(!huanErrorModal) return; huanErrorModal.classList.add('initial-state'); huanErrorModal.classList.remove('hidden'); requestAnimationFrame(()=>{huanErrorModal.classList.remove('initial-state')}); }
         function isValidUrl(string) { if (!string) return false; try { new URL(string); return string.startsWith('http:') || string.startsWith('https:') || string.startsWith('data:'); } catch (_) { return false; } }
 
-        // Password Check & Content Display (CẬP NHẬT ĐỂ ÁP DỤNG LAYOUT ẢNH)
+        // Password Check & Content Display (Giữ nguyên logic)
         function checkFinalPagePassword(event){
             if(event)event.preventDefault();const enteredPassword=finalPasswordInput.value.trim();
             finalErrorMessage.classList.remove('show');
@@ -576,9 +564,9 @@
                 try{
                     const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, enteredPassword, 10);
 
-                    // --- Render Ảnh với Layout đã chọn ---
-                    finalImagesContainer.innerHTML = ''; // Xóa ảnh cũ (nếu có)
-                    finalImagesContainer.className = 'layout-' + imageLayout; // *** ÁP DỤNG CLASS LAYOUT ***
+                    // --- Render Ảnh ---
+                    finalImagesContainer.innerHTML = '';
+                    finalImagesContainer.className = 'layout-' + imageLayout;
 
                     if (Array.isArray(embeddedImageUrls) && embeddedImageUrls.length > 0) {
                          embeddedImageUrls.forEach(imageUrl => {
@@ -588,7 +576,6 @@
                                 img.onerror = () => { imgItem.innerHTML = '<div class="media-error-message"><i class="material-icons">broken_image</i> Ảnh lỗi</div>'; img.classList.add('loaded'); };
                                 img.onload = () => { img.classList.add('loaded'); };
                                 img.src = imageUrl;
-                                // *** CHỈ GÁN ONCLICK NẾU KHÔNG PHẢI LAYOUT COMIC ***
                                 if (imageLayout !== 'comic') {
                                     img.onclick = () => window.open(imageUrl, '_blank');
                                 }
@@ -597,10 +584,10 @@
                         });
                     }
 
-                    // Render Markdown Content (nếu có)
-                    finalMarkdownContentDiv.innerHTML = decryptedHtml; // decryptedHtml có thể rỗng
+                    // Render Markdown Content
+                    finalMarkdownContentDiv.innerHTML = decryptedHtml;
 
-                    // --- Render Iframes (Giữ nguyên) ---
+                    // --- Render Iframes ---
                     finalIframesContainer.innerHTML = '';
                     if (Array.isArray(embeddedIframeUrls) && embeddedIframeUrls.length > 0) {
                          embeddedIframeUrls.forEach(iframeUrl => {
@@ -614,8 +601,9 @@
                         });
                     } else { finalMarkdownContentDiv.style.marginBottom='0'; }
 
+                    // --- Show Content ---
                     finalPasswordSection.classList.add('hiding');
-                    finalContentSection.classList.add('visible');
+                    finalContentSection.classList.add('visible'); // Trigger transition (chỉ opacity/visibility)
                     setTimeout(()=>{ const focusTarget = finalMarkdownContentDiv.querySelector('h1, h2, h3, h4, h5, h6') || finalImagesContainer || finalIframesContainer || finalContentSection; if(focusTarget && typeof focusTarget.focus === 'function') { focusTarget.setAttribute('tabindex', '-1'); focusTarget.focus({preventScroll:true}); window.scrollTo({ top: finalContentSection.offsetTop - 20, behavior: 'smooth' }); } }, 700);
 
                 } catch(e) { // Handle Decryption Errors
@@ -623,8 +611,8 @@
                      else { showInlineError(e.message || "Lỗi xử lý không xác định."); }
                      finalPasswordInput.value = '';
                      finalPasswordSection.classList.remove('hiding');
-                     finalContentSection.classList.remove('visible');
-                     finalImagesContainer.innerHTML = ''; finalImagesContainer.className = ''; // Reset class layout
+                     finalContentSection.classList.remove('visible'); // Hide content again
+                     finalImagesContainer.innerHTML = ''; finalImagesContainer.className = '';
                      finalIframesContainer.innerHTML = '';
                      finalMarkdownContentDiv.innerHTML = '';
                  } finally {
@@ -643,34 +631,30 @@
 </html>`;
         }
 
-        // ====== GENERATOR PAGE FUNCTIONS (CẬP NHẬT VALIDATION & GỌI HÀM) ======
+        // ====== GENERATOR PAGE FUNCTIONS (Giữ nguyên) ======
         function handleGenerate() {
-             const markdownText = markdownInput.value.trim(); // Lấy cả khi nó rỗng
+             const markdownText = markdownInput.value.trim();
              const outputPassword = outputPasswordInput.value;
-             const selectedImageLayout = imageLayoutSelect.value; // *** LẤY GIÁ TRỊ LAYOUT ĐÃ CHỌN ***
+             const selectedImageLayout = imageLayoutSelect.value;
 
-             // Lấy URL từ list (logic giữ nguyên)
              const getImageUrls = () => { const urls = []; imageUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
              const getIframeUrls = () => { const urls = []; iframeUrlList.querySelectorAll('.input-list-item input[type="url"]').forEach(i => { const u=i.value.trim(); i.classList.remove('error', 'shake'); if (u) { if (isValidUrl(u)) { urls.push(u); } else { i.classList.add('error'); } } }); return urls; };
              const imageUrls = getImageUrls();
              const iframeUrls = getIframeUrls();
 
-             // --- VALIDATION (CẬP NHẬT: BỎ CHECK MARKDOWN) ---
-             // markdownInput.classList.remove('error', 'shake'); // Không cần check markdown nữa
+             // --- VALIDATION ---
              outputPasswordInput.classList.remove('error', 'shake');
-             imageLayoutSelect.classList.remove('error'); // Xóa lỗi select nếu có
+             imageLayoutSelect.classList.remove('error');
              statusMessage.classList.remove('show');
 
              let isValid = true;
              let firstErrorField = null;
-             // KHÔNG check markdownInput nữa
              if (!outputPassword || outputPassword.length < 8) { outputPasswordInput.classList.add('error'); if (!firstErrorField) firstErrorField = outputPasswordInput; isValid = false; }
-             if (!selectedImageLayout) { imageLayoutSelect.classList.add('error'); if (!firstErrorField) firstErrorField = imageLayoutSelect; isValid = false; } // Kiểm tra select có giá trị không (dù mặc định có)
+             if (!selectedImageLayout) { imageLayoutSelect.classList.add('error'); if (!firstErrorField) firstErrorField = imageLayoutSelect; isValid = false; }
              const invalidUrlInputs = document.querySelectorAll('.input-list-item input[type="url"].error');
              if (invalidUrlInputs.length > 0) { if (!firstErrorField) firstErrorField = invalidUrlInputs[0]; isValid = false; }
              if (!isValid) {
                  let errorMsg = "";
-                 // KHÔNG thêm lỗi markdown
                  if (outputPasswordInput.classList.contains('error')) errorMsg += "Mật khẩu cần ít nhất 8 ký tự. ";
                  if (imageLayoutSelect.classList.contains('error')) errorMsg += "Chưa chọn định dạng ảnh. ";
                  if (invalidUrlInputs.length > 0) errorMsg += `Có ${invalidUrlInputs.length} link không hợp lệ. `;
@@ -682,28 +666,23 @@
              }
              // --- END VALIDATION ---
 
-             // --- GENERATION PROCESS (Gọi hàm mới) ---
+             // --- GENERATION PROCESS ---
              try {
                  if (typeof marked === 'undefined' || typeof CryptoJS === 'undefined') { throw new Error("Thư viện chưa tải xong, F5 lại?"); }
 
-                 // 1. Convert Markdown to HTML (Chỉ chạy nếu có markdown)
                  let convertedHtml = "";
-                 if (markdownText) { // *** CHỈ CHUYỂN ĐỔI NẾU CÓ NỘI DUNG MARKDOWN ***
+                 if (markdownText) {
                      marked.setOptions({ gfm: true, breaks: true, mangle: false, headerIds: false });
                      convertedHtml = marked.parse(markdownText);
                  }
-                 // console.log("Converted HTML (có thể rỗng):", convertedHtml.substring(0, 200) + "...");
 
-                 // 2. Show Confirmation Modal (Giữ nguyên)
                  loadAndShowWarningModal(() => {
                      showStatus("Đang xử lý mã hóa đa tầng...", "info", "hourglass_empty", 0);
                      generateButton.disabled = true; generateButton.innerHTML = '<i class="material-icons spin">sync</i> ĐANG TẠO...';
                      copyButton.disabled = true; copyButton.classList.remove('copied'); copyButton.innerHTML = '<i class="material-icons">content_copy</i> Sao Chép';
 
-                     // 3. Generate Target HTML using the converted HTML
                      setTimeout(() => {
                          try {
-                             // *** TRUYỀN selectedImageLayout vào hàm generateTargetHtmlTemplate ***
                              fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, selectedImageLayout, imageUrls, iframeUrls);
 
                              if (!fullHtmlToCopy || typeof fullHtmlToCopy !== 'string' || fullHtmlToCopy.length < 500) { throw new Error("Kết quả tạo HTML lỗi hoặc quá ngắn."); }
@@ -718,7 +697,7 @@
                              generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn';
                          }
                      }, 100);
-                 }, imageUrls, iframeUrls); // Vẫn truyền media vào modal để hiển thị thông tin
+                 }, imageUrls, iframeUrls);
 
              } catch (processingError) {
                  console.error("Processing Error:", processingError);
@@ -733,7 +712,7 @@
         // Show Confirmation Modal (Giữ nguyên)
         function loadAndShowWarningModal(onConfirmCallback, currentImageUrls = [], currentIframeUrls = []) {
              const hasImages = currentImageUrls.length > 0; const hasIframes = currentIframeUrls.length > 0; let mediaInfo = '';
-             const selectedLayoutText = imageLayoutSelect.options[imageLayoutSelect.selectedIndex].text; // Lấy text của option đã chọn
+             const selectedLayoutText = imageLayoutSelect.options[imageLayoutSelect.selectedIndex].text;
              if (hasImages || hasIframes) { mediaInfo += `<p style="color:var(--primary); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-bottom: 0.5rem;"><i class="material-icons">perm_media</i><strong>Nội dung nhúng thêm:</strong></p>`; const listStyle = 'style="list-style: none; padding: 0; margin: 0 auto; max-width: 80%; text-align: left;"'; mediaInfo += `<ul ${listStyle}>`; if (hasImages) mediaInfo += `<li style="margin-bottom: 0.3rem;"><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--success);">image</i>${currentImageUrls.length} Ảnh (Layout: ${selectedLayoutText})</li>`; if (hasIframes) mediaInfo += `<li><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--accent);">integration_instructions</i>${currentIframeUrls.length} Iframe/Video</li>`; mediaInfo += `</ul>`; } else { mediaInfo = '<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">web_asset_off</i>Không nhúng thêm ảnh/iframe.</p>'; }
              const modalHtml = `
                  <div class="modal-content">
@@ -763,9 +742,8 @@
                  createParticles(particlesContainer);
                  generateButton.addEventListener('click', handleGenerate);
                  copyButton.addEventListener('click', handleCopy);
-                 // *** BỎ markdownInput ra khỏi danh sách check lỗi ban đầu ***
                  [outputPasswordInput].forEach(input => { if(input) { input.addEventListener('input', () => { input.classList.remove('error', 'shake'); }); } });
-                 imageLayoutSelect.addEventListener('change', () => imageLayoutSelect.classList.remove('error')); // Xóa lỗi khi chọn layout
+                 imageLayoutSelect.addEventListener('change', () => imageLayoutSelect.classList.remove('error'));
                  showStatus("✨ Sẵn sàng mã hóa & nhúng đa phương tiện! ✨", "info", "auto_awesome", 7000);
                  let resizeTimeout; window.addEventListener('resize', () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => createParticles(particlesContainer), 300); });
             } catch (e) { console.error("Initialization Error:", e); alert("Lỗi khởi tạo trang Generator. Kiểm tra Console (F12)."); showStatus("Lỗi khởi tạo nghiêm trọng!", "error", "report_problem", 0); }
