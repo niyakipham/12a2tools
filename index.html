@@ -348,7 +348,7 @@
             } return currentContent;
         }
 
-        // ====== HTML TEMPLATE GENERATION (REVISED v2.2) ======
+        // ====== HTML TEMPLATE GENERATION (REVISED v2.2 - MODIFIED TO REMOVE HINT & ADD FREESOS) ======
         function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, pageLayoutMode = 'normal', imageLayout = 'grid', imageUrls = [], iframeUrls = [], expiryDetails = null) {
             let encryptedMarkdownHtml;
             try {
@@ -357,21 +357,24 @@
             } catch (e) { throw new Error(`Mã hóa thất bại: ${e.message}`); }
 
             const escapedEncryptedData = encryptedMarkdownHtml.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-            const escapedPageLayoutMode = pageLayoutMode.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$'); // NEW: Escape page layout mode
+            const escapedPageLayoutMode = pageLayoutMode.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
             const escapedImageLayout = imageLayout.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
             const imageUrlsJs = JSON.stringify(imageUrls);
             const iframeUrlsJs = JSON.stringify(iframeUrls);
             const expiryDetailsJs = expiryDetails ? JSON.stringify(expiryDetails) : 'null';
-            const adminEncodedPassJs = `'${btoa(pagePassword)}'`; // Simple Base64 encoding
+            // Store original password encoded for admin/freesos bypass decryption
+            const adminEncodedPassJs = `'${btoa(pagePassword)}'`;
 
-            const adminKeyTripleEncoded = btoa(btoa(btoa('admin')));
-            const adminAccessInfo = `🔑 Để bỏ qua hết hạn & mật khẩu, thêm tham số <code>?view=${adminKeyTripleEncoded}</code> vào cuối URL.`;
+            // --- REMOVED adminAccessInfo GENERATION ---
+            // const adminKeyTripleEncoded = btoa(btoa(btoa('admin')));
+            // const adminAccessInfo = `🔑 Để bỏ qua...`; // Removed
+
             const donateMessage = `🤫 Quên mật khẩu? Đôn nết nhẹ <strong>10K</strong> vào Momo/ZaloPay <strong>0901574726</strong>, nhắn vấn đề và tớ sẽ cố gắng giúp! 😉`;
             const huấnQuote = `Sau nay, chỉ có làm chịu khó cần cù thì bù siêng năng,... Cái loại xem chùa mà đòi free thì ăn cám<br><strong style="font-style:normal;font-weight:bold;font-size:1.1em;">| -_- |</strong>`;
             const expiredMessage = `Ôi không, vận may của bạn đã hết. File đã hết hạn rùi!!!`;
 
             // --- TARGET HTML TEMPLATE (REVISED STRUCTURE & CSS v2.2) ---
-            return `<!DOCTYPE html>
+            return `
 <html lang="vi">
 <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nội Dung Bảo Mật & Media Đa Năng v2.2</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
@@ -395,7 +398,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
 .page-title{text-align:center;color:var(--primary);margin-bottom:2rem;font-weight:300;letter-spacing:2px;text-transform:uppercase;font-size:1.6rem;text-shadow:0 0 15px rgba(0,247,255,.5);position:relative;padding-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.7rem}.page-title .material-icons{font-size:2rem}.page-title::after{content:'';position:absolute;bottom:0;left:30%;width:40%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
 .final-page-password-form{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem;max-width:400px;margin-left:auto;margin-right:auto}
 #final-password-section{transition:opacity .5s ease,transform .5s ease,padding .6s ease,margin .6s ease,visibility 0s linear .6s; overflow:hidden;visibility:visible;padding:1rem 0;margin-bottom:2rem;}
-#final-password-section.hidden{display: none !important;} /* Simple hide for admin */
+#final-password-section.hidden{display: none !important;} /* Simple hide for admin/freesos */
 #final-password-section.hiding{opacity:0;transform:scale(.9);pointer-events:none; padding-top:0;padding-bottom:0;margin-bottom:0;visibility:hidden; transition-delay: 0s !important;}
 .final-page-input-group label{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;color:var(--text-light);font-size:.9rem;letter-spacing:1px;text-transform:uppercase}.final-page-input-group label .material-icons{color:var(--secondary);font-size:1.2rem}
 .final-page-input-group input[type=password]{width:100%;padding:1rem 1.5rem;background:var(--bg-light);border:1px solid rgba(110,0,255,.5);border-radius:var(--border-radius);color:var(--text-light);font-size:1.1rem;transition:var(--transition);outline:none;letter-spacing:3px;font-family:'Courier New',Courier,monospace}.final-page-input-group input[type=password]:focus{border-color:var(--primary);box-shadow:0 0 15px rgba(0,247,255,.5);transform:translateY(-2px)}
@@ -542,7 +545,8 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
                     <label for="final-password-input"><i class="material-icons">password</i> Mã Truy Cập:</label>
                     <input type="password" id="final-password-input" placeholder="••••••••••••" autocomplete="current-password" required>
                 </div>
-                <div class="final-page-donation-prompt">${donateMessage}<br>${adminAccessInfo}</div>
+                <!-- --- MODIFIED: Removed admin hint --- -->
+                <div class="final-page-donation-prompt">${donateMessage}</div>
                 <button type="submit" class="final-page-button" id="final-submit-btn">
                     <i class="material-icons">sensors</i> Giải Mã & Hiển Thị
                 </button>
@@ -575,14 +579,14 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
     </div>
 
     <script>
-        // === TARGET PAGE SCRIPT (REVISED v2.2 with Study Mode) ===
+        // === TARGET PAGE SCRIPT (REVISED v2.2 with Study Mode & FreeSOS) ===
         const encryptedMarkdownContent = \`${escapedEncryptedData}\`;
-        const pageLayoutMode = \`${escapedPageLayoutMode}\`; // NEW: Get layout mode
+        const pageLayoutMode = \`${escapedPageLayoutMode}\`;
         const imageLayout = \`${escapedImageLayout}\`;
         const embeddedImageUrls = ${imageUrlsJs};
         const embeddedIframeUrls = ${iframeUrlsJs};
         const expiryDetails = ${expiryDetailsJs};
-        const adminEncodedPass = ${adminEncodedPassJs};
+        const adminEncodedPass = ${adminEncodedPassJs}; // Still needed for bypass decryption
 
         // Elements
         const targetBody = document.getElementById('target-body');
@@ -638,12 +642,30 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             try { for (let i = 0; i < layers; i++) { currentData = atob(currentData); } return currentData; }
             catch (e) { console.warn('Base64 decoding failed:', e); return null; }
         }
-        // Check if Admin View is active
-        function isAdminViewActive() {
-            const urlParams = new URLSearchParams(window.location.search); const viewParam = urlParams.get('view');
+
+        // ---- MODIFIED Check if Admin/FreeSOS View is active ----
+        function isAdminOrFreeSosViewActive() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
             if (!viewParam) { return false; }
-            const decodedAdmin = decodeBase64Multi(viewParam, 3); return decodedAdmin === 'admin';
+
+            // Check for 'freesos' explicitly
+            if (viewParam === 'freesos') {
+                console.log("Chế độ FreeSOS được kích hoạt!");
+                return true;
+            }
+
+            // Check for the original admin key (triple base64 'admin')
+            const decodedAdmin = decodeBase64Multi(viewParam, 3);
+            if (decodedAdmin === 'admin') {
+                console.log("Chế độ Admin (legacy) được kích hoạt!");
+                return true;
+            }
+
+            return false;
         }
+        // ---- END MODIFICATION ----
+
         // Check Expiration Status
         function isExpired() {
             if (!expiryDetails) { return false; }
@@ -664,61 +686,48 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             for (let i = 0; i < children.length; i++) {
                 const currentElement = children[i];
                 const nextElement = children[i + 1];
-                const strongChild = currentElement.querySelector(':scope > strong:only-child'); // Strong is the only direct child
+                const strongChild = currentElement.querySelector(':scope > strong:only-child');
                 const textContentTrimmed = currentElement.textContent.trim();
-                const isIndented = /^\s{4,}/.test(currentElement.innerHTML); // Check raw HTML for leading spaces within the tag itself
+                const isIndented = /^\s{4,}/.test(currentElement.innerHTML);
                 const containsOnlyStrong = strongChild && strongChild.textContent.trim() === textContentTrimmed;
-                const isExplanation = currentElement.querySelector(':scope > em > strong') || (currentElement.tagName === 'LI' && currentElement.querySelector(':scope > em > strong')); // Starts with * **...** (<em><strong>...)
+                const isExplanation = currentElement.querySelector(':scope > em > strong') || (currentElement.tagName === 'LI' && currentElement.querySelector(':scope > em > strong'));
 
-
-                // 1. Identify Question: <p><strong>...</strong></p>
-                 if (currentElement.tagName === 'P' && containsOnlyStrong) {
+                 if (currentElement.tagName === 'P' && containsOnlyStrong && !isIndented) { // Question should not be indented
                      currentElement.classList.add('study-question');
                      lastQuestionElement = currentElement;
-                     lastAnswerElement = null; // Reset answer tracking for new question
+                     lastAnswerElement = null;
                      console.log('Found Question:', currentElement.textContent);
                 }
-                // 2. Identify Answer: Indented <p><strong> or <li><strong> following a question
                 else if (lastQuestionElement && isIndented && containsOnlyStrong) {
-                     // Check if it immediately follows the last question or an answer/explanation related to the same question
                     if (currentElement.previousElementSibling === lastQuestionElement || currentElement.previousElementSibling === lastAnswerElement || currentElement.previousElementSibling?.classList.contains('study-explanation')) {
                          currentElement.classList.add('study-answer');
                          questionCounter++;
                          const answerId = \`study-answer-\${questionCounter}\`;
                          const explanationId = \`study-explanation-\${questionCounter}\`;
-                         currentElement.dataset.explanationTarget = explanationId; // Link answer to explanation
-                         lastAnswerElement = currentElement; // Track this answer
+                         currentElement.dataset.explanationTarget = explanationId;
+                         lastAnswerElement = currentElement;
                          console.log('Found Answer for:', lastQuestionElement.textContent, '->', currentElement.textContent);
-
-                        // Add click listener
                         currentElement.addEventListener('click', function() {
                            const targetId = this.dataset.explanationTarget;
                            const explanationEl = document.getElementById(targetId);
-                           if (explanationEl) {
-                                explanationEl.classList.toggle('visible');
-                           } else {
-                               console.warn(\`Explanation target '\${targetId}' not found for\`, this);
-                           }
+                           if (explanationEl) explanationEl.classList.toggle('visible');
+                           else console.warn(\`Explanation target '\${targetId}' not found for\`, this);
                         });
                     }
                 }
-                 // 3. Identify Explanation: <p><em><strong>... or <li><em><strong> following an answer
-                else if (lastAnswerElement && isExplanation) {
-                     // Check if it immediately follows the last answer element
-                     if (currentElement.previousElementSibling === lastAnswerElement) {
-                         const explanationId = lastAnswerElement.dataset.explanationTarget; // Get ID from the linked answer
+                else if (lastAnswerElement && (isExplanation || (currentElement.tagName === 'UL' || currentElement.tagName === 'OL') && (currentElement.previousElementSibling === lastAnswerElement || currentElement.previousElementSibling?.classList.contains('study-explanation')) )) { // Explanation follows Answer OR a list following explanation
+                     if (currentElement.previousElementSibling === lastAnswerElement || currentElement.previousElementSibling?.classList.contains('study-explanation')) {
+                         const explanationId = lastAnswerElement.dataset.explanationTarget;
                          currentElement.classList.add('study-explanation');
                          currentElement.id = explanationId;
-                         lastQuestionElement = null; // Stop linking after explanation found for this block
-                         lastAnswerElement = null;   // Reset answer element tracking
+                         // Keep lastAnswerElement active for potential list explanation continuation
+                         //lastQuestionElement = null; // Don't reset question for list explanation
                          console.log('Found Explanation:', currentElement.textContent);
                     }
-                } else {
-                    // If it's not Q, A, or E, reset tracking unless it's related to current flow
-                     if (!currentElement.classList.contains('study-answer') && !currentElement.classList.contains('study-explanation')) {
-                         //lastQuestionElement = null; // Can be uncommented if strict Q/A/E sequence is required
-                         //lastAnswerElement = null;
-                     }
+                 } else if (!currentElement.classList.contains('study-answer') && !currentElement.classList.contains('study-explanation') && currentElement.tagName !== 'UL' && currentElement.tagName !== 'OL') {
+                      // Reset only if it's a new block not related to Q/A/E
+                     // lastQuestionElement = null;
+                     // lastAnswerElement = null;
                  }
             }
              console.log("Study Mode Processing Finished.");
@@ -744,12 +753,9 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             // Render Markdown (Standard Conversion)
             finalMarkdownContentDiv.innerHTML = decryptedHtml;
 
-             // NEW: Process for Study Mode AFTER rendering standard HTML
-            if (pageLayoutMode === 'study') {
-                 processStudyModeContent();
-            } else {
-                 finalMarkdownContentDiv.classList.remove('study-mode'); // Ensure normal mode doesn't have the class
-             }
+             // Process for Study Mode AFTER rendering standard HTML
+            if (pageLayoutMode === 'study') { processStudyModeContent(); }
+            else { finalMarkdownContentDiv.classList.remove('study-mode'); }
 
             // Render Iframes
             finalIframesContainer.innerHTML = '';
@@ -766,15 +772,17 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             } else { if(finalMarkdownContentDiv) finalMarkdownContentDiv.style.marginBottom='0'; }
         }
 
-        // Function to display content directly as admin
-        function displayContentAsAdmin() {
-            console.log("Chế độ Admin kích hoạt. Bỏ qua mật khẩu & hết hạn.");
-            if (!adminEncodedPass) { console.error("Lỗi: Không tìm thấy mật khẩu admin đã mã hóa."); showInlineError("Lỗi cấu hình Admin: Thiếu khóa."); return; }
-            let adminPassword;
-            try { adminPassword = atob(adminEncodedPass); } catch (e) { console.error("Lỗi giải mã mật khẩu admin:", e); showInlineError("Lỗi cấu hình Admin: Giải mã khóa thất bại."); return; }
+        // ---- Function to display content directly (Used by Admin/FreeSOS) ----
+        function displayContentAsAdmin() { // Renamed internally for clarity, but function remains
+            console.log("Chế độ bỏ qua kích hoạt. Bỏ qua mật khẩu & hết hạn.");
+            // Critical: Use the password embedded during generation for decryption
+            if (!adminEncodedPass) { console.error("Lỗi: Không tìm thấy mật khẩu gốc đã mã hóa."); showInlineError("Lỗi cấu hình Bypass: Thiếu khóa."); return; }
+            let originalPassword;
+            try { originalPassword = atob(adminEncodedPass); } catch (e) { console.error("Lỗi giải mã mật khẩu gốc:", e); showInlineError("Lỗi cấu hình Bypass: Giải mã khóa thất bại."); return; }
 
             try {
-                const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, adminPassword, 10);
+                // Decrypt using the original password obtained from adminEncodedPass
+                const decryptedHtml = multiLayerDecrypt(encryptedMarkdownContent, originalPassword, 10);
                 renderContent(decryptedHtml); // Render handles Study Mode processing internally now
                 finalContentSection.classList.add('visible');
                 setTimeout(() => {
@@ -785,8 +793,8 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
                     } else { window.scrollTo({ top: pageContainer.offsetTop - 20, behavior: 'smooth' }); }
                 }, 200);
             } catch (e) {
-                console.error("Lỗi giải mã Admin:", e);
-                showInlineError(e.message === 'decrypt-fail' ? "Lỗi giải mã Admin: Dữ liệu/Khóa không khớp." : "Lỗi giải mã Admin không xác định.");
+                console.error("Lỗi giải mã ở chế độ Bypass:", e);
+                showInlineError(e.message === 'decrypt-fail' ? "Lỗi giải mã Bypass: Dữ liệu/Khóa không khớp." : "Lỗi giải mã Bypass không xác định.");
                 finalContentSection.classList.remove('visible'); finalImagesContainer.innerHTML = ''; finalIframesContainer.innerHTML = ''; finalMarkdownContentDiv.innerHTML = '';
             }
         }
@@ -820,25 +828,37 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             }, 150);
         }
 
-        // Initialization (REVISED LOGIC v2.2)
+        // ---- MODIFIED Initialization (Checks for FreeSOS/Admin) ----
         document.addEventListener('DOMContentLoaded',()=>{
             createFinalParticles();
             if (finalContentSection) finalContentSection.setAttribute('tabindex','-1'); // Make focusable
 
-            const isAdmin = isAdminViewActive();
+            // Use the combined check function
+            const isBypassActive = isAdminOrFreeSosViewActive(); // <<< CHANGE HERE
             const hasExpired = isExpired();
 
-            if (isAdmin) {
-                targetBody.classList.remove('expired'); if(expirationMessageDiv) expirationMessageDiv.style.display = 'none';
-                if(finalPasswordSection) finalPasswordSection.classList.add('hidden');
-                displayContentAsAdmin();
-            } else if (hasExpired) {
-                targetBody.classList.add('expired'); if(expirationMessageDiv) expirationMessageDiv.style.display = 'block';
-                if(pageContainer) pageContainer.style.display = 'none'; console.warn("Trang đã hết hạn.");
-            } else {
-                targetBody.classList.remove('expired'); if(expirationMessageDiv) expirationMessageDiv.style.display = 'none';
-                if(pageContainer) pageContainer.style.display = 'block'; if(finalPasswordSection) finalPasswordSection.classList.remove('hidden', 'hiding');
+            if (isBypassActive) { // <<< CHANGE HERE
+                // FreeSOS or Admin Key - Bypass mode
+                targetBody.classList.remove('expired');
+                if(expirationMessageDiv) expirationMessageDiv.style.display = 'none';
+                if(finalPasswordSection) finalPasswordSection.classList.add('hidden'); // Hide password form
+                displayContentAsAdmin(); // Decrypt using the embedded original password
 
+            } else if (hasExpired) {
+                // Normal user, and content has expired
+                targetBody.classList.add('expired');
+                if(expirationMessageDiv) expirationMessageDiv.style.display = 'block';
+                if(pageContainer) pageContainer.style.display = 'none';
+                console.warn("Trang đã hết hạn.");
+
+            } else {
+                // Normal user, content not expired, show password prompt
+                targetBody.classList.remove('expired');
+                if(expirationMessageDiv) expirationMessageDiv.style.display = 'none';
+                if(pageContainer) pageContainer.style.display = 'block';
+                if(finalPasswordSection) finalPasswordSection.classList.remove('hidden', 'hiding');
+
+                // Show initial warning modal or focus password field
                 if(finalWarningModal && finalWarningConfirmBtn){
                     finalWarningModal.classList.remove('hidden','initial-state');
                     const wCH = ()=>{ finalWarningModal.classList.add('hidden'); setTimeout(()=>finalPasswordInput?.focus(), 100); };
@@ -853,6 +873,8 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
             if(huanErrorModal && huanErrorConfirmBtn){ const hCH=()=>{ huanErrorModal.classList.add('hidden'); setTimeout(()=> finalPasswordInput?.focus(), 100); }; huanErrorConfirmBtn.onclick=hCH; huanErrorModal.onclick=(e)=>{ if(e.target===huanErrorModal) hCH(); }; }
             if (finalPasswordInput) { finalPasswordInput.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') { checkFinalPagePassword(e); } }); }
         });
+        // ---- END MODIFIED INITIALIZATION ----
+
         let finalResizeTimeout; window.addEventListener('resize',()=>{clearTimeout(finalResizeTimeout);finalResizeTimeout=setTimeout(createFinalParticles,300)});
 
     <\/script>
@@ -864,7 +886,6 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
         function handleGenerate() {
              const markdownText = markdownInput.value.trim();
              const outputPassword = outputPasswordInput.value;
-             // NEW: Get Page Layout Mode
              const selectedPageLayoutMode = document.querySelector('input[name="page-layout"]:checked')?.value || 'normal';
              const selectedImageLayout = imageLayoutSelect.value;
              const expiryDay = parseInt(expiryDayInput.value, 10); const expiryMonth = parseInt(expiryMonthInput.value, 10); const expiryYear = parseInt(expiryYearInput.value, 10); const expiryHour = parseInt(expiryHourInput.value, 10); const expiryMinute = parseInt(expiryMinuteInput.value, 10);
@@ -900,7 +921,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
              outputPasswordInput.classList.remove('error', 'shake'); imageLayoutSelect.classList.remove('error'); statusMessage.classList.remove('show');
              let isValid = true; let firstErrorField = null;
              if (!outputPassword || outputPassword.length < 8) { outputPasswordInput.classList.add('error'); if (!firstErrorField) firstErrorField = outputPasswordInput; isValid = false; }
-             if (!selectedPageLayoutMode) { console.error("Lỗi không chọn được layout mode"); isValid = false; } // Should not happen with default checked radio
+             if (!selectedPageLayoutMode) { console.error("Lỗi không chọn được layout mode"); isValid = false; }
              if (!selectedImageLayout) { imageLayoutSelect.classList.add('error'); if (!firstErrorField) firstErrorField = imageLayoutSelect; isValid = false; }
              const invalidUrlInputs = document.querySelectorAll('.input-list-item input[type="url"].error');
              if (invalidUrlInputs.length > 0) { if (!firstErrorField) firstErrorField = invalidUrlInputs[0]; isValid = false; }
@@ -932,14 +953,14 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
 
                      setTimeout(() => {
                          try {
-                             fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, selectedPageLayoutMode, selectedImageLayout, imageUrls, iframeUrls, expiryDetails); // Pass page layout mode
+                             fullHtmlToCopy = generateTargetHtmlTemplate(convertedHtml, outputPassword, selectedPageLayoutMode, selectedImageLayout, imageUrls, iframeUrls, expiryDetails);
                              if (!fullHtmlToCopy || typeof fullHtmlToCopy !== 'string' || fullHtmlToCopy.length < 500) { throw new Error("Kết quả tạo HTML lỗi hoặc quá ngắn."); }
                              showStatus("Xong! Sẵn sàng copy mã nguồn siêu phẩm v2.2.", "success", "done_all", 5000);
                              copyButton.disabled = false; copyButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                          } catch (genError) { console.error("Lỗi tạo HTML/mã hóa:", genError); showStatus(`Lỗi tạo mã: ${genError.message}`, "error", "error_outline", 10000); fullHtmlToCopy = ''; copyButton.disabled = true;
                          } finally { generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn'; }
                      }, 100);
-                 }, imageUrls, iframeUrls, expiryDetails, selectedPageLayoutMode); // Pass page layout mode to modal
+                 }, imageUrls, iframeUrls, expiryDetails, selectedPageLayoutMode);
 
              } catch (processingError) { console.error("Lỗi xử lý:", processingError); showStatus(`Lỗi xử lý: ${processingError.message}`, "error", "error", 8000); fullHtmlToCopy = ''; copyButton.disabled = true; generateButton.disabled = false; generateButton.innerHTML = '<i class="material-icons">enhanced_encryption</i> Tạo Mã Nguồn'; }
         }
@@ -951,7 +972,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:va
         function loadAndShowWarningModal(onConfirmCallback, currentImageUrls = [], currentIframeUrls = [], currentExpiryDetails = null, currentPageLayoutMode = 'normal') {
              const hasImages = currentImageUrls.length > 0; const hasIframes = currentIframeUrls.length > 0; let mediaInfo = '';
              const selectedLayoutText = imageLayoutSelect.options[imageLayoutSelect.selectedIndex].text;
-             const pageLayoutText = currentPageLayoutMode === 'study' ? "Study Mode ✨" : "Bình thường"; // NEW: Get text for page layout
+             const pageLayoutText = currentPageLayoutMode === 'study' ? "Study Mode ✨" : "Bình thường";
              if (hasImages || hasIframes) { mediaInfo += `<p style="color:var(--primary); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-bottom: 0.5rem;"><i class="material-icons">perm_media</i><strong>Nội dung nhúng thêm:</strong></p>`; const listStyle = 'style="list-style: none; padding: 0; margin: 0 auto; max-width: 80%; text-align: left;"'; mediaInfo += `<ul ${listStyle}>`; if (hasImages) mediaInfo += `<li style="margin-bottom: 0.3rem;"><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--success);">image</i>${currentImageUrls.length} Ảnh (Layout: ${selectedLayoutText})</li>`; if (hasIframes) mediaInfo += `<li><i class="material-icons" style="vertical-align: middle; margin-right: 0.3em; font-size: 1.2em; color: var(--accent);">integration_instructions</i>${currentIframeUrls.length} Iframe/Video</li>`; mediaInfo += `</ul>`; } else { mediaInfo = '<p style="color:var(--text-dim); font-style: italic; display: flex; align-items: center; gap: 0.5em; justify-content: center;"><i class="material-icons">web_asset_off</i>Không nhúng thêm ảnh/iframe.</p>'; }
              let expiryInfo = '';
              if (currentExpiryDetails) { const { day, month, year, hour, minute } = currentExpiryDetails; const pD = String(day).padStart(2, '0'); const pM = String(month).padStart(2, '0'); const pH = String(hour).padStart(2, '0'); const pMin = String(minute).padStart(2, '0'); expiryInfo = `<p style="color:var(--accent); display: flex; align-items: center; gap: 0.5em; justify-content: center; margin-top: 1rem;"><i class="material-icons">timer_off</i><strong>Hết hạn vào:</strong> ${pD}/${pM}/${year} lúc ${pH}:${pMin}</p>`;
